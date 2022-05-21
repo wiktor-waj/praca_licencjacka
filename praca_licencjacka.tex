@@ -83,21 +83,47 @@
 
 % spis treści
 \tableofcontents{}
+\newpage
+
+% pusta strona - narazie zakomentowana
+%\thispagestyle{empty}
+%\
+%\newpage
 
 \chap{Wstęp}
 Jedną z większych dziedzin uczenia maszynowego jest uczenie przez wzmacnianie (ang.
 \textit{reinforcement learning}) W odróżnieniu od zarówno uczenia nadzorowanego i 
 nienadzorowanego nie potrzebujemy w tym przypadku żadnych gotowych danych wejściowych i
-wyjściowych. Dzięki temu, że algorytmy uczenia przez wzmacnianie nie mają tego
+wyjściowych. Zamiast tego, algorytm pozyskuje dane na bierząco ze środowiska do, którego
+jest zastosowany. Dzięki temu, że algorytmy uczenia przez wzmacnianie nie mają tego
 ograniczenia możemy zastosować je do problemów takich jak gra na giełdzie\cite{
-tradingreinforcement}
-Jakie rodzaje problemów mogą być rozwiązane przez reinforcement learning?\\
-Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie -- Q-Learning oraz zoptymalizowaniu go tak by po zastosowaniu go do własnoręcznie zaimplementowanej gry był w stanie osiągnąć w niej możliwie najwyższy wynik.
+trading_reinforcement}, czy nauka grania w gry, w swojej pracy
+skupię się na tym drugim.
+
+Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie --
+Q-Learning oraz zoptymalizowaniu go tak by po zastosowaniu go do własnoręcznie
+zaimplementowanej gry był w stanie osiągnąć w niej możliwie najwyższy wynik.
+
+Na początku przedstawię jaką grę wybrałem, opiszę jej zasady oraz przedstawię
+szczegóły jej implementacji. Następnie  przybliżę zagadnienie uczenia przez
+wzmacnianie oraz algorytmu Q\dywiz learning. Pod koniec pokażę jak
+zaimplementowałem wspomniany algorytm, oraz testy po optymalizacjach algorytmu,
+które zastosowałem.
+\newpage{}
+
+\chapter{Gra}
+Problem, który postawiłem przed Q-learningiem to gra z 2013 roku ``Flappy Bird'' autorstwa wietnamskiego developera Dong Nguyena\cite{flappy_bird_author}.
+\section{Zasady gry}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.65]{flappy_bird.png}
+\caption{Zrzut ekratu z gry}
+\end{figure}
 
 
 
 \addcontentsline{toc}{chapter}{Bibliografia}
-\bibliographystyle{ieeetr}
+\bibliographystyle{IEEEtran}
 \bibliography{praca_licencjacka}
 
 \end{document}
