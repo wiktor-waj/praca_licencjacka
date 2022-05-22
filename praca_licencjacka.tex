@@ -94,17 +94,17 @@
 Jedną z większych dziedzin uczenia maszynowego jest uczenie przez wzmacnianie (ang.
 \textit{reinforcement learning}) W odróżnieniu od zarówno uczenia nadzorowanego i 
 nienadzorowanego nie potrzebujemy w tym przypadku żadnych gotowych danych wejściowych i
-wyjściowych. Zamiast tego, algorytm pozyskuje dane na bierząco ze środowiska do, którego
+wyjściowych. Zamiast tego, algorytm pozyskuje dane na bieżąco ze środowiska do, którego
 jest zastosowany. Dzięki temu, że algorytmy uczenia przez wzmacnianie nie mają tego
 ograniczenia możemy zastosować je do problemów takich jak gra na giełdzie\cite{
 trading_reinforcement}, czy nauka grania w gry, w swojej pracy
 skupię się na tym drugim.
 
-Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie --
-Q-Learning oraz zoptymalizowaniu go tak by po zastosowaniu go do własnoręcznie
+Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie \\
+Q-Learningu oraz zoptymalizowaniu go tak by po zastosowaniu go do własnoręcznie
 zaimplementowanej gry był w stanie osiągnąć w niej możliwie najwyższy wynik.
 
-Na początku przedstawię jaką grę wybrałem, opiszę jej zasady oraz przedstawię
+Na początku przedstawię jaką grę wybrałem, opiszę jej zasady oraz zaprezentuję
 szczegóły jej implementacji. Następnie  przybliżę zagadnienie uczenia przez
 wzmacnianie oraz algorytmu Q\dywiz learning. Pod koniec pokażę jak
 zaimplementowałem wspomniany algorytm, oraz testy po optymalizacjach algorytmu,
@@ -112,14 +112,73 @@ które zastosowałem.
 \newpage{}
 
 \chapter{Gra}
-Problem, który postawiłem przed Q-learningiem to gra z 2013 roku ``Flappy Bird'' autorstwa wietnamskiego developera Dong Nguyena\cite{flappy_bird_author}.
+Problem, który postawiłem przed Q-learningiem to gra z 2013 roku ``Flappy Bird''
+autorstwa wietnamskiego developera Dong Nguyena\cite{flappy_bird_author}.
+Zdecydowałem się właśnie na tą grę, gdyż sterowanie w niej jest bardzo proste --
+jest tylko jeden przycisk do kontrolowania toteż jedna akcja do podjęcia przez
+algorytm.
 \section{Zasady gry}
 \begin{figure}[h]
-\centering
-\includegraphics[scale=0.65]{flappy_bird.png}
-\caption{Zrzut ekratu z gry}
+	\begin{center}
+		\includegraphics[scale=0.40]{flappy_bird.png}
+		\caption{Zrzut ekranu z gry}
+		\label{flappy_screenshot}
+	\end{center}
 \end{figure}
 
+Gracz kontroluje ptaka (na rysunku \ref{flappy_screenshot} kolor żółty),
+jego zadaniem jest tak nim sterować by omijać czerwone rury.
+Na ptaka działa jedynie siła grawitacji a to rury są przesuwane w jego stronę ze
+stałą prędkością. Jak wspomniałem wcześniej gracz ma możliwość jedynie kontrolować
+czy ptak załopocze skrzydłami przeciwdziałając sile grawitacji i unosząc się czy
+tego nie wykona i opadnie. Gra kończy się gdy ptak spadnie na ziemię 
+(część zielona na dole na rysunku \ref{flappy_screenshot}) albo uderzy
+w jedną z dwóch nadchodzących do niego czerwonych rur -- dolnej bądź górnej. Punkty
+przyznawane są jeżeli graczowi uda się ominąć nadchodzące przeszkody przelatując
+przez szczelinę między nimi. Za każde ominięcie przyznawany jest jeden punkt. Jak
+widać na rysunku \ref{flappy_screenshot} gracz ominął już trzydzieści par rur.
+Podsumowując -- gra sprowadza się do kontrolowania wysokości ptaka tak by ten
+przelatywał między nadchodzącymi rurami.
+
+\section{Implementacja}
+Do zaimplementowania tej gry zdecydowałem się na użycie skryptowego języka
+\textbf{python} w wersji 3.8. Wybrałem tą technologię ze względu na prostotę w
+pisaniu kodu, świetną dokumentację, fakt, że jest dostępny na większości
+współczesnych platform oraz to, że jest to język open\dywiz source.
+Dodatkowo wykorzystałem moduł \textbf{pygame}.
+\subsection{Pygame}
+Pygame dodaje funkcjonalność do biblioteki SDL (więcej o SDLu w następnym podrozdziale).
+Pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne w pythonie.
+
+
+
+
+\chapter{Uczenie przez wzmacnianie}
+Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
+jak działa, schemat środowisko - agent - akcja - reward
+\section{Q\dywiz learning}
+Tutaj wszystko związane z qlearningiem, wzory, itp :)
+
+\chapter{Implementacja Q\dywiz learningu}
+Tutaj fragmenty kodu, jakie zmiany dokonałem względem książkowego algorytmu
+\section{Podejście pierwsze grid 10 na 10}
+Po kolei wyjaśnienie co to grid 10 na 10 jak to jest implementowane itp
+\section{Podejście drugie grid 10 na 10 i flaga za śmierć od wysokiej rury}
+Jak wyżej
+\section{Podejście trzecie grid 5 na 5 z flagą}
+Jak wyżej
+
+\chapter{Podsumowanie}
+Wyniki osiągane są w miarę ok ale mogło by być lepiej bo są na internecie lepsze
+podejścia do tego problemu -- być może wynika to z tego ze sam implementowałem grę
+i nie jest ona tak dobrze przetestowana jak ta dostępna na GitHub?
+\section{Co można by ulepszyć}
+Tutaj będę pisał co mogłem zrobić gdybym poświęcił więcej czasu np:
+\begin{itemize}
+\item uczenie bez wizualizacji pygamowej
+\item zrównoleglenie by paru agentów na raz mogło się uczyć
+\item doszlifowanie algorytmu??
+\end{itemize}
 
 
 \addcontentsline{toc}{chapter}{Bibliografia}
