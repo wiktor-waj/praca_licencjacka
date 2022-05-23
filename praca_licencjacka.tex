@@ -20,6 +20,7 @@
 \usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{xcolor}
+\usepackage{nameref} % do robienia referencji do chapterów
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows}
 \graphicspath{ {./img/} }
@@ -31,10 +32,13 @@
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 % tikz shapes for flow diagram
-\tikzstyle{terminator} = [rectangle, draw, text centered, rounded corners, minimum height=2em]
+\tikzstyle{terminator} = [rectangle, draw, text centered, rounded corners,
+                          minimum height=2em]
 \tikzstyle{process} = [rectangle, draw, text centered, minimum height=2em]
-\tikzstyle{decision} = [diamond, minimum width=2cm, minimum height=0.5, text centered, draw=black]
-\tikzstyle{data}=[trapezium, draw, text centered, trapezium left angle=60, trapezium right angle=120, minimum height=2em]
+\tikzstyle{decision} = [diamond, minimum width=2cm, minimum height=0.5,
+			text centered, draw=black]
+\tikzstyle{data}=[trapezium, draw, text centered, trapezium left angle=60,
+                  trapezium right angle=120, minimum height=2em]
 \tikzstyle{connector} = [draw, -latex']
 \tikzstyle{arrow} = [thin,->,>=stealth]
 
@@ -102,18 +106,21 @@
 %\newpage
 
 \chap{Wstęp}
-Jedną z większych dziedzin uczenia maszynowego jest uczenie przez wzmacnianie (ang.
-\textit{reinforcement learning}) W odróżnieniu od zarówno uczenia nadzorowanego i 
-nienadzorowanego nie potrzebujemy w tym przypadku żadnych gotowych danych wejściowych i
-wyjściowych. Zamiast tego, algorytm pozyskuje dane na bieżąco ze środowiska do, którego
-jest zastosowany. Dzięki temu, że algorytmy uczenia przez wzmacnianie nie mają tego
-ograniczenia możemy zastosować je do problemów takich jak gra na giełdzie\cite{
-trading_reinforcement}, czy nauka grania w gry, w swojej pracy
+Jedną z większych dziedzin uczenia maszynowego jest uczenie przez wzmacnianie 
+(ang. \textit{reinforcement learning}) W odróżnieniu od zarówno uczenia 
+nadzorowanego i nienadzorowanego nie potrzebujemy w tym przypadku żadnych
+gotowych danych wejściowych i wyjściowych. Zamiast tego, algorytm pozyskuje
+dane na bieżąco ze środowiska do, którego jest zastosowany. Dzięki temu,
+że algorytmy uczenia przez wzmacnianie nie mają tego ograniczenia możemy
+zastosować je do problemów takich jak gra na giełdzie
+\cite{trading_reinforcement}, czy nauka grania w gry, w swojej pracy
 skupię się na tym drugim.
 
-Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie \\
-Q-Learningu oraz zoptymalizowaniu go tak by po zastosowaniu go do własnoręcznie
-zaimplementowanej gry był w stanie osiągnąć w niej możliwie najwyższy wynik.
+Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie\\
+Q-Learningu. Następnie zoptymalizowaniu go tak by po zastosowaniu go do
+własnoręcznie zaimplementowanej gry był w stanie osiągnąć w niej możliwie
+najwyższy wynik. Do zrealizowania tego zostanie użyty język python oraz moduł
+pygame.
 
 Na początku przedstawię jaką grę wybrałem, opiszę jej zasady oraz zaprezentuję
 szczegóły jej implementacji. Następnie  przybliżę zagadnienie uczenia przez
@@ -123,11 +130,11 @@ które zastosowałem.
 \newpage{}
 
 \chapter{Gra}
-Problem, który postawiłem przed Q-learningiem to gra z 2013 roku ``Flappy Bird''
-autorstwa wietnamskiego developera Dong Nguyena\cite{flappy_bird_author}.
-Zdecydowałem się właśnie na tą grę, gdyż sterowanie w niej jest bardzo proste --
-jest tylko jeden przycisk do kontrolowania toteż jedna akcja do podjęcia przez
-algorytm.
+Problem, który postawiłem przed Q-learningiem to nauczenie się grania w
+``Flappy Bird'' -- grę z 2013 autorstwa wietnamskiego developera Dong Nguyena
+\cite{flappy_bird_author}. Zdecydowałem się właśnie na tą grę,
+gdyż sterowanie w niej jest bardzo proste -- jest tylko jeden przycisk do
+kontrolowania toteż jedna akcja do podjęcia przez algorytm.
 \section{Zasady gry}
 \begin{figure}[h]
 	\begin{center}
@@ -137,44 +144,51 @@ algorytm.
 	\end{center}
 \end{figure}
 
-Gracz kontroluje ptaka (na rysunku \ref{flappy_screenshot} kolor żółty),
-jego zadaniem jest tak nim sterować by omijać czerwone rury.
-Na ptaka działa jedynie siła grawitacji a to rury są przesuwane w jego stronę ze
-stałą prędkością. Jak wspomniałem wcześniej gracz ma możliwość jedynie kontrolować
-czy ptak załopocze skrzydłami przeciwdziałając sile grawitacji i unosząc się czy
-tego nie wykona i opadnie. Gra kończy się gdy ptak spadnie na ziemię 
-(część zielona na dole na rysunku \ref{flappy_screenshot}) albo uderzy
-w jedną z dwóch nadchodzących do niego czerwonych rur -- dolnej bądź górnej. Punkty
-przyznawane są jeżeli graczowi uda się ominąć nadchodzące przeszkody przelatując
-przez szczelinę między nimi. Za każde ominięcie przyznawany jest jeden punkt. Jak
-widać na rysunku \ref{flappy_screenshot} gracz ominął już trzydzieści par rur.
+Gracz kontroluje obiekt reprezentowany w grze jako żółty ptak,
+jego zadaniem jest tak nim sterować by omijać obiekty reprezentowane przez 
+czerwone rury oraz nie pozwolić na to by siła grawitacji doprowadziła do
+kolizji obiektu ptaka z obiektem ziemi (na rysunku \ref{flappy_screenshot}
+zielona część na dole). Na obiekt ptaka działa jedynie siła grawitacji a
+obiekty rur przesuwane są w lewo w jego stronę ze stałą prędkością. Gracz
+ma możliwość kontrolować jedynie czy obiekt, którym steruje zwiększy swoją
+wysokość o stałą, zakodowaną ilość jednostek czy tego nie zrobi i obiekt
+reprezentowany przez ptaka zmniejszy swoją wysokość. Gra kończy się gdy
+dojdzie do kolizji obiektu ptaka z, którymkolwiek obiektem rur -- dolnej
+bądź górnej albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi uda
+się ominąć nadchodzące przeszkody przelatując przez szczelinę między nimi.
+Za każde ominięcie przyznawany jest jeden punkt. Na górze rysunku
+\ref{flappy_screenshot} białymi cyframi wypisana jest ilość osiągniętych przez
+gracza punktów. Jak widać gracz ominął już trzydzieści par rur.
 Podsumowując -- gra sprowadza się do kontrolowania wysokości ptaka tak by ten
 przelatywał między nadchodzącymi rurami.
 
 \section{Wykorzystane technologie}
-Do zaimplementowania tej gry zdecydowałem się na użycie skryptowego języka
-\textbf{python} w wersji 3.8. Wybrałem tą technologię ze względu na prostotę w
-pisaniu kodu, świetną dokumentację, fakt, że jest dostępny na większości
-współczesnych platform oraz to, że jest to język open\dywiz source.
+Do zaimplementowania tej gry zdecydowałem się na użycie wysoko poziomowego
+interpretowanego języka \textbf{python} w wersji 3.8. Python jest dostępny na
+większości współczesnych platform oraz jest to język  open\dywiz source.
 Dodatkowo wykorzystałem moduł \textbf{pygame}.
-\subsection{Pygame}
-Pygame dodaje funkcjonalność do biblioteki SDL (więcej o SDLu w następnym podrozdziale).
-Pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne w pythonie.
-Zaletami pygame są między innymi : podstawowe funkcje używają zoptymalizowanego kodu
-w C oraz Assembly co sprawia, że pygame jest naprawdę szybkie, podobnie jak python jest
-dostępny na większości współczesnych platform oraz prosty w użyciu co zaprezentuję
-w części implementacyjnej. Ponadto jest modularny co pozwala programiście używać
-tylko tych komponentów, których naprawdę potrzebuje.
-\subsection{SDL -- Simple DirectMedia Layer}
-Jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do audio,
-urządzeń peryferyjnych takich jak mysz, klawiatura, joystick, sprzętu graficznego 
-(za pomocą OpenGL i Direct3D). Technologia open source zaimplementowana w C.
-To za pomocą tej biblioteki pygame może odczytywać wejście czy rysować wyjście 
-na ekranie.
-\section{Implementacja}
-W tym podrozdziale przedstawię w jaki sposób użyłem wyżej wymienionych technologii
-do zaimplementowania gry, zacznę od opisania diagramu przepływu.
 
+Pygame dodaje funkcjonalność do biblioteki SDL. Simple DirectMedia Layer(SDL)
+jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do
+audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick oraz
+sprzętu graficznego (za pomocą OpenGL i Direct3D). Technologia open source
+zaimplementowana w C. Używana w grach firm takich jak \textit{Valve Software}
+czy \textit{SuperTuxCart}\cite{sdl_ref}. To za pomocą tej biblioteki pygame
+może odczytywać wejście czy rysować wyjście na ekranie.
+
+Pygame pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne
+w pythonie. Zaletami pygame są między innymi : podstawowe funkcje używają
+zoptymalizowanego kodu w C oraz Assembly, dostępny podobnie jak python na
+większości współczesnych platform. Ponadto jest modularny co pozwala
+programiście używać tylko tych komponentów, których naprawdę potrzebuje.
+Gier stworzonych z użyciem pygame na samej stronie projektu jest ponad 660
+\cite{pygame_about_ref}.
+\section{Implementacja}
+Głównym elementem implementacji jest nieskończona pętla, w której sprawdzamy
+zdarzenia, które zaszły, sprawdzamy czy mamy wejście od gracza, i aktualizujemy
+obiekty gry oraz ekran. Na rysunku \ref{game_flow_chart} opisana jako 
+\textit{Main game loop}.
+\begin{figure}
 \begin{center}
 \begin{tikzpicture}[node distance = 1.5cm]
 \node [terminator] at (0,0) (start) {\textbf{Start}};
@@ -182,16 +196,20 @@ do zaimplementowania gry, zacznę od opisania diagramu przepływu.
 {Wczytaj zasoby; zainicjalizuj grę i zegar; zadeklaruj stałe; utwórz grupy};
 \node [process, below of=zainicjalizuj_gre] (main_loop) {Main game loop};
 \node [decision, below of=main_loop, yshift = -1cm] (900ms) {Minęło 900ms?};
-\node [process, right of=900ms, xshift = 3.5cm] (generate_pipes) {Wygeneruj rury};
+\node [process, right of=900ms, xshift = 3.5cm] (generate_pipes)
+	{Wygeneruj rury};
 \node [process, below of=900ms, yshift = -1.7cm] (draw_flappy)
 	{Narysuj i zaktualizuj ptaka};
-\node [process, below of=draw_flappy] (check_score) {Sprawdź czy przyznać punkt};
+\node [process, below of=draw_flappy] (check_score)
+	{Sprawdź czy przyznać punkt};
 \node [decision, below of=check_score, yshift = -0.5cm] (check_collision)
 	{Kolizja?};
-\node [data, below of=check_collision, yshift = -0.9cm] (check_input) {Sprawdź input};
+\node [data, below of=check_collision, yshift = -0.9cm] (check_input)
+	{Sprawdź input};
 \node [decision, below of=check_input, yshift = -0.5cm] (check_esc) {ESC?};
 \node [decision, below of=check_esc, yshift = -0.9cm] (check_lpm) {LPM?};
-\node [process, right of=check_lpm, xshift = 2.5cm] (flap) {Pomachaj skrzydłami};
+\node [process, right of=check_lpm, xshift = 2.5cm] (flap)
+	{Pomachaj skrzydłami};
 \node [process, below of=check_lpm, yshift = -0.8cm] (display_update)
 	{Zaktualizuj ekran};
 \node [terminator, below of=display_update] (end_game) {\textbf{Koniec gry}};
@@ -205,18 +223,19 @@ do zaimplementowania gry, zacznę od opisania diagramu przepływu.
 \draw [arrow] (check_input) -- (check_esc);
 \draw [arrow] (check_esc) -- node[anchor=east] {Nie} (check_lpm);
 \draw [arrow] (check_lpm) -- node[anchor=east] {Nie} (display_update);
-\draw [arrow] (display_update) -- (end_game);
 \draw [arrow] (900ms) -- node[anchor=south] {Tak} (generate_pipes);
 \draw [arrow] (check_lpm) -- node[anchor=south] {Tak} (flap);
 \draw [arrow] (generate_pipes) |- (draw_flappy);
 \draw [arrow] (flap) |- (display_update);
 \node [right of = check_collision, xshift = 5cm, inner sep=0pt, outer sep=0pt]
 	(phantom_collision) {};
-\draw [arrow] (check_collision) -- (phantom_collision);
+	\draw [arrow] (check_collision) -- node[anchor=south] {Tak}
+	(phantom_collision);
 \node [right of = check_esc, xshift = 5cm, inner sep=0pt, outer sep=0pt]
 	(phantom_esc) {};
 \draw [arrow] (phantom_collision) -- (phantom_esc);
-\draw [arrow] (check_esc) -- (phantom_esc);
+\draw [arrow] (check_esc) -- node[anchor=south] {Tak}
+	(phantom_esc);
 \draw [arrow] (phantom_esc) |- (end_game);
 \node [left of = display_update, xshift = -3cm, inner sep=0pt, outer sep=0pt]
 	(phantom_display_update) {};
@@ -224,9 +243,47 @@ do zaimplementowania gry, zacznę od opisania diagramu przepływu.
 \draw [arrow] (phantom_display_update) |- (main_loop);
 \end{tikzpicture}
 \end{center}
+\caption{Uproszczony diagram przepływu gry}
+\label{game_flow_chart}
+\end{figure}
 \newpage{}
-Tutaj będą opisane po kolei nody co robią na diagramie
-
+Program zaczyna od wczytania wczytania zasobów gry -- obrazków reprezentujących
+tło, rurę, ziemię, ptaka. Każdemu z tych zasobów tworzy obiekt klasy
+\textit{pygame.image}, wczytywane są za pomocą metody \textit{load}.
+Do śledzenia czasu w grze wykorzystywany jest obiekt klasy
+\textit{pygame.time.Clock}. Stałe deklarowane na początku programu to na
+przykład: ilość jednostek o ile przesunąć w lewo obiekty rur przy każdym
+tyknięciu zegara, szerokość szczeliny między obiektami rur, czy czas po jakim
+generować nowe rury. W tym miejscu przypisujemy wartość stałej opisującej co
+jaki czas mamy generować nowe obiekty rur. Jest wyliczana przez wzór:
+\begin{equation}
+	P_f = 900 * (30 \div F)
+\end{equation}
+Gdzie $P_f$ to czas po jakim generowane są nowe obiekty rur
+(ang. \textit{pipe frequency}) $F$ to ilość klatek na sekundę
+(ang. \textit{frames per second}). Potrzeba zmiennej częstotliwości
+generowania obiektów rur wzięła się z okoliczności, które opisuję w rozdziale
+\nameref{chapter:implementacja_qlearningu}.
+Przy uruchamianiu programu użytkownik ma opcję wybrać wartość parametru 
+klatek na sekundę : 30, 60 bądź 120. Domyślnie jest to 30, stąd we wzorze
+znajduje się ta liczba. W ten sposób przy 30 klatkach na sekundę nowe obiekty
+rur będą generowane co 900 milisekund, przy 60 co 450 milisekund i co 225
+milisekund w przypadku 120 klatek na sekundę. Obiekty rur domyślnie generowane
+są co 900 milisekund. Po kilku próbach stwierdziłem, że częstsze generowanie
+obiektów rur sprawiało, że gra była zbyt trudna dla gracza lub w najgorszym
+wypadku sprawiało, że gra była nie do przejścia jak na przykład w następującym
+scenariuszu przedstawionym na rysunku \ref{frequent_pipes}. Gdzie obiekt
+ptaka nie będzie miał nawet czasu by wznieść się na wystarczającą wysokość
+a potem opaść.
+\begin{figure}
+	\begin{center}
+		\includegraphics[scale=0.50]{impossible_pipes.png}
+		\caption{Często generowane obiekty rur z nie stałą odległością}
+		\label{frequent_pipes}
+	\end{center}
+\end{figure}
+Teraz napisz coś o grupach i to że jak collidują ze sobą to łatwo to sprawdzić
+w pygamie
 \chapter{Uczenie przez wzmacnianie}
 Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
 jak działa, schemat środowisko - agent - akcja - reward
@@ -234,6 +291,7 @@ jak działa, schemat środowisko - agent - akcja - reward
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
 \chapter{Implementacja Q\dywiz learningu}
+\label{chapter:implementacja_qlearningu}
 Tutaj fragmenty kodu, jakie zmiany dokonałem względem książkowego algorytmu
 \section{Podejście pierwsze grid 10 na 10}
 Po kolei wyjaśnienie co to grid 10 na 10 jak to jest implementowane itp
