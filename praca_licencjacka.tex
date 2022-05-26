@@ -257,7 +257,7 @@ Stałe deklarowane na początku programu to na
 przykład: ilość jednostek o ile przesunąć w lewo obiekty rur przy każdym
 tyknięciu zegara, szerokość szczeliny między obiektami rur, czy czas po jakim
 generować nowe rury. W tym miejscu przypisujemy wartość stałej opisującej co
-jaki czas mamy generować nowe obiekty rur. Jest wyliczana przez wzór:
+jaki czas mamy generować nowe obiekty rur. Jest wyliczana ze wzoru:
 \begin{equation}
 	P_f = 900 * (30 \div F)
 \end{equation}
@@ -305,7 +305,7 @@ pole na obrazek reprezentujący obiekt oraz metodę
 \textit{update}\cite{pygame_sprite_documentation}, którą będę wywoływał co
 każdy obrót głównej pętli programowej. W przypadku obiektu ptaka w
 przeładowanej metodzie \textit{update} znajduje się logika ``latania'' --
-co wywołanie metody update inkrementuję zmienną która mówi nam o ile ma
+co wywołanie metody update inkrementuję zmienną która mówi o ile ma
 być przesunięty obiekt ptaka w dół do maksymalnej wartości ośmiu jednostek.
 Jeżeli został wciśnięty lewy przycisk myszy to wartość ta jest zmniejszana o
 dziesięć (minusowe wartości tej zmiennej powodują, że obiekt zostanie
@@ -316,15 +316,47 @@ Po tym zaczyna się główna pętla programowa. Co $P_f$ czasu generujemy nowe r
 po \textit{pygame.sprite.Sprite}. Generuję liczbę losową $x$ z zakresu
 $(-100, 100)$, która będzie potrzebna w ustaleniu wysokości, na której 
 wygeneruję obiekty rur. W konstruktorze nadaję obiektom odpowiedni
-obrazek. Po wczytaniu obrazku w konstruktorze używam metody \textit{get\_rect}
+obrazek. Po wczytaniu obrazku w konstruktorze używam \textit{get\_rect}
 będącej metodą klasy \textit{pygame.Surface}, której instancją jest nadany w
 konstruktorze obrazek. Metoda ta mapuje obrazek na najmniejszy prostokąt, w
 którym zmieści się wczytany obrazek. Mamy dzięki temu dostęp do jego krawędzi,
 którym możemy nadawać współrzędne na ekranie, w których ma zostać narysowany.
-Górnej lewej krawędzi obiektu dolnej rury nadajemy współrzędne :
-\[W, H -  \]
-Gdzie $W$ to szerokość tła ustalona na początku, $H$ to wysokość tła
-% w kodzie to jest w linikach 33 i 210
+Wszystkie obiekty rysowane są w przestrzeni kartezjańskiej, gdzie punkt
+$(0,0)$ jest lewym górnym rogiem tła.
+Górnej lewej krawędzi obiektu dolnej rury nadajemy współrzędne:
+\[(W, H \div 2 + x + G \div 2)\]
+Natomiast dolnej lewej krawędzi obiektu górnej rury nadajemy współrzędne:
+\[(W, H \div 2 + x - G \div 2)\]
+Gdzie $W$ to szerokość tła ustalona na początku, $H$ to wysokość tła, a
+$G$ to stała oznaczająca odległośc między dolną a górną rurą, przypisywana
+na początku programu. 
+Tak narsyowane obiekty rur zostaną narysowane zaraz za ekranem z prawej strony,
+przesunięte od środku ekranu $x$ oraz połowę odległości ustalonej na początku
+działania programu.
+
+W następnym kroku rysuję na ekranie obiekt ptaka za pomocą metody \textit{draw}
+wywoływanej na grupie, do której ten obiekt należy. Metoda ta korzysta z
+nadanego w konstruktorze obrazka, oraz zmapowanego obiektu prostokąta
+(\textit{sprite.Rect}) do określenia pozycji, na której ma zostać narysowany.
+Rysowanie obiektów rur odbywa się w ten sam sposób, z tym, że wspomniana
+metoda jest wywoływana na odpowiednio grupie obiektów rur dolnych i górnych.
+Następnie na grupie, do której należy obiekt ptaka wywołuję metodę
+\textit{update}, która obsługuje logikę ``latania''.
+
+Sprawdzanie, czy zwiększyć punkt odbywa się w następujący sposób:
+%napisz tutaj cos XD nie no na serio to ze jak przelatuje przez czarna linie
+%jak ta linia jest ustalana
+%i ze to jest potrzebne bo inaczej jakbysmy tylko ta czarne linie sprawdzali
+%czy przelecial to moglby uderzyc od razu w pipa za nia i dalej bylby za to
+%punkt
+\begin{figure}
+	\begin{center}
+		\includegraphics{flappy_scoring}
+		\caption{Przyznawanie punktów}
+	\end{center}
+	\label{flappy_scoring}
+\end{figure}
+
 
 \chapter{Uczenie przez wzmacnianie}
 Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
