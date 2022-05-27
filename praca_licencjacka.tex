@@ -158,7 +158,7 @@ bądź górnej albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi ud
 się ominąć nadchodzące przeszkody przelatując przez szczelinę między nimi.
 Za każde ominięcie przyznawany jest jeden punkt. Na górze rysunku
 \ref{flappy_screenshot} białymi cyframi wypisana jest ilość osiągniętych przez
-gracza punktów. Jak widać gracz ominął już trzydzieści par rur.
+gracza punktów. Jak widać gracz ominął już trzydzieści czery pary rur.
 Podsumowując -- gra sprowadza się do kontrolowania wysokości ptaka tak by ten
 przelatywał między nadchodzącymi rurami.
 
@@ -298,7 +298,7 @@ Po określeniu wartości stałych tworzymy trzy instancje klasy
 \textit{pygame.sprite.Group}, jedną dla obiektu ptaka, drugą dla obiektów rur
 dolnych oraz jedną dla obiektów rur górnych. Będą nam potrzebne później przy
 sprawdzaniu czy zaszła kolizja między obiektem ptaka a obiektami rur.
-Sam obiekt ptaka jest instancją klasy dziedziczącej po
+Sam obiekt ptaka jest instancją klasy \textit{Bird} dziedziczącej po
 \textit{pygame.sprite.Sprite}. Wspomniana klasa jest przeznaczona dla obiektów,
 które mają być widoczne na ekranie, zawiera między innymi
 pole na obrazek reprezentujący obiekt oraz metodę
@@ -313,50 +313,88 @@ przesunięty w górę).
 
 Po tym zaczyna się główna pętla programowa. Co $P_f$ czasu generujemy nowe rury
 -- polega to na stworzeniu dwóch instancji klasy \textit{Pipe} dziedziczącej
-po \textit{pygame.sprite.Sprite}. Generuję liczbę losową $x$ z zakresu
+po \textit{pygame.sprite.Sprite}. Generuję liczbę losową $r$ z zakresu
 $(-100, 100)$, która będzie potrzebna w ustaleniu wysokości, na której 
 wygeneruję obiekty rur. W konstruktorze nadaję obiektom odpowiedni
-obrazek. Po wczytaniu obrazku w konstruktorze używam \textit{get\_rect}
+obrazek. Po wczytaniu obrazku używam \textit{get\_rect}
 będącej metodą klasy \textit{pygame.Surface}, której instancją jest nadany w
-konstruktorze obrazek. Metoda ta mapuje obrazek na najmniejszy prostokąt, w
+konstruktorze obrazek. Zwrócny obiekt przypisuję do zmiennej klasy
+\textit{rect}. Metoda ta mapuje obrazek na najmniejszy prostokąt, w
 którym zmieści się wczytany obrazek. Mamy dzięki temu dostęp do jego krawędzi,
 którym możemy nadawać współrzędne na ekranie, w których ma zostać narysowany.
 Wszystkie obiekty rysowane są w przestrzeni kartezjańskiej, gdzie punkt
 $(0,0)$ jest lewym górnym rogiem tła.
 Górnej lewej krawędzi obiektu dolnej rury nadajemy współrzędne:
-\[(W, H \div 2 + x + G \div 2)\]
+\[(W, H \div 2 + r + G \div 2)\]
 Natomiast dolnej lewej krawędzi obiektu górnej rury nadajemy współrzędne:
-\[(W, H \div 2 + x - G \div 2)\]
+\[(W, H \div 2 + r - G \div 2)\]
 Gdzie $W$ to szerokość tła ustalona na początku, $H$ to wysokość tła, a
 $G$ to stała oznaczająca odległośc między dolną a górną rurą, przypisywana
 na początku programu. 
 Tak narsyowane obiekty rur zostaną narysowane zaraz za ekranem z prawej strony,
 przesunięte od środku ekranu $x$ oraz połowę odległości ustalonej na początku
-działania programu.
+działania programu. Tak wygenerowane obiekty dodaję do odpowiednich instancji
+\textit{pygame.sprite.Group}. Jako, że klasa \textit{Pipe} dziedziczy po
+\textit{pygame.sprite.Sprite} (tak samo jak klasa \textit{Bird}), to powinna
+przeładowywać metodę \textit{update}\cite{pygame_sprite_documentation}.
+W przypadku klasy reprezentującej rury jest tam tylko logika przesuwania
+obiektu w lewo co sprowadza się do zmniejszenia współrzędnej $x$ 
+zmiennej \textit{rect} oraz ewentualnym usunięciu go jeżeli współrzędna ta
+po zmniejszeniu staje się ujemna (oznacza to, że jest po za lewą krawędzią
+ekranu przez co jest nie widocznia i nie potrzebna). Usuwanie polega na
+wywołaniu metody \textit{kill}, co powoduje, że obiekt zostaje usunięty
+z każdej grupy, której był elementem.
 
 W następnym kroku rysuję na ekranie obiekt ptaka za pomocą metody \textit{draw}
 wywoływanej na grupie, do której ten obiekt należy. Metoda ta korzysta z
 nadanego w konstruktorze obrazka, oraz zmapowanego obiektu prostokąta
-(\textit{sprite.Rect}) do określenia pozycji, na której ma zostać narysowany.
-Rysowanie obiektów rur odbywa się w ten sam sposób, z tym, że wspomniana
-metoda jest wywoływana na odpowiednio grupie obiektów rur dolnych i górnych.
-Następnie na grupie, do której należy obiekt ptaka wywołuję metodę
-\textit{update}, która obsługuje logikę ``latania''.
+(\textit{sprite.Rect}) do określenia pozycji, na której ma zostać
+narysowany\cite{pygame_group_draw_documentation}. Rysowanie obiektów rur odbywa
+się w ten sam sposób, z tym, że wspomniana metoda jest wywoływana na
+odpowiednio grupie obiektów rur dolnych i górnych. Następnie na grupie, do
+której należy obiekt ptaka wywołuję metodę \textit{update}, która obsługuje
+logikę ``latania''.
 
-Sprawdzanie, czy zwiększyć punkt odbywa się w następujący sposób:
-%napisz tutaj cos XD nie no na serio to ze jak przelatuje przez czarna linie
-%jak ta linia jest ustalana
-%i ze to jest potrzebne bo inaczej jakbysmy tylko ta czarne linie sprawdzali
-%czy przelecial to moglby uderzyc od razu w pipa za nia i dalej bylby za to
-%punkt
 \begin{figure}
 	\begin{center}
-		\includegraphics{flappy_scoring}
+		\includegraphics[scale=1.10]{flappy_scoring.png}
 		\caption{Przyznawanie punktów}
+		\label{flappy_scoring_fig}
 	\end{center}
-	\label{flappy_scoring}
 \end{figure}
+Najbliższym z prawej strony obiektem rury jest zawsze obiekt o indeksie zero
+z grupy dolnych bądź górnych rur, jest tak dzięki logice metody \textit{update}
+klasy \textit{Pipe}. Aby sprawdzić, czy przyznać graczowi punkt sprawdzamy
+najpierw, czy obiekt ptaka znalazł się w strefie między dwoma rurami, w tym
+celu wystarczy sprawdzić czy współrzędna $x$ pola \textit{rect.left} obiektu
+ptaka(na rysunku \ref{flappy_scoring_fig} zwizualizowana jako lewa krawędź
+czerwonego prostokątu wokól obiektu ptaka) jest większa tej samej współrzędnej
+obiektu dolnej rury. Na rysunku \ref{flappy_scoring_fig} jest to zaznaczone
+czarną przerywaną linią z lewej strony. Jeżeli tak jest to ustawiam logiczną
+flagę reprezentującą to zajście.
+W następnych obrotach głównej pętli programowej sprawdzane jest, czy ta flaga
+jest ustawiona i jeżeli tak jest to sprawdzam, czy ptak opuścił strefę między
+dwoma rurami. Dzieje się to analogicznie do sprawdzania, czy wszedł z tą
+różnicą, że porównuję $x$ pola \textit{rect.right} obiektu dolnej rury (to
+znaczy współrzędną prawej krawędzi dolnej rury, na rysunku
+\ref{flappy_scoring_fig} oznaczona białą przerywaną linią z prawej strony) z
+współrzędną $x$ pola \textit{rect.left} obiektu ptaka. Jeżeli tak się stało to
+punkt zostaje przyznany a wcześniej wspomnianą flaga zresetowana. Powody
+takiego rozwiązania są dwa:
+\begin{itemize}
+	\item Jeżeli sprawdzałbym tylko czy ptak ominął tylko lewą, albo tylko
+		prawą cześć pola \textit{rect} obiektu dolnej rury to punkty
+		byłyby naliczane przy każdym obrocie głównej pętli programowej
+		gdy obiekt rury najbliższej z prawej został ominięty a nie
+		dotarł jeszcze za lewą granicę ekranu i nie został jeszcze
+		usunięty.
+	\item Jeżeli przyznawałbym punkt, gdy tylko obiekt ptaka znajdzie się
+		w strefie między dwoma obiektami rurami to byłaby szansa, że
+		gracz wpadnie na obiekt rury zaraz po przyznaniu punktu --
+		byłoby to nieprawidłowe zachowanie
+\end{itemize}
 
+Sprawdzanie kolizji
 
 \chapter{Uczenie przez wzmacnianie}
 Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
