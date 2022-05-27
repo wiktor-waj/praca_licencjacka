@@ -158,7 +158,7 @@ bądź górnej albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi ud
 się ominąć nadchodzące przeszkody przelatując przez szczelinę między nimi.
 Za każde ominięcie przyznawany jest jeden punkt. Na górze rysunku
 \ref{flappy_screenshot} białymi cyframi wypisana jest ilość osiągniętych przez
-gracza punktów. Jak widać gracz ominął już trzydzieści czery pary rur.
+gracza punktów. Jak widać gracz ominął już trzydzieści cztery pary rur.
 Podsumowując -- gra sprowadza się do kontrolowania wysokości ptaka tak by ten
 przelatywał między nadchodzącymi rurami.
 
@@ -318,10 +318,10 @@ $(-100, 100)$, która będzie potrzebna w ustaleniu wysokości, na której
 wygeneruję obiekty rur. W konstruktorze nadaję obiektom odpowiedni
 obrazek. Po wczytaniu obrazku używam \textit{get\_rect}
 będącej metodą klasy \textit{pygame.Surface}, której instancją jest nadany w
-konstruktorze obrazek. Zwrócny obiekt przypisuję do zmiennej klasy
-\textit{rect}. Metoda ta mapuje obrazek na najmniejszy prostokąt, w
-którym zmieści się wczytany obrazek. Mamy dzięki temu dostęp do jego krawędzi,
-którym możemy nadawać współrzędne na ekranie, w których ma zostać narysowany.
+konstruktorze obrazek. Zwrócony obiekt przypisuję do pola \textit{rect}.
+Metoda ta mapuje obrazek na najmniejszy prostokąt, w którym zmieści się
+wczytany obrazek. Mamy dzięki temu dostęp do jego krawędzi, którym możemy
+nadawać współrzędne na ekranie, w których ma zostać narysowany.
 Wszystkie obiekty rysowane są w przestrzeni kartezjańskiej, gdzie punkt
 $(0,0)$ jest lewym górnym rogiem tła.
 Górnej lewej krawędzi obiektu dolnej rury nadajemy współrzędne:
@@ -329,9 +329,9 @@ Górnej lewej krawędzi obiektu dolnej rury nadajemy współrzędne:
 Natomiast dolnej lewej krawędzi obiektu górnej rury nadajemy współrzędne:
 \[(W, H \div 2 + r - G \div 2)\]
 Gdzie $W$ to szerokość tła ustalona na początku, $H$ to wysokość tła, a
-$G$ to stała oznaczająca odległośc między dolną a górną rurą, przypisywana
+$G$ to stała oznaczająca odległość między dolną a górną rurą, przypisywana
 na początku programu. 
-Tak narsyowane obiekty rur zostaną narysowane zaraz za ekranem z prawej strony,
+Tak narysowane obiekty rur zostaną narysowane zaraz za ekranem z prawej strony,
 przesunięte od środku ekranu $x$ oraz połowę odległości ustalonej na początku
 działania programu. Tak wygenerowane obiekty dodaję do odpowiednich instancji
 \textit{pygame.sprite.Group}. Jako, że klasa \textit{Pipe} dziedziczy po
@@ -341,7 +341,7 @@ W przypadku klasy reprezentującej rury jest tam tylko logika przesuwania
 obiektu w lewo co sprowadza się do zmniejszenia współrzędnej $x$ 
 zmiennej \textit{rect} oraz ewentualnym usunięciu go jeżeli współrzędna ta
 po zmniejszeniu staje się ujemna (oznacza to, że jest po za lewą krawędzią
-ekranu przez co jest nie widocznia i nie potrzebna). Usuwanie polega na
+ekranu przez co jest nie widoczna i nie potrzebna). Usuwanie polega na
 wywołaniu metody \textit{kill}, co powoduje, że obiekt zostaje usunięty
 z każdej grupy, której był elementem.
 
@@ -368,7 +368,7 @@ klasy \textit{Pipe}. Aby sprawdzić, czy przyznać graczowi punkt sprawdzamy
 najpierw, czy obiekt ptaka znalazł się w strefie między dwoma rurami, w tym
 celu wystarczy sprawdzić czy współrzędna $x$ pola \textit{rect.left} obiektu
 ptaka(na rysunku \ref{flappy_scoring_fig} zwizualizowana jako lewa krawędź
-czerwonego prostokątu wokól obiektu ptaka) jest większa tej samej współrzędnej
+czerwonego prostokąta wokół obiektu ptaka) jest większa tej samej współrzędnej
 obiektu dolnej rury. Na rysunku \ref{flappy_scoring_fig} jest to zaznaczone
 czarną przerywaną linią z lewej strony. Jeżeli tak jest to ustawiam logiczną
 flagę reprezentującą to zajście.
@@ -394,7 +394,41 @@ takiego rozwiązania są dwa:
 		byłoby to nieprawidłowe zachowanie
 \end{itemize}
 
-Sprawdzanie kolizji
+Aby sprawdzić, czy zaszła kolizja obiektu ptaka z ziemią wystarczy sprawdzić,
+czy współrzędna $y$ dolnej części \textit{rect} (czyli \textit{rect.bottom})
+będąca zmienną obiektu ptaka jest większa od $H$ (przypomnę, że w
+\textit{pygame} układ współrzędnych kartezjańskich ma swój początek w lewym
+górnym rogu ekranu a współrzędne z osi $OY$ rosną w ``dół''), gdzie $H$ to
+wysokość tła przypisana na początku. Sprawdzenie kolizji między obiektem ptaka
+a obiektami rur dzięki \textit{pygame} sprowadza się do wywołania metody
+\textbf{pygame.sprite.groupcollide}, która sprawdza, czy doszło do kolizji
+pomiędzy dwiema grupami podanymi jako argumenty i zwraca słownik, gdzie
+kluczami są obiekty z grupy podanej jako pierwszy argument a wartościami każdy
+obiekt z grupy podanej jako drugi argument, z którym obiekt będący kluczem
+wszedł w kolizję. Pod spodem metoda ta sprawdza tak naprawdę czy zmienne
+\textit{rect} obiektu z każdej grupy nie nachodzą na
+siebie\cite{pygame_groupcollide_documentation}. Jako, że grupa
+obiektów \textit{Bird} ma tylko jeden element, to wystarczy, że wspomniana
+metoda zwróci cokolwiek by stwierdzić, że zaszła kolizja między obiektem ptaka
+a obiektami rur i zakończyć grę.
+
+Do sprawdzania wejścia z klawiatury i myszki od gracza używam funkcjonalności,
+którą \textit{pygame} dodaje do biblioteki SDL. Sprawdzenie, czy gracz wcisnął
+%tutaj czy gracz wscinal esc i jak to sie sprwdza
+lewy przycisk myszy jest sprawdzane w metodzie \textit{update} obiekt ptaka i
+polega na sprawdzeniu dwóch warunków:
+\begin{itemize}
+	\item Czy lewy przycisk myszy jest wciśnięty
+	\item Czy lewy przycisk myszy był wciśnięty w ostatnim obrocie głównej
+		pętli programowej
+\end{itemize}
+Jeżeli przycisk nie był wciśnięty to obiekt ptaka podlatuje i ustawiana jest
+flaga logiczna mówiąca o tym, że lewy przycisk myszy jest wciśnięty. Flaga
+ta jest resetowana, gdy przy następnym obrocie głównej pętli programowej
+przycisk nie będzie wciśnięty. Takie sprawdzanie jest konieczne, inaczej jedno
+wciśnięcie lewego przycisku myszy powodowałoby, że ptak podlatywał by do góry
+o dużą ilość jednostek, dopóki przycisk nie zostałby zwolniony.
+
 
 \chapter{Uczenie przez wzmacnianie}
 Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
