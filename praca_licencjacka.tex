@@ -452,13 +452,40 @@ Na końcu aktualizowane jest okno gry dzięki użyciu metody
 Optymalizacja jaka jest zastosowana w tej metodzie, sprawia, że aktualizowane
 są tylko te części obrazu, które faktycznie się zmieniły a nie całość.
 
-%tutaj dodaj pare slow o rysowaniu ekranu restart_Game
-
-
+Gdy gra zostaje zakończona, na ekranie rysowany przycisk reset oraz ustawiana
+flaga logiczna zatrzymująca wykonywanie opisanych w tym rozdziale dyrektyw
+dopóki nie zostanie wciśniety lewy przycisk myszy, wtedy gra jest resetowana,
+to znaczy wszystkie zmienne są ustawiane do stanu początkowego co powoduje
+rozpoczęcie gry na nowo.
 
 \chapter{Uczenie przez wzmacnianie}
-Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
-jak działa, schemat środowisko - agent - akcja - reward
+%Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
+%jak działa, schemat środowisko - agent - akcja - reward\cite{ai_foundations}
+\section{Czym jest sztuczna inteligencja}
+\textbf{Sztuczna inteligencja} (ang. \textit{artificial intelligence}} to
+dziedzina nauki, która zajmuje się syntezowaniem oraz analizowaniem
+obliczeniowych agentów, którzy potrafią podejmować inteligentne decyzje.
+
+\textbf{Agent} jest czymś, co potrafi podejmować decyzje w pewnym środowisku,
+robić coś. Agentami są na przykład: psy, termostaty, ludzie, korporacje,
+samoloty czy roboty.
+
+Mówimy, że agent działa/podejmuje decyzje inteligentnie gdy:
+\begin{itemize}
+	\item Uczy się na podstawie swojego doświadczenia
+	\item Jest elastyczny na zmieniające się środowisko i zmieniające się
+		cele
+	\item Decyzje, które podejmuje są właściwe dla okoliczności, w których
+		się znajduje oraz celów, które ma osiągnąć, biorące pod uwagę
+		krótko i długo terminowe konsekwencje
+\end{itemize}
+
+\textbf{Obliczeniowy agent} to taki agent, którego podejmowane decyzje mogą
+zostać wyjaśnione pod względem obliczeniowym. To znaczy decyzja może zostać
+rozbita na podstawowe operacje czyli takie, które mogą zostać zaimplementowane
+na fizycznym urządzeniu. Takie obliczenia mogą przyjmować wiele różnych form.
+U ludzi są one wykonywane w mózgu, w przypadku komputerów na procesorach.
+j
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
