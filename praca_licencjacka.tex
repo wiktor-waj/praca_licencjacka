@@ -72,7 +72,7 @@
   \chapter*{#1}%
   \addcontentsline{toc}{chapter}{#1}}
 \fancyhf{}
-\fancyhead[LE,RO]{\footnotesize\bfseries\thepage}
+\fancyhead[LE,RO]{\footnotesize\thepage}
 \fancyhead[LO]{\footnotesize\rightmark}
 \fancyhead[RE]{\footnotesize\leftmark}
 \renewcommand{\headrulewidth}{0.5pt}
@@ -184,8 +184,8 @@ programiście używać tylko tych komponentów, których naprawdę potrzebuje.
 Gier stworzonych z użyciem pygame na samej stronie projektu jest ponad 660
 \cite{pygame_about_ref}.
 \section{Implementacja}
-Głównym elementem implementacji jest nieskończona pętla, w której sprawdzamy
-zdarzenia, które zaszły, sprawdzamy czy mamy wejście od gracza, i aktualizujemy
+Głównym elementem implementacji jest nieskończona pętla, w której sprawdzam
+zdarzenia, które zaszły, sprawdzam czy mamy wejście od gracza, i aktualizuję
 obiekty gry oraz ekran. Na rysunku \ref{game_flow_chart} opisana jako 
 \textit{Main game loop}.
 \begin{figure}
@@ -355,10 +355,10 @@ odpowiednio grupie obiektów rur dolnych i górnych. Następnie na grupie, do
 której należy obiekt ptaka wywołuję metodę \textit{update}, która obsługuje
 logikę ``latania''.
 
-\begin{figure}
+\begin{figure} 
 	\begin{center}
 		\includegraphics[scale=1.10]{flappy_scoring.png}
-		\caption{Przyznawanie punktów}
+		\caption{Granice \textit{rect} obiektów \textit{sprite}}
 		\label{flappy_scoring_fig}
 	\end{center}
 \end{figure}
@@ -398,7 +398,7 @@ Aby sprawdzić, czy zaszła kolizja obiektu ptaka z ziemią wystarczy sprawdzić
 czy współrzędna $y$ dolnej części \textit{rect} (czyli \textit{rect.bottom})
 będąca zmienną obiektu ptaka jest większa od $H$ (przypomnę, że w
 \textit{pygame} układ współrzędnych kartezjańskich ma swój początek w lewym
-górnym rogu ekranu a współrzędne z osi $OY$ rosną w ``dół''), gdzie $H$ to
+górnym rogu ekranu a współrzędne z osi $OY$ ``rosną w dół''), gdzie $H$ to
 wysokość tła przypisana na początku. Sprawdzenie kolizji między obiektem ptaka
 a obiektami rur dzięki \textit{pygame} sprowadza się do wywołania metody
 \textbf{pygame.sprite.groupcollide}, która sprawdza, czy doszło do kolizji
@@ -412,11 +412,29 @@ obiektów \textit{Bird} ma tylko jeden element, to wystarczy, że wspomniana
 metoda zwróci cokolwiek by stwierdzić, że zaszła kolizja między obiektem ptaka
 a obiektami rur i zakończyć grę.
 
-Do sprawdzania wejścia z klawiatury i myszki od gracza używam funkcjonalności,
-którą \textit{pygame} dodaje do biblioteki SDL. Sprawdzenie, czy gracz wcisnął
-%tutaj czy gracz wscinal esc i jak to sie sprwdza
-lewy przycisk myszy jest sprawdzane w metodzie \textit{update} obiekt ptaka i
-polega na sprawdzeniu dwóch warunków:
+\textbf{Pygame.event} to moduł, który pozwala na interakcję z kolejką wydarzeń,
+które odbywają się w systemie np. wciśnięto lub zwolniono przycisk przycisk
+myszy bądź klawiatury, zmieniono rozdzielczość ekranu, wyłączono program.
+To ten moduł komunikuje się z biblioteką SDL. Jest zależny od modułu
+\textbf{pygame.display}\cite{pygame_event_documentation}, który zarządza
+wyświetlaniem okna programu na ekranie.
+Okno programu jest inicjalizowane na początku działania programu na podstawie
+wymiarów obrazków reprezentujących tło i ziemię w grze. Sprawdzanie wydarzeń
+polega na iteracji kolejki, którą \textit{pygame} udostępnia za pomocą metody
+\textit{pygame.event.get}. Jeżeli zajdzie się w niej wydarzenie o typie
+\textit{pygame.QUIT} albo \textit{pygame.KEYDOWN} (został wciśnięty przycisk
+klawiatury) oraz \textit{pygame.event.key} to \textit{pygame.K\_ESCAPE}
+(wciśnięty klawisz to escape) to podobnie jak w przypadku wykrycia kolizji
+gra jest zakańczana.
+
+Dodatkowo \textit{pygame} umożliwia komunikację ze sprzętem bezpośrednio, nie
+przez sprawdzanie kolejki wydarzeń. Mysz obsługiwana jest przez moduł
+\textbf{pygame.mouse}. Pozwala na sprawdzenie w każdym momencie, które
+przyciski na myszy są wciśnięte za pomocą metody
+\textit{pygame.mouse.get\_pressed}, która zwraca tablicę wartości logicznych
+reprezentujących przyciski na myszy.
+Sprawdzenie, czy gracz wcisnął lewy przycisk myszy jest sprawdzane w metodzie
+\textit{update} obiektu ptaka i polega na sprawdzeniu dwóch warunków:
 \begin{itemize}
 	\item Czy lewy przycisk myszy jest wciśnięty
 	\item Czy lewy przycisk myszy był wciśnięty w ostatnim obrocie głównej
@@ -426,8 +444,16 @@ Jeżeli przycisk nie był wciśnięty to obiekt ptaka podlatuje i ustawiana jest
 flaga logiczna mówiąca o tym, że lewy przycisk myszy jest wciśnięty. Flaga
 ta jest resetowana, gdy przy następnym obrocie głównej pętli programowej
 przycisk nie będzie wciśnięty. Takie sprawdzanie jest konieczne, inaczej jedno
-wciśnięcie lewego przycisku myszy powodowałoby, że ptak podlatywał by do góry
-o dużą ilość jednostek, dopóki przycisk nie zostałby zwolniony.
+wciśnięcie lewego przycisku myszy powodowałoby, że obiekt ptaka podlatywał by
+do góry o dużą ilość jednostek, dopóki przycisk nie zostałby zwolniony.
+
+Na końcu aktualizowane jest okno gry dzięki użyciu metody
+\textbf{pygame.display.update}, która wysyła zaktualizowany obraz na ekran.
+Optymalizacja jaka jest zastosowana w tej metodzie, sprawia, że aktualizowane
+są tylko te części obrazu, które faktycznie się zmieniły a nie całość.
+
+%tutaj dodaj pare slow o rysowaniu ekranu restart_Game
+
 
 
 \chapter{Uczenie przez wzmacnianie}
