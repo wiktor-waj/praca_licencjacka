@@ -41,6 +41,11 @@
                   trapezium right angle=120, minimum height=2em]
 \tikzstyle{connector} = [draw, -latex']
 \tikzstyle{arrow} = [thin,->,>=stealth]
+% tikz shapes for reinforcement learning figure
+\tikzstyle{block} = [rectangle, draw, 
+    text width=8em, text centered, rounded corners, minimum height=4em]
+    
+\tikzstyle{line} = [draw, -latex]
 
 
 \lstset{
@@ -462,7 +467,7 @@ rozpoczęcie gry na nowo.
 %Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
 %jak działa, schemat środowisko - agent - akcja - reward\cite{ai_foundations}
 \section{Czym jest sztuczna inteligencja}
-\textbf{Sztuczna inteligencja} (ang. \textit{artificial intelligence}} to
+\textbf{Sztuczna inteligencja} (ang. \textit{artificial intelligence}) to
 dziedzina nauki, która zajmuje się syntezowaniem oraz analizowaniem
 obliczeniowych agentów, którzy potrafią podejmować inteligentne decyzje.
 
@@ -485,7 +490,45 @@ zostać wyjaśnione pod względem obliczeniowym. To znaczy decyzja może zostać
 rozbita na podstawowe operacje czyli takie, które mogą zostać zaimplementowane
 na fizycznym urządzeniu. Takie obliczenia mogą przyjmować wiele różnych form.
 U ludzi są one wykonywane w mózgu, w przypadku komputerów na procesorach.
-j
+
+Wszyscy agenci mają swoje ograniczenia. Żaden agent nie jest wszechmocny czy 
+wszechwiedzący. Agenci mogą jedynie obserwować swoje ograniczone środowisko
+w bardzo wyspecjalizowanych domenach. Agenci mają skończoną pamięć oraz nie
+mają nieskończonej ilości czasu na podjęcie decyzji.
+
+Naukowym celem sztucznej inteligencji jest zrozumienie zasad, które sprawiają,
+że inteligentne zachowania są możliwe w naturalnych czy sztucznych systemach.
+Jest on osiągany przez:
+\begin{itemize}
+	\item Analizę naturalnych i sztucznych agentów
+	\item Formułowaniem i sprawdzaniem hipotez dotyczących czego potrzeba
+		by skonstruować inteligentnych agentów
+	\item Projektowanie, budowanie  i eksperymentowanie z systemami
+		obliczeniowymi, które wykonują zadania powszechnie uważane
+		za wymagające inteligencji
+\end{itemize}
+Inżynieryjnym celem sztucznej inteligencji jest projektowanie i syntezowanie
+użytecznych inteligentnych artefaktów. Chcemy tworzyć agentów, którzy będą
+działać inteligentnie. Tacy agenci są użyteczni w wielu problemach.
+
+\section{Agenci umieszczeni w środowisku}
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}[node distance = 6em, auto, thick]
+    \node [block] (Agent) {Agent};
+    \node [block, below of=Agent] (Environment) {Środowisko};
+     \path [line] (Agent.0) --++ (4em,0em) |- node 
+     	[near start]{Akcja} (Environment.0);
+     \path [line] (Environment.190) --++ (-6em,0em) |- node
+     	[near start] {Nowy stan  $s_{t+1}$} (Agent.170);
+     \path [line] (Environment.170) --++ (-4.25em,0em) |- node
+     	[near start, right] {Nagroda $r_{t+1}$} (Agent.190);
+\end{tikzpicture}
+\end{center}
+\label{rl_figure}
+\caption{Schemat interakcji agenta ze środowiskiem}
+\end{figure}
+\label{Schemat agenta w środowisku}
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
