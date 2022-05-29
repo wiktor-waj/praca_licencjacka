@@ -387,6 +387,7 @@ współrzędną $x$ pola \textit{rect.left} obiektu ptaka. Jeżeli tak się sta�
 punkt zostaje przyznany a wcześniej wspomnianą flaga zresetowana. Powody
 takiego rozwiązania są dwa:
 \begin{itemize}
+	\setlength\itemsep{-0.4em}
 	\item Jeżeli sprawdzałbym tylko czy ptak ominął tylko lewą, albo tylko
 		prawą cześć pola \textit{rect} obiektu dolnej rury to punkty
 		byłyby naliczane przy każdym obrocie głównej pętli programowej
@@ -441,6 +442,7 @@ reprezentujących przyciski na myszy.
 Sprawdzenie, czy gracz wcisnął lewy przycisk myszy jest sprawdzane w metodzie
 \textit{update} obiektu ptaka i polega na sprawdzeniu dwóch warunków:
 \begin{itemize}
+	\setlength\itemsep{-0.4em}
 	\item Czy lewy przycisk myszy jest wciśnięty
 	\item Czy lewy przycisk myszy był wciśnięty w ostatnim obrocie głównej
 		pętli programowej
@@ -459,7 +461,7 @@ są tylko te części obrazu, które faktycznie się zmieniły a nie całość.
 
 Gdy gra zostaje zakończona, na ekranie rysowany przycisk reset oraz ustawiana
 flaga logiczna zatrzymująca wykonywanie opisanych w tym rozdziale dyrektyw
-dopóki nie zostanie wciśniety lewy przycisk myszy, wtedy gra jest resetowana,
+dopóki nie zostanie wciśnięty lewy przycisk myszy, wtedy gra jest resetowana,
 to znaczy wszystkie zmienne są ustawiane do stanu początkowego co powoduje
 rozpoczęcie gry na nowo.
 
@@ -477,6 +479,7 @@ samoloty czy roboty.
 
 Mówimy, że agent działa/podejmuje decyzje inteligentnie gdy:
 \begin{itemize}
+	\setlength\itemsep{-0.4em}
 	\item Uczy się na podstawie swojego doświadczenia
 	\item Jest elastyczny na zmieniające się środowisko i zmieniające się
 		cele
@@ -500,6 +503,7 @@ Naukowym celem sztucznej inteligencji jest zrozumienie zasad, które sprawiają,
 że inteligentne zachowania są możliwe w naturalnych czy sztucznych systemach.
 Jest on osiągany przez:
 \begin{itemize}
+	\setlength\itemsep{-0.4em}
 	\item Analizę naturalnych i sztucznych agentów
 	\item Formułowaniem i sprawdzaniem hipotez dotyczących czego potrzeba
 		by skonstruować inteligentnych agentów
@@ -512,23 +516,61 @@ użytecznych inteligentnych artefaktów. Chcemy tworzyć agentów, którzy będ�
 działać inteligentnie. Tacy agenci są użyteczni w wielu problemach.
 
 \section{Agenci umieszczeni w środowisku}
+Kwintesencją sztucznej inteligencji jest praktyczne rozumowanie -- rozumowanie
+w celu osiągnięcia jakiegoś celu. Na agenta składa się zespojenie percepcji,
+rozumowania oraz podejmowania decyzji. Agent podejmuje decyzje w
+\textbf{środowisku}.
+
+Agentem może być na przykład komputer z sensorami i siłownikami, innymi słowy
+robot, gdzie jego środowiskiem jest świat rzeczywisty. Może być to samo
+prowadzący się samochód, lub jak w moim przypadku może być to program, który
+działa w czysto obliczeniowym środowisku -- agent programowy (ang.
+\textit{software agent}).
 \begin{figure}[!htb]
 \begin{center}
 \begin{tikzpicture}[node distance = 6em, auto, thick]
-    \node [block] (Agent) {Agent};
-    \node [block, below of=Agent] (Environment) {Środowisko};
-     \path [line] (Agent.0) --++ (4em,0em) |- node 
-     	[near start]{Akcja} (Environment.0);
-     \path [line] (Environment.190) --++ (-6em,0em) |- node
-     	[near start] {Nowy stan  $s_{t+1}$} (Agent.170);
-     \path [line] (Environment.170) --++ (-4.25em,0em) |- node
-     	[near start, right] {Nagroda $r_{t+1}$} (Agent.190);
+	\node [inner sep=0pt, outer sep=0pt] (Phantom_agent) {};
+	\node [left of=Phantom_agent, inner sep=0pt, outer sep=0pt,
+		xshift = 1cm] (Phantom_agent_2) {};
+	\node [right of=Phantom_agent, inner sep=0pt, outer sep=0pt,
+		xshift = -1.1cm] (Phantom_agent_3) {};
+	\node [block, below of=Phantom_agent, fill=black, text=white] (Agent)
+		{\textbf{Agent}};
+	\node [block, below of=Agent] (Environment) {Środowisko};
+	\path [line] (Agent.0) --++ (4em,0em) |- node 
+	     	[near start]{Akcje} (Environment.0);
+	\path [line] (Environment.190) --++ (-6em,0em) |- node
+	     	[near start] {Przeszłe doświadczenia} (Agent.170);
+	\path [line] (Environment.170) --++ (-4.25em,0em) |- node
+	     	[near start, right] {Bodziec} (Agent.190);
+	\path [line] (Phantom_agent) --++(0em, 0em) -- node
+		[near start, left] {Cele} (Agent.91);
+	\path [line] (Phantom_agent_2) --++(0em, 0em) -- node
+		[near start, left] {Wcześniejsza wiedza} (Agent.151);
+	\path [line] (Phantom_agent_3) --++(0em, 0em) -- node
+		[near start, right] {Zdolności} (Agent.31);
 \end{tikzpicture}
 \end{center}
 \label{rl_figure}
 \caption{Schemat interakcji agenta ze środowiskiem}
 \end{figure}
-\label{Schemat agenta w środowisku}
+
+Rysunek \ref{rl_figure} pokazuje widok czarnej skrzynki agenta z wejściami
+i wyjściami. W dowolnym momencie agent jest zależny od:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+	\item \textbf{Wcześniejszej wiedzy} o agencie i środowisku
+	\item \textbf{Bodźców} otrzymanych od obecnego
+		środowiska, które mogą zawierać obserwacje o
+		środowisku, ale również akcje, które środowisko
+		narzuca agentowi
+	\item \textbf{Przeszłych doświadczeń} z poprzednich
+		działań i bodźców lub innych danych, z których
+		może się uczyć
+	\item \textbf{Celów}, które musi starać się osiągnąć
+	\item \textbf{Zdolności}, czyli prymitywne działania, które agent
+		może wykonać
+\end{itemize}
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
