@@ -27,5 +27,5 @@ praca_licencjacka.pdf: praca_licencjacka.tex
 	latexmk -pdflua -lualatex="lualatex -interaction=nonstopmode" -use-make praca_licencjacka.tex
 
 clean:
-	latexmk -CA
+	latexmk -c
 	rm praca_licencjacka.bbl
