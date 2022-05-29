@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt,oneside]{book}
+\documentclass[a4paper, 12pt,oneside]{book}
 
 % pakiety
 \usepackage{polski}
@@ -22,7 +22,7 @@
 \usepackage{xcolor}
 \usepackage{nameref} % do robienia referencji do chapterów
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
 \DeclareCaptionType{code}[Listing][Spis listingów] 
 
@@ -44,8 +44,9 @@
 % tikz shapes for reinforcement learning figure
 \tikzstyle{block} = [rectangle, draw, 
     text width=8em, text centered, rounded corners, minimum height=4em]
-    
 \tikzstyle{line} = [draw, -latex]
+% tikz shapes for makrov chains
+\tikzstyle{round}=[thick,draw=black,circle]
 
 
 \lstset{
@@ -515,7 +516,7 @@ Inżynieryjnym celem sztucznej inteligencji jest projektowanie i syntezowanie
 użytecznych inteligentnych artefaktów. Chcemy tworzyć agentów, którzy będą
 działać inteligentnie. Tacy agenci są użyteczni w wielu problemach.
 
-\section{Interakcja agenta ze środowiskiem}
+\section{Interakcja agenta  ze środowiskiem}
 Kwintesencją sztucznej inteligencji jest praktyczne rozumowanie, czyli
 rozumowanie w celu osiągnięcia jakiegoś celu. Na agenta składa się zespojenie
 percepcji, rozumowania oraz podejmowania działań. Agent podejmuje działania w
@@ -526,7 +527,7 @@ robot, gdzie jego środowiskiem jest świat rzeczywisty. Może być to samo
 prowadzący się samochód, lub jak w moim przypadku może być to program, który
 działa w czysto obliczeniowym środowisku -- agent programowy (ang.
 \textit{software agent}).
-\begin{figure}[!htb]
+\begin{figure}[!htb] 
 \begin{center}
 \begin{tikzpicture}[node distance = 6em, auto, thick]
 	\node [inner sep=0pt, outer sep=0pt] (Phantom_agent) {};
@@ -576,7 +577,7 @@ W czarnej skrzynce, agent jest w pewnym stanie wiedzy, może być to wiedza o
 ten stan bazując na bodźcach ze środowiska. Na podstawie stanu wiedzy decyduje
 o swoich działaniach\cite{ai_foundations_agents_situated}.
 
-\section{Wiedza agenta}
+\section{Wiedza agenta} 
 W najprostszym przypadku, kiedy agent decyduje co powinien zrobić odnosi się
 do modelu środowiska opartego o stany, z celem do osiągnięcia i bez żadnych
 niepewności. Agent jest w stanie ustalić jak osiągnąć swój cel przeszukując
@@ -605,7 +606,7 @@ obecnego stanu do stanu, który spełnia cel.
 W poprzednim podrozdziale założyłem, że rozwiązanie to skończona sekwencja
 działań, co jednak, jeżeli problem, który agent, musi rozważyć trwający proces
 lub nie wie ile działań będzie musiał jeszcze podjąć. Takie problemy nazywane
-są \textbf{problemami nieskończonego horyzontu} (ang. \texit{infinite horizon
+są \textbf{problemami nieskończonego horyzontu} (ang. \textit{infinite horizon
 problems}), gdzie proces może trwać wiecznie, jak na przykład problem grania
 we ``Flappy Bird'' lub \textbf{problemami nieokreślonego horyzontu} (ang.
 \textit{indefinite horizon problems}), w którym agent w końcu zakończy
@@ -622,6 +623,112 @@ wszystkie działania nie mają żadnego efektu to znaczy jeżeli agent znajdzie
 się w tym stanie to wszystkie jego działania wracają do stanu z zerową nagrodą.
 Osiągniecie celu może być wymodelowane w ten sposób, by agent otrzymał nagrodę
 właśnie, kiedy osiągnie stan stopu.
+
+\subsection{Łańcuchy Markova}
+% http://artint.info/2e/html/ArtInt2e.Ch8.S2.html
+Mówimy, że zmienna $X$ jest \textbf{warunkowo niezależna} od losowej zmiennej
+$Y$ zakładając, że mamy zbiór losowych zmiennych $Z_s$ jeżeli
+\[P(X | Y, Z_s) = P(X| Z_s)\]
+gdzie prawdopodobieństwa są dobrze zdefiniowane (żadne nie jest równe $0$).
+Zapis $P(X| Y, Z_s)$ oznacza prawdopodobieństwo zajścia $X$ pod
+warunkiem, że zajdzie $Y$ oraz $Z_s$. To oznacza, że dla każdego $x \in
+\text{dziedzina}(X)$, dla każdego $y \in \text{dziedzina}(Y)$ oraz dla każdego
+$z \in \text{dziedzina}(Z_s)$ jeżeli $P(Y = y \wedge Z_s = z) > 0,$
+\[P(X=x|Y=y \wedge Z_s = z) = (X=x|Z_s = z).\]
+To znaczy, mając wartość każdej zmiennej $Z_s$, wiedza o prawdopodobieństwie
+$Y$ nie ma wpływu na przekonanie o $X$.
+
+% http://artint.info/2e/html/ArtInt2e.Ch8.S3.html
+Pojęcie warunkowej niezależności jest użyte by nadać zwięzłą reprezentację
+wielu domenom. Chodzi o to, że jeżeli mamy daną losową zmienną $X$, to może
+istnieć kilka zmiennych, które bezpośrednio wpływają na wartość $X$, w pewnym
+sensie $X$ jest warunkowo niezależne od innych zmiennych biorąc pod uwagę te
+zmienne. Zbiór lokalnie wpływających na $X$ zmiennych jest nazwany
+\textbf{ogrodzeniem Markova} (ang. \textit{Markov blanket}). Ta lokalność
+jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
+
+% tutaj może więcej o regule łańcuchowej? 
+% http://artint.info/2e/html/ArtInt2e.Ch8.S1.SS3.html#Ch8.Thmtheorem3
+\textbf{Sieć przekonań} (ang. \textit{belief network}), również nazywana
+\textbf{siecią Bayesa} to acykliczny graf skierowany, gdzie wierzchołki są
+losowymi zmiennymi. Ponadto istnieje krawędź od każdego elementu ze zbioru
+$\text{rodzice}(X_i)$ do $X_i$. Powiązany z siecią przekonań jest zbiór
+rozkładu prawdopodobieństw warunkowych, które określają warunkowe
+prawdopodobieństwo między każdą zmienną a jej rodzicami (co włącza wcześniejsze
+prawdopodobieństwa zmiennych bez rodziców). A więc sieć przekonań składa się z:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+\item Grafu acyklicznego skierowanego, gdzie każdy wierzchołek jest oznaczony
+	losową zmienną
+\item Dziedziny dla każdej losowej zmiennej
+\item Zbioru rozkładu prawdopodobieństw warunkowych przypisujący
+	$P(X|\text{rodzice}(X))$ dla każdej zmiennej $X$
+\end{itemize}
+
+% http://artint.info/2e/html/ArtInt2e.Ch8.S5.SS1.html
+\textbf{Łańcuch Markova} to sieć przekonań z losowymi zmiennymi w sekwencji,
+gdzie każda zmienna bezpośrednio zależy od swojego poprzednika w sekwencji.
+Łańcuchy Markova są używane do reprezentowania sekwencji wartości jak
+na przykład sekwencja stanów w dynamicznym systemie lub sekwencja słów w
+zdaniu. Każdy punkt w sekwencji jest nazywany \textbf{etapem} (ang.
+\textit{stage}).
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}[auto,node distance=15mm,>=latex,font=\small]
+    \node[round] (s0) {$s_0$};
+    \node[round, right of=s0] (s1) {$s_1$};
+    \node[round, right of=s1] (s2) {$s_2$};
+    \node[round, right of=s2] (s3) {$s_3$};
+    \node[round, right of=s3] (s4) {$s_4$};
+
+    \draw[->] (s0) -- (s1);
+    \draw[->] (s1) -- (s2);
+    \draw[->] (s2) -- (s3);
+    \draw[->] (s3) -- (s4);
+\end{tikzpicture}
+\caption{Łańcuch Markova jako sieć przekonań}
+\label{markov_chain}
+\end{center}
+\end{figure}
+Rysunek \ref{markov_chain} pokazuje ogólny łańcuch Markova jako sieć przekonań.
+Sieć ma pięć etapów, ale nie musi zatrzymywać się na $s_4$, może rozrastać
+się w nieskończoność. Sieci przekonań przekazują założenie niezależności:
+\[P(S_{i+1} | S_0, \dots , S_i) = P(S_{i+1} | S_i),\]
+które jest nazywane \textbf{założeniem Markova}
+
+Często sekwencje są rozłożone w czasie, wtedy $S_t$ reprezentuje stan w
+momencie $t$. Intuicyjnie $S_t$ przekazuje całą informację o historii, która
+mogłaby wpłynąć na przyszłe stany. Niezależność przypuszczenia w łańcuchu
+Markova może być rozumiana jako ``biorąc pod uwagę teraźniejszość -- przyszłość
+jest warunkowo niezależna od przeszłości''
+
+Mówimy, że łańcuch Markova jest \textbf{modelem stacjonarnym} (ang.
+\textit{stationary model}) oraz \textbf{czasowo homogenicznym modelem} (ang.
+\textit{time-homogenous model}) jeżeli wszystkie zmienne mają tą samą dziedzinę
+oraz wszystkie prawdopodobieństwa przejść są takie same dla każdego etapu, to
+znaczy:
+\[\forall i \ge 0, P(S_{i+1}|S_i) = P(S_1|S_0)\]
+By określić stacjonarny łańcuch Markova, podano dwa prawdopodobieństwa
+warunkowe:
+\begin{itemize}
+		\setlength\itemsep{-0.4em}
+	\item $P(S_0)$ specyfikuje wszystkie początkowe warunki
+	\item $P(S_{i+1} | S_i)$ specyfikuje \textbf{dynamikę}, która jest taka
+		sama dla każdego $i \ge 0$
+\end{itemize}
+Stacjonarne łańcuchy Markova interesują nas z kilku względów:
+\begin{itemize}
+		\setlength\itemsep{-0.4em}
+	\item Zapewniają prosty model, który jest łatwy do określenia
+	\item Założenie stacjonarności jest często naturalnym modelem, ponieważ
+		dynamika środowiska zazwyczaj nie zmienia się w czasie.
+	\item Sieć może się rozrastać w nieskończoność. Określenie małej liczby
+		parametrów daje nam nieskończoną
+		sieć\cite{ai_foundations_markov_chains}.
+\end{itemize}
+
+\subsection{Proces decyzyjny Markova}
+Tutaj o procesie decyzyjnym Markova, potrzebne by zrozumieć QLearning
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
