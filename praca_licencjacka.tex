@@ -45,7 +45,7 @@
 \tikzstyle{block} = [rectangle, draw, 
     text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex]
-% tikz shapes for makrov chains
+% tikz shapes for Markov chains
 \tikzstyle{round}=[thick,draw=black,circle]
 
 
@@ -634,7 +634,7 @@ Zapis $P(X| Y, Z_s)$ oznacza prawdopodobieństwo zajścia $X$ pod
 warunkiem, że zajdzie $Y$ oraz $Z_s$. To oznacza, że dla każdego $x \in
 \text{dziedzina}(X)$, dla każdego $y \in \text{dziedzina}(Y)$ oraz dla każdego
 $z \in \text{dziedzina}(Z_s)$ jeżeli $P(Y = y \wedge Z_s = z) > 0,$
-\[P(X=x|Y=y \wedge Z_s = z) = (X=x|Z_s = z).\]
+\[P(X=x|Y=y \wedge Z_s = z) = P(X=x|Z_s = z).\]
 To znaczy, mając wartość każdej zmiennej $Z_s$, wiedza o prawdopodobieństwie
 $Y$ nie ma wpływu na przekonanie o $X$.
 
@@ -727,8 +727,34 @@ Stacjonarne łańcuchy Markova interesują nas z kilku względów:
 		sieć\cite{ai_foundations_markov_chains}.
 \end{itemize}
 
+% http://artint.info/2e/html/ArtInt2e.Ch9.S5.html
 \subsection{Proces decyzyjny Markova}
-Tutaj o procesie decyzyjnym Markova, potrzebne by zrozumieć QLearning
+Proces decyzyjny Markova, może być rozumiany jako łańcuch Markova powiększony o
+działania agenta oraz nagrodę dla agenta. W każdym etapie agent decyduje jakie
+działanie podjąć, nagroda i nowy stan zależą od podjętego przez agenta
+działania oraz poprzedniego stanu. 
+
+Rozważę jedynie stacjonarne modele łańcuchu Markova, gdzie przejścia między
+stanami oraz nagrody nie zależą od czasu. 
+
+Proces decyzyjny Markova (ang. \textit{Markov decision process (MDP)}) składa
+się z:
+\begin{itemize}
+		\setlength\itemsep{-0.4em}
+	\item $S$ -- zbiór stanów środowiska
+	\item $A$ -- zbiór decyzji (akcji możliwych do podjęcia przez agenta)
+	\item $P: S\times S\times A\rightarrow [0,1]$ -- funkcja, która określa
+		\textbf{dynamikę}. Zapis $P(s' | s, a)$ oznacza
+		prawdopodobieństwo, że agent przejdzie do stanu $s'$ pod
+		warunkiem, że był w stanie $s$ i podjął akcję $a$, czyli:
+		\[\forall s\in S \ \forall a\in A \sum_{s' \in S}P(s'|s,a)=1\]
+	\item $R:S\times S\times A\times S \rightarrow \mathfrak{R}$, gdzie
+		$R(s,a,s')$ to \textbf{funkcja nagrody}, dająca oczekiwaną
+		natychmiastową nagrodę za wykonanie działania $a$ i przejścia
+		do stanu $s'$ ze stanu $s$. Czasem wygodnie jest użyć zapisu
+		$R(s,a)$ -- oczekiwana wartość wykonania $a$ w stanie $s$,
+		która równa jest $R(s,a)=\sum _{s'}R(s,a,s') * P(s'|s,a)$.
+\end{itemize}
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
