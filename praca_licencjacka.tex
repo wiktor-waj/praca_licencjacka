@@ -46,7 +46,9 @@
     text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex]
 % tikz shapes for Markov chains
-\tikzstyle{round}=[thick,draw=black,circle]
+\tikzstyle{state}=[thick,draw=black,circle]
+\tikzstyle{reward}=[thick,draw=black,diamond]
+\tikzstyle{action}=[thick,draw=black,rectangle]
 
 
 \lstset{
@@ -675,11 +677,11 @@ zdaniu. Każdy punkt w sekwencji jest nazywany \textbf{etapem} (ang.
 \begin{figure}[!htb]
 \begin{center}
 \begin{tikzpicture}[auto,node distance=15mm,>=latex,font=\small]
-    \node[round] (s0) {$s_0$};
-    \node[round, right of=s0] (s1) {$s_1$};
-    \node[round, right of=s1] (s2) {$s_2$};
-    \node[round, right of=s2] (s3) {$s_3$};
-    \node[round, right of=s3] (s4) {$s_4$};
+    \node[state] (s0) {$s_0$};
+    \node[state, right of=s0] (s1) {$s_1$};
+    \node[state, right of=s1] (s2) {$s_2$};
+    \node[state, right of=s2] (s3) {$s_3$};
+    \node[state, right of=s3] (s4) {$s_4$};
 
     \draw[->] (s0) -- (s1);
     \draw[->] (s1) -- (s2);
@@ -727,6 +729,91 @@ Stacjonarne łańcuchy Markova interesują nas z kilku względów:
 		sieć\cite{ai_foundations_markov_chains}.
 \end{itemize}
 
+% http://artint.info/2e/html/ArtInt2e.Ch9.S3.html
+\subsection{Sieć decyzyjna}
+Zazwyczaj agent nie podejmuje decyzji bez wcześniejszych obserwacji środowiska,
+nie podejmuje też tylko jednej decyzji. Bardziej typowy scenariusz wygląda
+następująco -- agent obserwuje swoje środowisko, decyduje jaką akcję podjąć,
+wykonuje tą akcję, obserwuje zmienione po jego akcji środowisko, i tak dalej.
+Następujące po sobie (sekwencyjne) akcje agenta mogą zależeć od tego co agent
+zaobserwuje, a to co zaobserwuje może zależeć na poprzednich podjętych przez
+niego akcji. W takim wypadku, często jedynym powodem dla wykonania jakiejś
+akcji jest to by dostarczyć kontekst dla przyszłych akcji. Akcje wykonywane
+tylko po to by nabyć informacje nazywane są \textbf{akcjami poszukującymi
+informacji}. Formalnie nie muszę odróżniać akcji poszukujących informacji od
+innych akcji. Zazwyczaj podjęte akcje będą prowadziły do pozyskania nowych
+informacji i wywarciu jakiejś zmiany na środowisku.
+
+\textbf{Sekwencyjny model decyzyjny} modeluje:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+	\item Które akcje są dostępne dla agenta, w którym etapie
+	\item Jaka informacja jest, albo będzie dostępna dla agenta, kiedy
+		będzie musiał podjąć akcję
+	\item Efekty akcji na środowisko
+	\item To jak pożądane te efekty będą
+\end{itemize}
+
+% http://artint.info/2e/html/ArtInt2e.Ch9.S3.SS1.html
+\textbf{Sieć decyzyjna} zwana również \textbf{diagramem wpływu} to graficzna
+reprezentacja skończonego problemu decyzji
+sekwencyjnych\cite{ai_foundations_decision_networks}. Sieć decyzyjna
+rozszerza sieć przekonań by zawierać zmienne decyzji (akcji) i użyteczności.
+
+W szczególności, sieć decyzyjna to skierowany graf acykliczny, z następującymi
+wierzchołkami:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+\item \textbf{Wierzchołek decyzji}, rysowany jako prostokąt reprezentuje
+	zmienne decyzji. Agent może wybrać wartość każdej ze zmiennych decyzji.
+\item \textbf{Wierzchołek szansy}, rysowany jako okrąg reprezentuje zmienne
+	losowe. To są te same wierzchołki co w sieciach przekonań. Każdy
+	wierzchołek szansy ma powiązaną ze sobą domenę i warunkowe
+	prawdopodobieństwo biorące pod uwagę rodziców wierzchołka. Tak jak w
+	sieciach przekonań, rodzice wierzchołka reprezentują warunkową
+	zależność: zmienna jest niezależna od innych zmiennych nie będących jej
+	potomkami. W sieci decyzyjnej zarówno wierzchołki decyzji i wierzchołki
+	szansy mogą być rodzicami wierzchołka szansy.
+\item \textbf{Wierzchołek użyteczności}, rysowany jako romb reprezentuje
+	użyteczność. Zarówno wierzchołki szansy jak i wierzchołki decyzji mogą
+	być rodzicami wierzchołka użyteczności.
+\end{itemize}
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}[auto,node distance=18mm,>=latex,font=\small]
+	\node [state] (weather) {Pogoda};
+	\node [draw=none, below of=weather] (help) {};
+	\node [action, below of=help] (umbrella) {Parasolka};
+	\node [state, left of=help] (forecast) {Prognoza};
+	\node [reward, right of=help] (utility) {Użyteczność};
+	
+	\draw[->, thick] (weather) -- (forecast);
+	\draw[->, thick] (forecast) -- (umbrella);
+	\draw[->, thick] (umbrella) -- (utility);
+	\draw[->, thick] (weather) -- (utility);
+\end{tikzpicture}
+\caption{Sieć decyzyjna reprezentująca decyzję, czy wziąć parasolkę}
+\label{decision_network_umbrella}
+\end{center}
+\end{figure}
+Krawędzie wchodzące do wierzchołków decyzyjnych reprezentują informację, która
+będzie dostępna, jeżeli decyzja zostanie podjęta.
+Krawędzie wchodzące do wierzchołków szansy reprezentują zależność
+probabilistyczną.
+Krawędzie wchodzące do wierzchołków użyteczności reprezentują od czego ta
+użyteczność zależy.
+
+Mówimy, że \textbf{agent nie zapomina}, jeżeli decyzje, które podjął są
+uporządkowane w czasie, i agent pamięta swoje poprzednie decyzje i każdą
+informację, która była dostępna przy poprzedniej decyzji.
+
+Mówimy, że \textbf{sieć decyzyjna nie zapomina}, jeżeli jej wierzchołki decyzji
+są całkowicie uporządkowane, to znaczy, jeżeli wierzchołek decyzyjny $D_i$ jest
+przed $D_j$ to znaczy, że $D_i$ jest rodzicem $D_j$ i każdy rodzic $D_i$ jest
+również rodzicem $D_j$. A to oznacza, że każda informacja dostępna dla $D_i$
+jest dostępna dla każdej późniejszej decyzji w sekwencji i akcja wybrana dla
+decyzji $D_i$ jest częścią informacji dostępnej dla każdej późniejszej decyzji.
+
 % http://artint.info/2e/html/ArtInt2e.Ch9.S5.html
 \subsection{Proces decyzyjny Markova}
 Proces decyzyjny Markova, może być rozumiany jako łańcuch Markova powiększony o
@@ -755,6 +842,52 @@ się z:
 		$R(s,a)$ -- oczekiwana wartość wykonania $a$ w stanie $s$,
 		która równa jest $R(s,a)=\sum _{s'}R(s,a,s') * P(s'|s,a)$.
 \end{itemize}
+
+\begin{figure}[!htb]
+\begin{center}
+\begin{tikzpicture}[auto,node distance=18mm,>=latex,font=\small]
+    \node[reward] (r0) {$R_0$};
+    \node[draw=none, right of=r0] (help_r0) {};
+    \node[state, below of=r0, left of=r0] (s0) {$S_0$};
+    \node[draw=none, right of=s0] (help_s0) {};
+    \node[state, right of=help_s0] (s1) {$S_1$};
+    \node[draw=none, right of=s1] (help_s1) {};
+    \node[reward, right of=help_r0] (r1) {$R_1$};
+    \node[draw=none, right of=r1] (help_r1) {};
+    \node[state, right of=help_s1] (s2) {$S_2$};
+    \node[draw=none, right of=s2] (help_s2) {};
+    \node[reward, right of=help_r1] (r2) {$R_2$};
+    \node[state, right of=help_s2] (s3) {$S_3$};
+    \node[action, below of=help_s0] (a0) {$A_0$};
+    \node[action, below of=help_s1] (a1) {$A_1$};
+    \node[action, below of=help_s2] (a2) {$A_1$};
+
+    \draw[->, thick] (s0) -- (s1);
+    \draw[->, thick] (s1) -- (s2);
+    \draw[->, thick] (s2) -- (s3);
+    \draw[->, thick] (s0) -- (a0);
+    \draw[->, thick] (s0) -- (r0);
+    \draw[->, thick] (a0) -- (r0);
+    \draw[->, thick] (a0) -- (s1);
+    \draw[->, thick] (s0) -- (r0);
+    \draw[->, thick] (s1) -- (r0);
+    \draw[->, thick] (s1) -- (r1);
+    \draw[->, thick] (s1) -- (a1);
+    \draw[->, thick] (a1) -- (r1);
+    \draw[->, thick] (a1) -- (s2);
+    \draw[->, thick] (s2) -- (r1);
+    \draw[->, thick] (s2) -- (r2);
+    \draw[->, thick] (s2) -- (a2);
+    \draw[->, thick] (a2) -- (r2);
+    \draw[->, thick] (a2) -- (s3);
+    \draw[->, thick] (s3) -- (r2);
+\end{tikzpicture}
+\caption{Sieć decyzyjna reprezentująca skończoną część MDP}
+\label{markov_decision_process}
+\end{center}
+\end{figure}
+% dokoncz pisac o procesie decyzyjnym!!!
+
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
