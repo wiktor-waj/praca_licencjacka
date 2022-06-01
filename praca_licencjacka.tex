@@ -886,8 +886,39 @@ się z:
 \label{markov_decision_process}
 \end{center}
 \end{figure}
-% dokoncz pisac o procesie decyzyjnym!!!
 
+By zdecydować jaką akcję podjąć agent porównuje różne sekwencje nagród.
+Najczęstszym sposobem jest konwersja sekwencji nagród do jednej liczby zwanej
+\textbf{nagrodą skumulowaną} (ang. \textit{cumulative reward}). Aby to zrobić
+agent łączy obecną nagrodę z innymi nagrodami w przyszłości. Załóżmy, że agent
+otrzyma następującą sekwencję nagród: $r_1, r_2, r_3, r_4, \dots$
+
+Trzema najczęstszymi sposobami połączenia sekwencji nagród w nagrodę
+skumulowaną $V$ to:
+
+\textbf{Całkowita nagroda} (ang. \textit{total reward}) $V =
+\sum_{i=1}^{\infty} r_i$. W tym przypadku nagroda skumulowana to suma
+wszystkich nagród. Metoda ta działa kiedy możemy zagwarantować, że suma jest
+skończona. Jeżeli nie możemy tego założyć to nie możemy określić, która
+sekwencja nagród jest preferowana. Na przykład: Sekwencja nagród po 1zł sumuje
+się do tej samej $V$ co sekwencja nagród 100zł (obie są nieskończone). Nagroda
+jest skończona na przykład w przypadku, gdzie występują stany stopu a agent ma
+zawsze nie zerowe prawdopodobieństwo wejścia w taki stan.
+
+\textbf{Średnia nagród} (ang. \textit{average reward}) $V =
+\lim_{n\to\infty}\frac{(r_1 + \dots + r_n)}{n}$. W tym przypadku, skumulowana
+nagroda agenta to wartość średnia otrzymanych przez niego nagród, uśredniona
+dla każdego odcinka czasu. Dopóki nagrody są skończone dopóty $V$ też będzie
+wartością skończoną.
+
+\textbf{Dyskontowa nagroda} (ang. \textit{discount reward}) $V = r_1 + \gamma
+r_2 + \gamma^2 r_3 + \dots + \gamma^{i-1} r_i + \dots$, gdzie $\gamma$ -- stopa
+dyskontowa to liczba w zakresie $0 \leq \gamma < 1$. Przy tych założeniach
+przyszłe nagrody są warte mniej niż obecna nagroda. Jeżeli $\gamma$ byłaby
+równa $1$, to byłby to przypadek całkowitej nagrody. Jeżeli $\gamma = 0$ to
+znaczy, że agent ignoruje wszystkie przyszłe nagrody. To, że $0 \leq \gamma <
+1$ gwarantuje nam, że jeżeli nagrody są wartościami skończonymi to skumulowana
+nagroda również będzie skończona.
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
