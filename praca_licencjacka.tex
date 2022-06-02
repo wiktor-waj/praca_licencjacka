@@ -918,7 +918,33 @@ przyszłe nagrody są warte mniej niż obecna nagroda. Jeżeli $\gamma$ byłaby
 równa $1$, to byłby to przypadek całkowitej nagrody. Jeżeli $\gamma = 0$ to
 znaczy, że agent ignoruje wszystkie przyszłe nagrody. To, że $0 \leq \gamma <
 1$ gwarantuje nam, że jeżeli nagrody są wartościami skończonymi to skumulowana
-nagroda również będzie skończona.
+nagroda również będzie skończona. Nagrodę dyskontową można zapisać jako:
+\begin{equation} \label{discount_reward}
+\begin{split}
+	V &= \sum_{i=1}^{\infty} \gamma^{i - 1} r_i \\
+	  &= r_1 + \gamma r_2 + \gamma^2 r_3 + \dots + \gamma^{i-1}r_i +\dots\\
+	  &= r_1 + \gamma(r_2 +\gamma(r_3 + \dots)).
+\end{split}
+\end{equation}
+Załóżmy, że $V_k$ to nagroda skumulowana od czasu $k$:
+\begin{equation} \label{discount_reward_2}
+\begin{split}
+	V &= r_k + \gamma(r_{k+1} +\gamma(r_{k+2} + \dots))\\
+	&= r_k + \gamma V_{k+1}
+\end{split}
+\end{equation}
+W dalszej części pracy będę rozważał nagrodę jako nagrodę dyskontową.
+
+% http://artint.info/2e/html/ArtInt2e.Ch9.S5.SS1.html
+\subsection{Funkcja polityki}
+\textbf{Polityka} (ang. \textit{policy}) precyzuje co agent powinien zrobić
+jako funkcja od stanu, w którym obecnie się znajduje\cite{sawka_ml}.
+\textbf{Stacjonarna polityka} to funkcja $\pi : S \rightarrow A$ (gdzie $S$ to
+zbiór stanów środowiska a $A$ to zbiór dostępnych dla agenta akcji).
+
+Biorąc pod uwagę kryterium przyznania nagrody polityka zawiera spodziewaną
+nagrodę skumulowaną dla każdego stanu. Niech $V_{\pi}(s)$ będzie spodziewaną
+nagrodą skumulowaną użycia polityki $\pi$ w stanie $s$.
 \section{Q\dywiz learning}
 Tutaj wszystko związane z qlearningiem, wzory, itp :)
 
