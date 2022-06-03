@@ -20,6 +20,8 @@
 \usepackage{subcaption}
 \usepackage{nameref} % do robienia referencji do chapterów
 \usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
 
@@ -940,14 +942,14 @@ $s$.
 gdzie $R(s,a) = \sum_{s'}P(s'|s,a)R(s,a,s')$.
 $V^*(s)$ otrzymywane jest przez wykonywanie akcji, która daje najlepszą wartość
 w każdym stanie:
-\begin{equation} \label{optimal_policy_1}
+\begin{equation} \label{optimal_policy_2}
 \begin{split}
 	V^*(s) &= \max_{a} Q^*(s,a).
 \end{split}
 \end{equation}
 Optymalna polityka $\pi^*$ to jedna z polityk, która daje najlepszą wartość w
 każdym stanie:
-\begin{equation} \label{optimal_policy_1}
+\begin{equation} \label{optimal_policy_3}
 \begin{split}
 	\pi^*(s) &= \arg\max_{a} Q^*(s,a).
 \end{split}
@@ -1055,6 +1057,50 @@ Q[s,a]\right) \]
 albo, równoważnie
 \[Q[s,a] := (1 - \alpha) * A[s,a] + \alpha * \left(r + \gamma \max_{a'}
 Q[s',a'] \right)\]
+
+\begin{algorithm}
+	\caption{Algorytm Q-Learning\cite{ai_foundations_qlearning}}
+\begin{algorithmic}
+	\Procedure{Q-Learning}{$S, A, \gamma, \alpha$} \\
+	\hspace{\algorithmicindent}\textbf{Zmienne wejściowe} \\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}$S$ jest zbiorem stanów\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}$A$ jest zbiorem akcji\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}$\gamma$ jest stopą
+						dyskontową\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}$\alpha$ jest rozmiarem
+						jednego kroku\\
+	\hspace{\algorithmicindent}\textbf{Zmienne lokalne} \\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}tablica liczb rzeczywistych
+					$Q[S,A]$\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}stany $s, s'$\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}akcja $a$\\
+	\hspace{\algorithmicindent}zainicjalizuj $Q[S,A]$ zerami\\
+	\hspace{\algorithmicindent}zaobserwuj obecny stan $s$\\
+	\hspace{\algorithmicindent}\textbf{powtarzaj}\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}wybierz akcję $a$\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}\textit{wykonaj}($a$)\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}otrzymaj nagrodę $r$ i
+						zaobserwuj stan $s'$\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent}$Q[s,a] := Q[s,a] + \alpha *
+		(r + \gamma * \max_{a'} Q[s',a'] - Q[s,a])$\\
+		\hspace{\algorithmicindent}
+		\hspace{\algorithmicindent} $s := s'$\\
+		\hspace{\algorithmicindent}\textbf{do zakończenia}
+	\EndProcedure
+\end{algorithmic}
+\label{qlearning_algorithm}
+\end{algorithm}
 
 \chapter{Implementacja Q\dywiz learningu}
 \label{chapter:implementacja_qlearningu}
