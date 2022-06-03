@@ -15,21 +15,13 @@
 \usepackage{pdfpages}
 \usepackage{lipsum}
 \usepackage{multirow}
-\usepackage{listings}
 \usepackage{caption}
 \usepackage{booktabs}
 \usepackage{subcaption}
-\usepackage{xcolor}
 \usepackage{nameref} % do robienia referencji do chapterów
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
-\DeclareCaptionType{code}[Listing][Spis listingów] 
-
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 % tikz shapes for flow diagram
 \tikzstyle{terminator} = [rectangle, draw, text centered, rounded corners,
@@ -50,26 +42,6 @@
 \tikzstyle{reward}=[thick,draw=black,diamond]
 \tikzstyle{action}=[thick,draw=black,rectangle]
 
-
-\lstset{
-	backgroundcolor=\color{backcolour},   
-	commentstyle=\color{codegreen},
-	keywordstyle=\color{magenta},
-	numberstyle=\tiny\color{codegray},
-	stringstyle=\color{codepurple},
-	basicstyle=\footnotesize,
-	breakatwhitespace=false,         
-	breaklines=true,                 
-	captionpos=b,                    
-	keepspaces=true,                 
-	numbers=left,                    
-	numbersep=5pt,                  
-	showspaces=false,                
-	showstringspaces=false,
-	showtabs=false,                  
-	tabsize=2,
-	float=h
-}
 
 % definicje nagłówków i stopek
 \pagestyle{fancy}
@@ -943,10 +915,146 @@ jako funkcja od stanu, w którym obecnie się znajduje\cite{sawka_ml}.
 zbiór stanów środowiska a $A$ to zbiór dostępnych dla agenta akcji).
 
 Biorąc pod uwagę kryterium przyznania nagrody polityka zawiera spodziewaną
-nagrodę skumulowaną dla każdego stanu. Niech $V_{\pi}(s)$ będzie spodziewaną
-nagrodą skumulowaną użycia polityki $\pi$ w stanie $s$.
+nagrodę skumulowaną dla każdego stanu. Niech $V^{\pi}(s)$ będzie spodziewaną
+nagrodą skumulowaną użycia polityki $\pi$ w stanie $s$. To znaczy, jaką nagrodę
+skumulowaną agent oczekuje, że otrzyma po zastosowaniu tej polityki w tym
+stanie. Mówimy, że $\pi$ jest \textbf{polityką optymalną}, jeżeli nie ma
+polityki $\pi'$ i takiego stanu $s$, że $V^{\pi'}(s) > V^{\pi}(s)$. To znaczy,
+taka polityka, która ma większą spodziewaną nagrodę skumulowaną dla
+każdego stanu, niż jakakolwiek inna polityka.
+
+Dla problemów nieskończonego horyzontu, stacjonarny proces decyzyjny Markova
+zawsze ma optymalną stacjonarną politykę.\cite{ai_foundations_policies}
+
+Jak zatem obliczyć nagrodę skumulowaną optymalnej polityki? Niech $Q^*(s,a)$,
+gdzie $s$ to stan, $a$ to akcja będzie oczekiwaną nagrodą skumulowaną wykonania
+$a$ w stanie $s$ i potem używania optymalnej polityki. Niech $V^*(s)$ będzie
+oczekiwaną nagrodą skumulowaną używania optymalnej polityki począwszy od stanu
+$s$.
+\begin{equation} \label{optimal_policy_1}
+\begin{split}
+	Q^*(s,a) &= \sum_{s'}P(s'|s,a)(R(s,a,s') + \gamma V^*(s'))\\
+	&= R(s,a) + \gamma \sum_{s'}P(s'|s,a) \gamma V^*(s').
+\end{split}
+\end{equation}
+gdzie $R(s,a) = \sum_{s'}P(s'|s,a)R(s,a,s')$.
+$V^*(s)$ otrzymywane jest przez wykonywanie akcji, która daje najlepszą wartość
+w każdym stanie:
+\begin{equation} \label{optimal_policy_1}
+\begin{split}
+	V^*(s) &= \max_{a} Q^*(s,a).
+\end{split}
+\end{equation}
+Optymalna polityka $\pi^*$ to jedna z polityk, która daje najlepszą wartość w
+każdym stanie:
+\begin{equation} \label{optimal_policy_1}
+\begin{split}
+	\pi^*(s) &= \arg\max_{a} Q^*(s,a).
+\end{split}
+\end{equation}
+Gdzie $\arg\max_{a} Q^*(s,a)$ to funkcja od stanu $s$ a jej wartością jest
+akcja $a$, w wyniku wykonania której otrzymamy największą wartość $Q^*(s,a)$.
+
+\section{Uczenie przez wzmacnianie}
+Agent uczony przez wzmacnianie działa w środowisku, obserwuje jego stan oraz
+otrzymuje nagrody. Na podstawie tych informacji decyduje co ma zrobić. Agenta
+charakteryzują następujące cechy:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+\item Agent ma dane możliwe stany, w których może się znaleźć oraz zbiór akcji,
+	które może wykonać.
+\item Za każdym razem, po zaobserwowaniu stanu środowiska wykonuje akcję
+\item Celem agenta jest zmaksymalizowanie nagrody dyskontowej, dla jakiejś
+	stopy dyskontowej $\gamma$
+\end{itemize}
+Uczenie przez wzmacnianie może być sformalizowane pod kątem procesu Decyzyjnego
+Markova, w którym agent początkowo zna tylko zbiór możliwych stanów oraz zbiór
+możliwych akcji. Dynamika $P(s'|a,s)$ oraz funkcja nagrody $R(s,a)$, nie są
+agentowi znane. Tak jak w procesie decyzyjnym Markova po każdej akcji agent
+obserwuje stan, w którym się znajduje i otrzymuje nagrodę.
+
+% http://artint.info/2e/html/ArtInt2e.Ch12.S3.html#Ch12.E1
+\section{Różnice czasowe}
+Załóżmy, że mamy sekwencję wartości numerycznych $v_1,v_2,v_3,\dots$ i celem
+jest przewidzenie następnej wartości biorąc pod uwagę poprzednie wartości.
+Jednym ze sposobów jest obliczenie bieżącego przybliżenia oczekiwanej wartości
+$v_i$. Może to być zaimplementowane poprzez utrzymywanie bieżącej średniej:
+
+Niech $A_k$ będzie oszacowaną oczekiwaną wartością bazującą na pierwszych $k$
+punktach danych $v_1, \dots, v_k$. Przybliżeniem może być po prostu średnia:
+\[A_k = \frac{v_1 + \dots + v_k}{k}\].
+Po przemnożeniu przez $k$:
+\begin{equation} \label{td_1}
+\begin{split}
+	k * A_k &= v_1 + \dots + v_{k-1} + v_k \\
+	        &= (k-1)A_{k-1} + v_k
+\end{split}
+\end{equation}
+Dzieląc przez $k$ otrzymujemy:
+\begin{equation} \label{td_2}
+\begin{split}
+	A_k &= \left( 1 - \frac{1}{k} \right) * A_{k-1} + \frac{v_k}{k}
+\end{split}
+\end{equation}
+Niech $\alpha_k = \frac{1}{k}$, wtedy:
+\begin{equation} \label{td_3}
+\begin{split}
+	A_k &= (1 - \alpha_k) * A_{k-1} + \alpha_k * v_k \\
+	    &= A_{k-1} + \alpha_k * (v_k - A_{k-1})
+\end{split}
+\end{equation}
+Różnicę $v_k - A_{k-1}$ nazywamy \textbf{błędem różnicy czasowej}. Określa jak
+bardzo różni się nowa wartość $v_k$, od starej prognozy $A_{k-1}$. Stare
+przybliżenie $A_{k-1}$ jest zaktualizowane o $\alpha_k$ razy błąd różnicy
+czasowej by otrzymać nowe przybliżenie $A_k$. Interpretacja wzoru na różnicę
+czasową jest następująca: jeżeli nowa wartość jest większa niż poprzednia,
+zwiększ przewidywaną wartość; jeżeli nowa wartość jest mniejsza niż poprzednia
+zmniejsz przewidywaną wartość. Zmiana jest proporcjonalna do różnicy między
+nową wartością a poprzednią przewidywaną wartością.
+
+W uczeniu przez wzmacnianie, wartości (skumulowane nagrody) są efektami akcji.
+Nowsze wartości są bardziej dokładne od poprzednich ponieważ agent się uczy i
+przez to nowsze wartości powinny mieć większą wagę.
+% http://artint.info/2e/html/ArtInt2e.Ch12.S4.html
 \section{Q\dywiz learning}
-Tutaj wszystko związane z qlearningiem, wzory, itp :)
+Q-learning został wprowadzony przez Chrisa Watkinsa w 1989 roku w jego pracy
+doktorskiej zatytułowanej : ``Learning from Delayed
+Rewards''\cite{qlearning_inventor}.
+W Q-learningu agent próbuje nauczyć się optymalnej polityki z historii
+interakcji ze środowiskiem. \textbf{Historia} agenta to sekwencja
+stanu-akcji\dywiz nagrody:
+\[\langle s_0, a_0, r_1, s_1, a_1, r_2, s_2, a_2, r_3, s_3, a_3, r_4, \dots
+\rangle\]
+co oznacza, że agent był w stanie $s_0$, wykonał akcję $a_0$ co spowodowało
+przyznaniem mu nagrody $r_1$ i przejścia do stanu $s_1$, następnie wykonał
+akcję $a_1$, otrzymał nagrodę $r_2$ i przeszedł do stanu $s_2$ i tak dalej.
+
+Traktujemy historię interakcji jako sekwencję doświadczeń, gdzie
+\textbf{doświadczenie} to krotka:
+\[\langle s, a, r, s' \rangle\]
+co oznacza, że agent był w stanie $s$, wykonał akcję $a$ za co otrzymał nagrodę
+$r$ i przeszedł do stanu $s'$. Te doświadczenia będą danymi, na podstawie
+których agent będzie się uczył co robić. Tak jak w planowaniu decyzji celem
+jest by agent zmaksymalizował swoją nagrodę skumulowaną, która zazwyczaj jest
+nagrodą dyskontową.
+
+Q-learning wykorzystuje różnice czasowe do obliczenia przybliżonej wartości
+$Q^*(s, a)$. W Q-learningu agent utrzymuje tablicę $Q[S,A]$, gdzie $S$ to zbiór
+możliwych dla danego środowiska stanów, a $A$ to zbiór akcji, które agent może
+podjąć. $Q[s,a]$ reprezentuje obecne przybliżenie $Q^*(s,a)$
+
+Doświadczenie $\langle s,a,r,s' \rangle$ zapewnia jeden punkt danych dla
+wartości $Q(s,a)$. Zawiera informację o tym, że agent otrzymał przyszłą wartość
+$r + \gamma V(s')$, gdzie $V(s') = \max_{a'}Q(s',a')$. To jest aktualną
+rzeczywistą nagrodę plus dyskontowa oszacowana przyszła nagroda skumulowana.
+Ten punkt danych nazywany jest \textbf{zwrotem} (ang. \textit{return}). Agent
+może użyć równania na różnicę czasową \ref{td_3} by zaktualizować swoje
+oszacowanie dla $Q(s,a)$:
+\[Q[s,a] := Q[s,a] + \alpha * \left(r + \gamma \max_{a'} Q[s',a'] -
+Q[s,a]\right) \]
+albo, równoważnie
+\[Q[s,a] := (1 - \alpha) * A[s,a] + \alpha * \left(r + \gamma \max_{a'}
+Q[s',a'] \right)\]
 
 \chapter{Implementacja Q\dywiz learningu}
 \label{chapter:implementacja_qlearningu}
