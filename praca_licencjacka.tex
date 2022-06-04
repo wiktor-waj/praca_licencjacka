@@ -22,6 +22,8 @@
 \usepackage{tikz}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{xcolor}
 \usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
 
@@ -44,6 +46,32 @@
 \tikzstyle{reward}=[thick,draw=black,diamond]
 \tikzstyle{action}=[thick,draw=black,rectangle]
 
+% listings style taken from https://www.overleaf.com/learn/latex/Code_listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 
 % definicje nagłówków i stopek
 \pagestyle{fancy}
@@ -443,8 +471,6 @@ to znaczy wszystkie zmienne są ustawiane do stanu początkowego co powoduje
 rozpoczęcie gry na nowo.
 
 \chapter{Uczenie maszynowe}
-%Tutaj do napisania o tym czym jest uczenie przez wzmacnianie pare slow jakie są algorytmy
-%jak działa, schemat środowisko - agent - akcja - reward\cite{ai_foundations}
 \section{Czym jest sztuczna inteligencja}
 \textbf{Sztuczna inteligencja} (ang. \textit{artificial intelligence}) to
 dziedzina nauki, która zajmuje się syntezowaniem oraz analizowaniem
@@ -623,7 +649,6 @@ zmienne. Zbiór lokalnie wpływających na $X$ zmiennych jest nazwany
 \textbf{ogrodzeniem Markova} (ang. \textit{Markov blanket}). Ta lokalność
 jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
 
-% tutaj może więcej o regule łańcuchowej? 
 % http://artint.info/2e/html/ArtInt2e.Ch8.S1.SS3.html#Ch8.Thmtheorem3
 \textbf{Sieć przekonań} (ang. \textit{belief network}), również nazywana
 \textbf{siecią Bayesa} to acykliczny graf skierowany, gdzie wierzchołki są
@@ -1052,15 +1077,20 @@ rzeczywistą nagrodę plus dyskontowa oszacowana przyszła nagroda skumulowana.
 Ten punkt danych nazywany jest \textbf{zwrotem} (ang. \textit{return}). Agent
 może użyć równania na różnicę czasową \ref{td_3} by zaktualizować swoje
 oszacowanie dla $Q(s,a)$:
-\[Q[s,a] := Q[s,a] + \alpha * \left(r + \gamma \max_{a'} Q[s',a'] -
-Q[s,a]\right) \]
+\begin{equation}
+Q[s,a] := Q[s,a] + \alpha * \left(r + \gamma \max_{a'} Q[s',a'] -
+Q[s,a]\right)
+\label{qvalue_1}
+\end{equation}
 albo, równoważnie
-\[Q[s,a] := (1 - \alpha) * A[s,a] + \alpha * \left(r + \gamma \max_{a'}
-Q[s',a'] \right)\]
-
+\begin{equation}
+Q[s,a] := (1 - \alpha) * Q[s,a] + \alpha * \left(r + \gamma \max_{a'}
+Q[s',a'] \right)
+\label{qvalue_2}
+\end{equation}
 \begin{algorithm}
 	\caption{Algorytm Q-Learning\cite{ai_foundations_qlearning}}
-\begin{algorithmic}
+\begin{algorithmic}[1]
 	\Procedure{Q-Learning}{$S, A, \gamma, \alpha$} \\
 	\hspace{\algorithmicindent}\textbf{Zmienne wejściowe} \\
 		\hspace{\algorithmicindent}
@@ -1102,9 +1132,162 @@ Q[s',a'] \right)\]
 \label{qlearning_algorithm}
 \end{algorithm}
 
+Q-Learningowy algorytm uczy się (przybliżenia) optymalnej $Q$-funkcji tak długo
+jak agent wystarczająco eksploruje i nie ma ograniczenia co do tego ile razy
+może spróbować wykonania akcji w dowolnym stanie.
+
+
 \chapter{Implementacja Q\dywiz learningu}
 \label{chapter:implementacja_qlearningu}
-Tutaj fragmenty kodu, jakie zmiany dokonałem względem książkowego algorytmu
+W mojej implementacji Q-Learningu, \textbf{przestrzeń stanów} zdyskretyzowałem
+nad następującymi parametrami:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+	\item Odległość w pionie obiektu ptaka od obiektu najbliższej od prawej
+		dolnej rury
+	\item Odległość w poziomie obiektu ptaka od obiektu najbliższej od 
+		prawej dolnej rury
+	\item Prędkość spadania obiektu ptaka.
+\end{itemize}
+\begin{figure}[!htb]
+	\begin{center}
+	\includegraphics[scale=0.80]{agent_vision.png}
+	\end{center}
+	\caption{Wizja agenta}
+	\label{agent_vision}
+\end{figure}
+
+Te informacje są zwracane bezpośrednio agentowi od silnika gry, sam 
+\textbf{agent nie ma zaimplementowanych} algorytmów wizji komputerowej.
+
+Jak widać na rysunku \ref{agent_vision} agent musi rozpatrywać tylko obiekty
+rur, które są po jego prawej stronie, te po lewej zostały ominięte co oznacza,
+że agent osiągnął swój cel w odniesieniu do nich. Aby stwierdzić, który obiekt
+rury jest najbliższym z prawej nie mogę jak poprzednio (gdzie wystarczyło
+ustalić, który obiekt rury jest najbliżej, nie ważne czy z lewej czy z prawej)
+wciąć obiektu o indeksie zero z grupy dolnych obiektów rur. Przypomnę, że grupa
+obiektów rur działa jak tablica, gdzie obiekty są ponumerowane indeksami od
+zera w odniesieniu ich pozycji na ekranie -- obiekt najbardziej z lewej ma
+indeks zero. Istnieje scenariusz, w którym agent dopiero co ominął obiekt rury,
+ale powinien zacząć już rozpatrywać następne obiekty z prawej strony.
+Rozpatrywanie obiektu o indeksie zero z grupy obiektów rur byłoby tutaj błędne.
+Wystarczy rozważyć różnicę między współrzędną $x$ obiektu ptaka a obiektu rury
+o indeksie zero z grupy obiektów rur dolnych. Jeżeli ta jest większa niż $-30$
+jednostek to oznacza, że obiekt został przez agenta ominięty i najbliższą z
+prawej rurą będzie ta o indeksie jeden z grupy obiektów rur. W przeciwnym
+wypadku najbliższa będzie ta o indeksie zero. Skąd liczba $30$? Jest to lekko
+ponad połowa szerokości obiektu rur w pixelach.
+
+Przestrzeń stanów jest inicjalizowana w następujący sposób:
+\begin{lstlisting}[language=Python, label={qval_init}, caption={Inicjalizacja
+QValues}]
+qval = {}
+for x in list(range(-80, 510, 10)):
+    for y in list(range(-300, 800, 10)):
+        for v in range(-10, 9):
+            qval[str(x) + "_" + str(y) + "_" + str(v)] = [0, 0]
+\end{lstlisting}
+Gdzie \textbf{qval} to słownik, którego kluczami są napisy w formacie
+$X\_Y\_V$, gdzie $X$ to różnica w poziomie, $Y$ to różnica w pionie, a $V$ to
+prędkość spadania. Wartości $X$ są generowane co dziesięć w zakresie $(-80,
+510)$, wartości $Y$ co dziesięć w zakresie $(-300, 800)$, a wartość $V$ w
+zakresie $(-10,9)$. O tym dlaczego wartości $X$ i $Y$ są generowane co dziesięć
+piszę w następnym podrozdziale. Wartość $V$ jest ma taki zakres, gdyż jest tak
+ograniczona przez sam program gry, gdzie wartość $9$ oznacza, że obiekt ptaka
+spada najszybciej jak może, a wartość $-10$ to, że podlatuje do góry.
+
+Agent ma możliwość podjąć jedynie \textbf{dwie akcje} -- kliknąć lewy przycisk
+myszy (to znaczy podlecieć), albo nie robić nic i pozwolić obiektowi ptaka
+zmniejszyć wysokość.
+
+Takim kluczom jest przypisywana tablica z dwoma zerami, gdzie
+indeks zerowy jest $Q$ jeżeli dla tego stanu nie została podjęta akcja,
+a indeks jeden jest $Q$ dla tego stanu, jeżeli agent zdecydował się
+podjąć akcję. Te wyzerowane wartości $Q$ stanowią jedynie symbol zastępczy,
+potem będą wyliczane ze wzoru \ref{qvalue_1}.
+
+\textbf{Funkcja nagrody} $R$ przyznaje $1$ punkt za każdym razem, kiedy obiekt
+ptaka sterowany przez agenta żyje oraz $-1000$ punktów jeżeli nie żyje.
+
+Jedyną zasadniczą modyfikacją jakiej dokonałem względem algorytmu
+\ref{qlearning_algorithm}, jest to, że zamiast aktualizować $Q$ (krok z linii
+17 w algorytmie) co każde zaobserwowane doświadczenie, obliczam je od tyłu po
+każdej rozegranej przez agenta grze -- tak, że $Q$ jest obliczane od ostatniego
+doświadczenia do pierwszego. Pomyślałem, że to pomoże w szybszym propagowaniu
+informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał akcję, która
+doprowadziła do śmierci obiektu ptaka. 
+\begin{lstlisting}[language=Python, label={qlearning_python},
+caption={Zaimplementowany algorytm Q-Learning}]
+def update_scores(self):
+    history = list(reversed(self.moves))
+
+    t = 1
+    for experience in history:
+        state = experience[0]
+        act = experience[1]
+        res_state = experience[2]
+
+        if t == 1 or t == 2:
+            cur_reward = self.reward[1]
+        else:
+            cur_reward = self.reward[0]
+
+        self.qvalues[state][act] = (1 - self.lr) * (
+            self.qvalues[state][act]
+        ) + self.lr * (cur_reward + self.discount * max(self.qvalues[res_state]))
+
+        t += 1
+    self.moves = []
+\end{lstlisting}
+\textit{self.moves} to tablica doświadczeń $(s, a, s')$, gdzie $s$ to poprzedni
+stan, $a$ to poprzednia akcja jaką wykonał agent a $s'$ to obecny stan. Tablica
+ta jest uzupełniana o nowe doświadczenie, za każdym razem, gdy program gry 
+wywołuję metodę agenta proszącą go o wybór akcji. \textit{self.reward} zwraca
+wartość $1$ dla indeksu $0$, oraz wartość $-1000$ dla indeksu $1$. To oznacza,
+że dla ostatnich dwóch stanów, jest przyznawana nagroda $-1000$. Dzieje się tak
+ponieważ to one, skoro były ostatnie (a metoda jest wywoływana w momencie końca
+gry) to doprowadziły do porażki. Pozostałym stanom przyznawana jest nagroda
+$1$, ponieważ akcje podjęte dla tych stanów sprawiały, że agent omijał obiekty
+rur. \textit{self.discount} to liczba określająca stopę dyskontową i jest to
+stała wynosząca $0.7$ Oczywiście dla każdego doświadczenia aktualizowana jest
+wartość $Q$ zgodnie ze wzorem \ref{qvalue_1} i wypisywana odpowiednio do
+słownika \textit{qvalues} dla odpowiedniego stanu i akcji. 
+
+\begin{lstlisting}[language=Python, label={act_python},
+caption={Metoda wybierająca akcję agenta}]
+def act(self, xdif, ydif, vel):
+    state = self.map_state(xdif, ydif, vel)
+    self.moves.append((self.last_state, self.last_action, state))
+    self.last_state = state
+
+    if self.qvalues[state][0] >= self.qvalues[state][1]:
+        self.last_action = 0
+        return 0
+    else:
+        self.last_action = 1
+        return 1
+\end{lstlisting}
+Program gry przystosowany dla agenta, różni się niewiele od tego
+zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące:
+\begin{itemize}
+\setlength\itemsep{-0.4em}
+\item Nie jest sprawdzane, żadne wejście
+\item Co obrót głównej pętli programowej agent jest pytany o swoją akcję, do
+	podjęcia której program daje agentowi wcześniej wspomniane wartości,
+	które stanowią ``obserwację'' agenta. Sam wybór akcji polega na
+	zmapowaniu otrzymanych ze środowiska wartości do tych, które zostały
+	zainicjalizowane tak jak jest to pokazane na listingu \ref{qval_init}.
+	Czyli w tym przypadku zaokrąglenie wartości $X$ i $Y$ do części
+	dziesiątych. A następnie wybieranie akcji, jak pokazuje to
+	listing \ref{act_python} -- agent wybiera akcję $1$ (kliknij lewy
+	przycisk myszy) albo $0$ (nie rób nic) w zależności od tego dla której
+	akcji wartość $Q$ jest większa.
+\item W przypadku końca gry wywoływana jest metoda pokazana na listingu
+	\ref{qlearning_python},  po czym zaczyna się nowa gra. Gra jest
+	resetowana tyle razy ile poda się przy uruchamianiu programu.
+\end{itemize}
+
+%tutaj wyniki daj wykres jak wyglada to 
 \section{Podejście pierwsze grid 10 na 10}
 Po kolei wyjaśnienie co to grid 10 na 10 jak to jest implementowane itp
 \section{Podejście drugie grid 10 na 10 i flaga za śmierć od wysokiej rury}
