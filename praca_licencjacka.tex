@@ -24,6 +24,7 @@
 \usepackage{algpseudocode}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{pgf}
 \usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
 
@@ -1044,8 +1045,8 @@ Nowsze wartości są bardziej dokładne od poprzednich ponieważ agent się uczy
 przez to nowsze wartości powinny mieć większą wagę.
 % http://artint.info/2e/html/ArtInt2e.Ch12.S4.html
 \section{Q\dywiz learning}
-Q-learning został wprowadzony przez Chrisa Watkinsa w 1989 roku w jego pracy
-doktorskiej zatytułowanej : ``Learning from Delayed
+Autorem algorytmu Q-learning jest Christ Watkins, który zaprezentował go w
+swojej pracy doktorskiej zatytułowanej : ``Learning from Delayed
 Rewards''\cite{qlearning_inventor}.
 W Q-learningu agent próbuje nauczyć się optymalnej polityki z historii
 interakcji ze środowiskiem. \textbf{Historia} agenta to sekwencja
@@ -1287,11 +1288,69 @@ zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące
 	resetowana tyle razy ile poda się przy uruchamianiu programu.
 \end{itemize}
 
-%tutaj wyniki daj wykres jak wyglada to 
-\section{Podejście pierwsze grid 10 na 10}
-Po kolei wyjaśnienie co to grid 10 na 10 jak to jest implementowane itp
-\section{Podejście drugie grid 10 na 10 i flaga za śmierć od wysokiej rury}
-Jak wyżej
+\section{Optymalizacja pod względem rozmiaru przestrzeni stanów}
+Przestrzeń stanów to zbiór $S$, którego elementy wyglądają następująco:
+\[\forall x \in [-80, 510] \cap \mathbb{Z} \ \forall y \in [-300,800] \cap
+\mathbb{Z} \ \forall v \in [-10,9] \cap \mathbb{Z}\ \  \{x, y, v\}\]
+
+Co daje nam $(510 + 80 + 1) * (300 + 800 + 1) * (10 + 9 +1) = 13 013 820$
+stanów. Wyuczenie agenta -- to znaczy wypełnienie wartości $Q$ dla większości
+stanów zajęłoby bardzo dużo czasu. Postanowiłem poświęcić precyzję z jaką agent
+wykonuje akcje na rzecz ograniczenia ilości stanów. Dlatego jak w wcześniej
+wspominałem stany są inicjalizowane z wartościami $x$ i $y$ generowanymi co
+$10$. W ten sposób przestrzeń stanów ma $(51 + 8 + 1) * (30 + 80 + 1) * (10 + 9
++ 1) = 133 200$ stanów, co jak można się spodziewać jest prawie stukrotnym
+pomniejszeniem ilości elementów w przestrzeni stanów. Środowisko dalej zwraca
+agentowi ``pełne liczby'', jednak ten zanim podejrzy wartość $Q$ mapuje te
+wartości zaokrąglając je w dół do części dziesiątych.
+
+Tak zaimplementowany algorytm i grę uruchomiłem otrzymując następujące wyniki:
+\begin{figure}[!htb]
+	\begin{center}
+		\input{plots/plotFirstApproach.pgf}
+	\end{center}
+	\caption{Wykres gry od wyniku}
+	\label{plot_first_approach}
+\end{figure}
+
+Wykres \ref{plot_first_approach} pokazuje jaką ilość punktów agent otrzymywał w
+danej grze -- te dane są zaznaczone na wykresie czarnymi punktami. Agent
+rozegrał $5000$ gier. Maksymalny wynik jaki udało mu się osiągnąć to $1003$ w
+grze o numerze $4152$. Jest to jednak bardzo odizolowany przypadek. Niebieską
+linia to wykres średniej. Gdzie średnia ta jest liczona w każdym punkcie
+dla ostatnich $100$ gier (z wyjątkiem $100$ pierwszych gier). Po $5000$ gier
+średnia wynosiła $69,09$.
+
+\section{Optymalizacja algorytmu}
+Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony na
+rysunku \ref{agent_top_pipe}.
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[scale=0.40]{agent_top_pipe_penalty.png}
+	\end{center}
+	\caption{Agent wybiera złą akcję}
+	\label{agent_top_pipe}
+\end{figure}
+Gdy wygenerowana szczelina znajdowała się wysoko, a następna za nią
+zdecydowanie niżej, agent bardzo często wybierał by podskoczyć zamiast dać czas
+obiektowi ptaka na zmniejszenie swojej wysokości co oczywiście sprawiało,
+że przegrywał tą grę. Nie mogłem znaleźć przyczyny takiego zachowania dlatego
+postanowiłem lekko zmodyfikować algorytm przedstawiony w listingu
+\ref{qlearning_python}. Dodałem flagę, która jest włączana, gdy różnica w
+pionie była wystarczająco wysoka. Wtedy, jeżeli ostatnią akcją agenta było
+podskoczenie (\textit{self.last\_action} $=1$) i flaga była włączona, dla tego
+stanu przyznawałem nagrodę $-1000$. Po takim zmodyfikowaniu algorytmu
+otrzymałem następujące wyniki:
+\begin{figure}[!htb]
+	\begin{center}
+		\input{plots/plotTopPipeDeathPenalty.pgf}
+	\end{center}
+	\caption{Wykres gry od wyniku po zmianie algorytmu}
+	\label{plot_top_pipe_penalty}
+\end{figure}
+
+% YYY napisz cos o wynikach tutaj i lecisz ostatnie
+
 \section{Podejście trzecie grid 5 na 5 z flagą}
 Jak wyżej
 
@@ -1305,6 +1364,8 @@ Tutaj będę pisał co mogłem zrobić gdybym poświęcił więcej czasu np:
 \item uczenie bez wizualizacji pygamowej
 \item zrównoleglenie by paru agentów na raz mogło się uczyć
 \item doszlifowanie algorytmu??
+\item Zrobienie wersji bez wizualizacji, tzn 1 tykniecie procka - 1 tykniecie
+	gry =  szybsze uczenie!
 \end{itemize}
 
 
