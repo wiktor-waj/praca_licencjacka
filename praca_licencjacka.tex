@@ -274,9 +274,9 @@ jaki czas mamy generować nowe obiekty rur. Jest wyliczana ze wzoru:
 \end{equation}
 Gdzie $P_f$ to czas po jakim generowane są nowe obiekty rur
 (ang. \textit{pipe frequency}), $F$ to ilość klatek na sekundę
-(ang. \textit{frames per second}). Potrzeba zmiennej częstotliwości
-generowania obiektów rur wzięła się z okoliczności, które opisuję w rozdziale
-\nameref{chapter:implementacja_qlearningu}.
+(ang. \textit{frames per second}). Dzięki takiemu podejściu gra może częściej
+generować obiekty rur przy większej ilości klatek na sekundę, przez co
+odległość między nimi zostaje taka sama bez względu na tempo gry.
 
 Przy uruchamianiu programu użytkownik ma opcję wybrać wartość parametru 
 klatek na sekundę : 30, 60 bądź 120. Domyślnie jest to 30, stąd we wzorze
@@ -342,8 +342,9 @@ Natomiast dolnej lewej krawędzi obiektu górnej rury nadajemy współrzędne:
 Gdzie $W$ to szerokość tła ustalona na początku, $H$ to wysokość tła, a
 $G$ to stała oznaczająca odległość między dolną a górną rurą, przypisywana
 na początku programu. 
-Tak narysowane obiekty rur zostaną narysowane zaraz za ekranem z prawej strony,
-przesunięte od środku ekranu $x$ oraz połowę odległości ustalonej na początku
+Tak wygenerowane obiekty rur zostaną narysowane zaraz za ekranem z prawej
+strony, przesunięte od środka ekranu w pionie o $r$ oraz połowę odległości
+ustalonej na początku
 działania programu. Tak wygenerowane obiekty dodaję do odpowiednich instancji
 \textit{pygame.sprite.Group}. Jako, że klasa \textit{Pipe} dziedziczy po
 \textit{pygame.sprite.Sprite} (tak samo jak klasa \textit{Bird}), to powinna
@@ -509,7 +510,7 @@ Jest on osiągany przez:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
 	\item Analizę naturalnych i sztucznych agentów
-	\item Formułowaniem i sprawdzaniem hipotez dotyczących czego potrzeba
+	\item Formułowanie i sprawdzanie hipotez dotyczących czego potrzeba
 		by skonstruować inteligentnych agentów
 	\item Projektowanie, budowanie  i eksperymentowanie z systemami
 		obliczeniowymi, które wykonują zadania powszechnie uważane
@@ -563,7 +564,7 @@ Rysunek \ref{rl_figure} pokazuje widok czarnej skrzynki agenta z wejściami
 i wyjściami. W dowolnym momencie agent jest zależny od:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item \textbf{Wcześniejszej wiedzy} o agencie i środowisku
+	\item \textbf{Wcześniejszej wiedzy} o sobie samym i środowisku
 	\item \textbf{Bodźców} otrzymanych od obecnego
 		środowiska, które mogą zawierać obserwacje o
 		środowisku, ale również akcje, które środowisko
@@ -572,7 +573,7 @@ i wyjściami. W dowolnym momencie agent jest zależny od:
 		działań i bodźców lub innych danych, z których
 		może się uczyć
 	\item \textbf{Celów}, które musi starać się osiągnąć
-	\item \textbf{Zdolności}, czyli prymitywne działania, które agent
+	\item \textbf{Zdolności}, czyli prymitywnych działań, które
 		może wykonać
 \end{itemize}
 W czarnej skrzynce, agent jest w pewnym stanie wiedzy, może być to wiedza o
@@ -580,6 +581,7 @@ W czarnej skrzynce, agent jest w pewnym stanie wiedzy, może być to wiedza o
 ten stan bazując na bodźcach ze środowiska. Na podstawie stanu wiedzy decyduje
 o swoich działaniach\cite{ai_foundations_agents_situated}.
 
+% http://artint.info/2e/html/ArtInt2e.Ch3.S2.html
 \section{Wiedza agenta} 
 W najprostszym przypadku, kiedy agent decyduje co powinien zrobić odnosi się
 do modelu środowiska opartego o stany, z celem do osiągnięcia i bez żadnych
@@ -587,7 +589,7 @@ niepewności. Agent jest w stanie ustalić jak osiągnąć swój cel przeszukuj�
 przestrzeń stanów środowiska, tak by ze swojego obecnego stanu przejść do
 stanu, w którym cel jest osiągnięty. Mając kompletną przestrzeń stanów, próbuje
 znaleźć sekwencję działań, których podjęcie sprawi, że osiągnie cel, zanim
-jakiekolwiek działania podejmie.
+podejmie jakiekolwiek działania.
 
 \textbf{Przestrzeń stanów} (ang. \textit{state space}) to jedno z ogólnych
 sformułowań inteligentnych działań. \textbf{Stan} zawiera wszystkie informacje
@@ -595,9 +597,9 @@ potrzebne do przewidzenia efektów danego działania i ustalenia, czy tenże sta
 jest potrzebny do osiągnięcia celu. Przeszukiwanie przestrzeni stanów zakłada:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-\item Agent ma całkowitą wiedzę o przestrzeni stanów i planuje na przypadek,
-	w którym obserwuje, w którym stanie się znajduje -- jest całkowita
-	obserwowalność
+\item Agent ma całkowitą wiedzę o przestrzeni stanów i zakłada, że istnieje
+	stan, w którym będzie obserwował to w jakim stanie się znajduje --
+	jest całkowita obserwowalność
 \item Agent ma zbiór akcji, które mają znane, deterministyczne efekty na
 	środowisko
 \item Agent może ustalić czy stan spełnia cel
@@ -611,21 +613,19 @@ działań, co jednak, jeżeli problem, który agent, musi rozważyć trwający p
 lub nie wie ile działań będzie musiał jeszcze podjąć. Takie problemy nazywane
 są \textbf{problemami nieskończonego horyzontu} (ang. \textit{infinite horizon
 problems}), gdzie proces może trwać wiecznie, jak na przykład problem grania
-we ``Flappy Bird'' lub \textbf{problemami nieokreślonego horyzontu} (ang.
+we ``Flappy Bird''. Albo też \textbf{problemami nieokreślonego horyzontu} (ang.
 \textit{indefinite horizon problems}), w którym agent w końcu zakończy
 podejmowanie działań, ale nie wie kiedy to nastąpi.
 
 Dla trwających procesów, może nie mieć sensu rozważanie użyteczności na końcu
 procesu ponieważ agent może nigdy nie dojść do końca. Zamiast tego agent może
-otrzymać sekwencję \textbf{nagród} (ang. \textit{rewards}). Te nagrody włączają
-koszt działania, oprócz nagród mogą agentowi mogą być nadane również kary.
+otrzymać sekwencję \textbf{nagród} (ang. \textit{rewards}).
 Negatywne nagrody nazywane są \textbf{karami} (ang. \textit{punishments}).
 Problemy niezdefiniowanego horyzontu mogą być wymodelowane używając stanu
 stop. \textbf{Stan stop} bądź \textbf{stan absorbujący} to stan, w którym
 wszystkie działania nie mają żadnego efektu to znaczy jeżeli agent znajdzie
-się w tym stanie to wszystkie jego działania wracają do stanu z zerową nagrodą.
-Osiągniecie celu może być wymodelowane w ten sposób, by agent otrzymał nagrodę
-właśnie, kiedy osiągnie stan stopu.
+się w tym stanie to wszystkie jego działania dostają zerową nagrodę ze
+środowiska.
 
 \subsection{Łańcuchy Markova}
 % http://artint.info/2e/html/ArtInt2e.Ch8.S2.html
@@ -653,7 +653,7 @@ jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
 % http://artint.info/2e/html/ArtInt2e.Ch8.S1.SS3.html#Ch8.Thmtheorem3
 \textbf{Sieć przekonań} (ang. \textit{belief network}), również nazywana
 \textbf{siecią Bayesa} to acykliczny graf skierowany, gdzie wierzchołki są
-losowymi zmiennymi. Ponadto istnieje krawędź od każdego elementu ze zbioru
+losowymi zmiennymi. Ponadto istnieje ścieżka od każdego elementu ze zbioru
 $\text{rodzice}(X_i)$ do $X_i$. Powiązany z siecią przekonań jest zbiór
 rozkładu prawdopodobieństw warunkowych, które określają warunkowe
 prawdopodobieństwo między każdą zmienną a jej rodzicami (co włącza wcześniejsze
@@ -705,7 +705,7 @@ Markova może być rozumiana jako ``biorąc pod uwagę teraźniejszość -- przy
 jest warunkowo niezależna od przeszłości''
 
 Mówimy, że łańcuch Markova jest \textbf{modelem stacjonarnym} (ang.
-\textit{stationary model}) oraz \textbf{czasowo homogenicznym modelem} (ang.
+\textit{stationary model}) oraz \textbf{modelem czasowo homogenicznym } (ang.
 \textit{time-homogenous model}) jeżeli wszystkie zmienne mają tą samą dziedzinę
 oraz wszystkie prawdopodobieństwa przejść są takie same dla każdego etapu, to
 znaczy:
@@ -736,22 +736,22 @@ nie podejmuje też tylko jednej decyzji. Bardziej typowy scenariusz wygląda
 następująco -- agent obserwuje swoje środowisko, decyduje jaką akcję podjąć,
 wykonuje tą akcję, obserwuje zmienione po jego akcji środowisko, i tak dalej.
 Następujące po sobie (sekwencyjne) akcje agenta mogą zależeć od tego co agent
-zaobserwuje, a to co zaobserwuje może zależeć na poprzednich podjętych przez
+zaobserwuje, a to co zaobserwuje może zależeć od poprzednich podjętych przez
 niego akcji. W takim wypadku, często jedynym powodem dla wykonania jakiejś
 akcji jest to by dostarczyć kontekst dla przyszłych akcji. Akcje wykonywane
 tylko po to by nabyć informacje nazywane są \textbf{akcjami poszukującymi
 informacji}. Formalnie nie muszę odróżniać akcji poszukujących informacji od
-innych akcji. Zazwyczaj podjęte akcje będą prowadziły do pozyskania nowych
-informacji i wywarciu jakiejś zmiany na środowisku.
+innych akcji. Zazwyczaj podjęte akcje będą prowadziły zarówno do pozyskania
+nowych informacji jak i wywarciu jakiejś zmiany na środowisku.
 
-\textbf{Sekwencyjny model decyzyjny} modeluje:
+\textbf{Sekwencyjny model decyzyjny} specyfikuje:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
 	\item Które akcje są dostępne dla agenta, w którym etapie
 	\item Jaka informacja jest, albo będzie dostępna dla agenta, kiedy
 		będzie musiał podjąć akcję
 	\item Efekty akcji na środowisko
-	\item To jak pożądane te efekty będą
+	\item To jak pożądane te efekty będą z perspektywy osiągnięcia celu
 \end{itemize}
 
 % http://artint.info/2e/html/ArtInt2e.Ch9.S3.SS1.html
@@ -768,7 +768,7 @@ wierzchołkami:
 	zmienne decyzji. Agent może wybrać wartość każdej ze zmiennych decyzji.
 \item \textbf{Wierzchołek szansy}, rysowany jako okrąg reprezentuje zmienne
 	losowe. To są te same wierzchołki co w sieciach przekonań. Każdy
-	wierzchołek szansy ma powiązaną ze sobą domenę i warunkowe
+	wierzchołek szansy ma powiązaną ze sobą dziedzinę i warunkowe
 	prawdopodobieństwo biorące pod uwagę rodziców wierzchołka. Tak jak w
 	sieciach przekonań, rodzice wierzchołka reprezentują warunkową
 	zależność: zmienna jest niezależna od innych zmiennych nie będących jej
@@ -776,7 +776,9 @@ wierzchołkami:
 	szansy mogą być rodzicami wierzchołka szansy.
 \item \textbf{Wierzchołek użyteczności}, rysowany jako romb reprezentuje
 	użyteczność. Zarówno wierzchołki szansy jak i wierzchołki decyzji mogą
-	być rodzicami wierzchołka użyteczności.
+	być rodzicami wierzchołka użyteczności. Mówimy tutaj o użyteczności w
+	odniesieniu do wyników akcji agenta -- tego jaki wpływ na jego cel mają
+	wyniki jego akcji.
 \end{itemize}
 \begin{figure}[!htb]
 \begin{center}
@@ -933,7 +935,8 @@ Załóżmy, że $V_k$ to nagroda skumulowana od czasu $k$:
 	&= r_k + \gamma V_{k+1}
 \end{split}
 \end{equation}
-W dalszej części pracy będę rozważał nagrodę jako nagrodę dyskontową.
+W dalszej części pracy będę rozważał nagrodę skumluowaną jako nagrodę
+dyskontową.
 
 % http://artint.info/2e/html/ArtInt2e.Ch9.S5.SS1.html
 \subsection{Funkcja polityki}
@@ -946,9 +949,9 @@ Biorąc pod uwagę kryterium przyznania nagrody polityka zawiera spodziewaną
 nagrodę skumulowaną dla każdego stanu. Niech $V^{\pi}(s)$ będzie spodziewaną
 nagrodą skumulowaną użycia polityki $\pi$ w stanie $s$. To znaczy, jaką nagrodę
 skumulowaną agent oczekuje, że otrzyma po zastosowaniu tej polityki w tym
-stanie. Mówimy, że $\pi$ jest \textbf{polityką optymalną}, jeżeli nie ma
-polityki $\pi'$ i takiego stanu $s$, że $V^{\pi'}(s) > V^{\pi}(s)$. To znaczy,
-taka polityka, która ma większą spodziewaną nagrodę skumulowaną dla
+stanie. Mówimy, że $\pi$ jest \textbf{polityką optymalną}, jeżeli nie istnieje
+polityka $\pi'$ dla dowlonego stanu $s$, że $V^{\pi'}(s) > V^{\pi}(s)$. To
+znaczy, taka polityka, która ma większą spodziewaną nagrodę skumulowaną dla
 każdego stanu, niż jakakolwiek inna polityka.
 
 Dla problemów nieskończonego horyzontu, stacjonarny proces decyzyjny Markova
@@ -956,7 +959,7 @@ zawsze ma optymalną stacjonarną politykę.\cite{ai_foundations_policies}
 
 Jak zatem obliczyć nagrodę skumulowaną optymalnej polityki? Niech $Q^*(s,a)$,
 gdzie $s$ to stan, $a$ to akcja będzie oczekiwaną nagrodą skumulowaną wykonania
-$a$ w stanie $s$ i potem używania optymalnej polityki. Niech $V^*(s)$ będzie
+$a$ w stanie $s$ i potem stosowania optymalnej polityki. Niech $V^*(s)$ będzie
 oczekiwaną nagrodą skumulowaną używania optymalnej polityki począwszy od stanu
 $s$.
 \begin{equation} \label{optimal_policy_1}
@@ -1057,7 +1060,7 @@ co oznacza, że agent był w stanie $s_0$, wykonał akcję $a_0$ co spowodowało
 przyznaniem mu nagrody $r_1$ i przejścia do stanu $s_1$, następnie wykonał
 akcję $a_1$, otrzymał nagrodę $r_2$ i przeszedł do stanu $s_2$ i tak dalej.
 
-Traktujemy historię interakcji jako sekwencję doświadczeń, gdzie
+Historię interakcji traktujemy jako sekwencję doświadczeń, gdzie
 \textbf{doświadczenie} to krotka:
 \[\langle s, a, r, s' \rangle\]
 co oznacza, że agent był w stanie $s$, wykonał akcję $a$ za co otrzymał nagrodę
@@ -1075,8 +1078,7 @@ Doświadczenie $\langle s,a,r,s' \rangle$ zapewnia jeden punkt danych dla
 wartości $Q(s,a)$. Zawiera informację o tym, że agent otrzymał przyszłą wartość
 $r + \gamma V(s')$, gdzie $V(s') = \max_{a'}Q(s',a')$. To jest aktualną
 rzeczywistą nagrodę plus dyskontowa oszacowana przyszła nagroda skumulowana.
-Ten punkt danych nazywany jest \textbf{zwrotem} (ang. \textit{return}). Agent
-może użyć równania na różnicę czasową \ref{td_3} by zaktualizować swoje
+Agent może użyć równania na różnicę czasową \ref{td_3} by zaktualizować swoje
 oszacowanie dla $Q(s,a)$:
 \begin{equation}
 Q[s,a] := Q[s,a] + \alpha * \left(r + \gamma \max_{a'} Q[s',a'] -
@@ -1141,7 +1143,8 @@ może spróbować wykonania akcji w dowolnym stanie.
 \chapter{Implementacja Q\dywiz learningu}
 \label{chapter:implementacja_qlearningu}
 W mojej implementacji Q-Learningu, \textbf{przestrzeń stanów} zdyskretyzowałem
-nad następującymi parametrami:
+(to znaczy ograniczyłem do zmiennych o skończonej ilości) nad następującymi
+parametrami:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
 	\item Odległość w pionie obiektu ptaka od obiektu najbliższej od prawej
@@ -1166,7 +1169,7 @@ rur, które są po jego prawej stronie, te po lewej zostały ominięte co oznacz
 że agent osiągnął swój cel w odniesieniu do nich. Aby stwierdzić, który obiekt
 rury jest najbliższym z prawej nie mogę jak poprzednio (gdzie wystarczyło
 ustalić, który obiekt rury jest najbliżej, nie ważne czy z lewej czy z prawej)
-wciąć obiektu o indeksie zero z grupy dolnych obiektów rur. Przypomnę, że grupa
+wziąć obiektu o indeksie zero z grupy dolnych obiektów rur. Przypomnę, że grupa
 obiektów rur działa jak tablica, gdzie obiekty są ponumerowane indeksami od
 zera w odniesieniu ich pozycji na ekranie -- obiekt najbardziej z lewej ma
 indeks zero. Istnieje scenariusz, w którym agent dopiero co ominął obiekt rury,
@@ -1181,7 +1184,7 @@ ponad połowa szerokości obiektu rur w pixelach.
 
 Przestrzeń stanów jest inicjalizowana w następujący sposób:
 \begin{lstlisting}[language=Python, label={qval_init}, caption={Inicjalizacja
-QValues}]
+Q-Values}]
 qval = {}
 for x in list(range(-80, 510, 10)):
     for y in list(range(-300, 800, 10)):
@@ -1190,11 +1193,12 @@ for x in list(range(-80, 510, 10)):
 \end{lstlisting}
 Gdzie \textbf{qval} to słownik, którego kluczami są napisy w formacie
 $X\_Y\_V$, gdzie $X$ to różnica w poziomie, $Y$ to różnica w pionie, a $V$ to
-prędkość spadania. Wartości $X$ są generowane co dziesięć w zakresie $(-80,
-510)$, wartości $Y$ co dziesięć w zakresie $(-300, 800)$, a wartość $V$ w
-zakresie $(-10,9)$. O tym dlaczego wartości $X$ i $Y$ są generowane co dziesięć
+prędkość spadania. Jest to odpowiednik tablicy $Q[S,A]$ z algorytmu
+\ref{qlearning_algorithm}. Wartości $X$ są generowane co dziesięć w zakresie
+$[-80,510)$, wartości $Y$ co dziesięć w zakresie $[-300,800)$, a wartość $V$ w
+zakresie $[-10,9)$. O tym dlaczego wartości $X$ i $Y$ są generowane co dziesięć
 piszę w następnym podrozdziale. Wartość $V$ jest ma taki zakres, gdyż jest tak
-ograniczona przez sam program gry, gdzie wartość $9$ oznacza, że obiekt ptaka
+ograniczona przez sam program gry, gdzie wartość $8$ oznacza, że obiekt ptaka
 spada najszybciej jak może, a wartość $-10$ to, że podlatuje do góry.
 
 Agent ma możliwość podjąć jedynie \textbf{dwie akcje} -- kliknąć lewy przycisk
@@ -1290,16 +1294,16 @@ zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące
 
 \section{Optymalizacja pod względem rozmiaru przestrzeni stanów}
 Przestrzeń stanów to zbiór $S$, którego elementy wyglądają następująco:
-\[\forall x \in [-80, 510] \cap \mathbb{Z} \ \forall y \in [-300,800] \cap
-\mathbb{Z} \ \forall v \in [-10,9] \cap \mathbb{Z}\ \  \{x, y, v\}\]
+\[\forall x \in [-80, 509] \cap \mathbb{Z} \ \forall y \in [-300,799] \cap
+\mathbb{Z} \ \forall v \in [-10,8] \cap \mathbb{Z}\ \  \{x, y, v\}\]
 
-Co daje nam $(510 + 80 + 1) * (300 + 800 + 1) * (10 + 9 +1) = 13 013 820$
+Co daje nam $(509 + 80 + 1) * (300 + 799 + 1) * (10 + 8 +1) = 12 331 000$
 stanów. Wyuczenie agenta -- to znaczy wypełnienie wartości $Q$ dla większości
 stanów zajęłoby bardzo dużo czasu. Postanowiłem poświęcić precyzję z jaką agent
 wykonuje akcje na rzecz ograniczenia ilości stanów. Dlatego jak w wcześniej
 wspominałem stany są inicjalizowane z wartościami $x$ i $y$ generowanymi co
-$10$. W ten sposób przestrzeń stanów ma $(51 + 8 + 1) * (30 + 80 + 1) * (10 + 9
-+ 1) = 133 200$ stanów, co jak można się spodziewać jest prawie stukrotnym
+$10$. W ten sposób przestrzeń stanów ma $(50 + 8 + 1) * (30 + 79 + 1) * (10 + 8
++ 1) = 123 310$ stanów, co jak można się spodziewać jest prawie stukrotnym
 pomniejszeniem ilości elementów w przestrzeni stanów. Środowisko dalej zwraca
 agentowi ``pełne liczby'', jednak ten zanim podejrzy wartość $Q$ mapuje te
 wartości zaokrąglając je w dół do części dziesiątych.
@@ -1326,7 +1330,7 @@ Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony
 rysunku \ref{agent_top_pipe}.
 \begin{figure}[!htb] 
 	\begin{center}
-		\includegraphics[scale=0.39]{agent_top_pipe_penalty.png}
+		\includegraphics[scale=0.35]{agent_top_pipe_penalty.png}
 	\end{center}
 	\caption{Agent wybiera złą akcję}
 	\label{agent_top_pipe}
@@ -1380,7 +1384,7 @@ generuję z dokładnością do wielokrotności liczby $5$ to znaczy wartości $X
 $Y$ przedstawione na listingu \ref{qval_init} generowane są co $5$ a nie co
 $10$. Analogicznie wartości obserwowane przez agenta ze środowiska są
 pomniejszane o resztę z dzielenia przez $5$. W tym przypadku zbiór stanów ma
-$532 800$ elementów, co dalej stanowi około $\frac{1}{24}$ ilości elementów
+$493 240$ elementów, co dalej stanowi $\frac{1}{25}$ ilości elementów
 zbioru stanów, gdzie żadnej optymalizacji nie zastosowano. W związku z takim
 powiększeniem przestrzeni stanów zwiększyłem ilość gier, które rozegrał agent
 (ponownie, agent uczył się od nowa, po wyzerowaniu wartości $Q$). Początkowo
@@ -1395,11 +1399,11 @@ podejścia. Średnia w tym podejściu pod koniec była najlepsza i wynosiła
 $135.6$, czyli o $13.6\%$ więcej niż poprzednio.
 
 \chap{Podsumowanie}
-Przedstawiona w ninejszej pracy problematyka nie wyczerpuje w całości
+Przedstawiona w niniejszej pracy problematyka nie wyczerpuje w całości
 zagadnienia uczenia przez wzmacnianie, jednak szczegółowo opisuje działanie
-algorytm Q-Learning. Samodzielne zaimplementowanie gry ``Flappy Bird'' pomogło
+algorytmu Q-Learning. Samodzielne zaimplementowanie gry ``Flappy Bird'' pomogło
 mi w zrozumieniu i opisaniu jak agent działa w środowisku. Uważam, że wybrane
-przezemnie technologie były trafionym pomysłem, były łatwe w użyciu i
+przeze mnie technologie były trafionym pomysłem, były łatwe w użyciu i
 pozwoliły mi na całkowite zrealizowanie mojej pracy.
 
 Największą komplikacją okazał się sam czas uczenia, mimo, że specjalnie dla 
@@ -1407,9 +1411,9 @@ agenta wprowadziłem możliwość uruchomienia szybszej rozgrywki, to przejście
 przez agenta $20000$ gier okazało się zabierać zdecydowanie za dużo czasu.
 Osiągane przez agenta wyniki mimo moich optymalizacji nie są też zbyt wysokie w
 porównaniu do innych rozwiązań, jak na przykład Tonego Xu, któremu udało się
-tak zoptymalizować algorytm, by agent w ogóle nie mógl
-przegrać\cite{tds_rl_score}. Myślę, że mógłym bardziej optymalizować swój
-algorytm, jednak potrzebnaby była modyfikacja programu by ta nie przedstawiała
+tak zoptymalizować algorytm, by agent w ogóle nie mógł
+przegrać\cite{tds_rl_score}. Myślę, że mógłbym bardziej optymalizować swój
+algorytm, jednak potrzebna by była modyfikacja programu by ten nie przedstawiał
 graficznej wizualizacji gry (wszak agent potrzebuje tylko informacji o
 położeniu najbliższego obiektu rury, nie potrzeba wizualizacji). Wtedy mógłbym
 zaimplementować tak główną pętlę programową by ta nie wykonywała się raz na
@@ -1417,7 +1421,7 @@ tyknięcie symulowanego zegara, a tak szybko jak pozwalałby na to procesor, na
 którym program został uruchomiony. Niestety do dalszych optymalizacji zabrakło
 mi czasu.
 	
-Ninejsza praca pokazuje jak skomplikowanym i fascynującym zagadnieniem może
+Niniejsza praca pokazuje jak skomplikowanym i fascynującym zagadnieniem może
 być uczenie przez wzmacnianie. Od samego wymyślenia algorytmu do jego
 optymalizacji wymaga nie tylko ogromnej wiedzy z zakresu prawdopodobieństwa,
 ale i kreatywnego myślenia.
@@ -1426,7 +1430,7 @@ Podsumowując, chociaż osiągane przez agenta wyniki nie są najlepsze (w
 porównaniu do innych tego typu rozwiązań, nie do graczy będących ludźmi)
 mimo wszystko stosując algorytm uczenia przez wzmacnianie udało mi się
 wytrenować agenta do grania w grę, nie mniej jednak zalecany byłby większy
-nakład pracy by osiągać naprawde dobre wyniki.
+nakład pracy by osiągać naprawdę dobre wyniki.
 
 
 %\listoftables{} % jeśli są tabele
