@@ -1324,9 +1324,9 @@ dla ostatnich $100$ gier (z wyjątkiem $100$ pierwszych gier). Po $5000$ gier
 \section{Optymalizacja algorytmu}
 Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony na
 rysunku \ref{agent_top_pipe}.
-\begin{figure}[!htb]
+\begin{figure}[!htb] 
 	\begin{center}
-		\includegraphics[scale=0.40]{agent_top_pipe_penalty.png}
+		\includegraphics[scale=0.39]{agent_top_pipe_penalty.png}
 	\end{center}
 	\caption{Agent wybiera złą akcję}
 	\label{agent_top_pipe}
@@ -1337,10 +1337,10 @@ obiektowi ptaka na zmniejszenie swojej wysokości co oczywiście sprawiało,
 że przegrywał tą grę. Nie mogłem znaleźć przyczyny takiego zachowania dlatego
 postanowiłem lekko zmodyfikować algorytm przedstawiony w listingu
 \ref{qlearning_python}. Dodałem flagę, która jest włączana, gdy różnica w
-pionie była wystarczająco wysoka. Wtedy, jeżeli ostatnią akcją agenta było
-podskoczenie (\textit{self.last\_action} $=1$) i flaga była włączona, dla tego
-stanu przyznawałem nagrodę $-1000$. Po takim zmodyfikowaniu algorytmu
-otrzymałem następujące wyniki:
+pionie między obiektem ptaka a dolną rurą była wystarczająco wysoka. Wtedy,
+jeżeli ostatnią akcją agenta było podskoczenie (\textit{self.last\_action}
+$=1$) i flaga była włączona, dla tego stanu przyznawałem nagrodę $-1000$. Po
+takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 \begin{figure}[!htb]
 	\begin{center}
 		\input{plots/plotTopPipeDeathPenalty.pgf}
@@ -1349,25 +1349,94 @@ otrzymałem następujące wyniki:
 	\label{plot_top_pipe_penalty}
 \end{figure}
 
-% YYY napisz cos o wynikach tutaj i lecisz ostatnie
+Agent uczył się tutaj od początku (wszystkie wartości $Q$ zostały wyzerowane
+dla każdego stanu przed uruchomieniem programu).
+Jak widać na wykresie \ref{plot_top_pipe_penalty} chociaż maksymalny wynik jaki 
+udało mu się osiągnąć jest mniejszy niż w poprzedniej grze -- jest to $933$
+uzyskanych punktów w grze $4652$ czyli aż o $70$ punktów mniej niż poprzednio
+to średni wynik po $5000$ rozegranych gier wynosi już $119,36$, czyli o 
+$72.7\%$ więcej. Ponadto w porównaniu do poprzedniej nauki agent po około
+$3500$ grach zdecydowanie częściej osiąga wyniki powyżej $200$ punktów, w
+porównaniu do poprzedniego podejścia, gdzie nawet po tylu grach zdarzało się,
+że agent zdobywał niskie wyniki, właśnie ze względu na zachowanie przedstawione
+na rysunku \ref{agent_top_pipe}.
 
-\section{Podejście trzecie grid 5 na 5 z flagą}
-Jak wyżej
+\section{Redukcja optymalizacji w przestrzeni stanów}
+Aby jeszcze zwiększyć średni wynik nauczonego agenta postanowiłem zmniejszyć
+skalę z jaką zoptymalizowałem rozmiar przestrzeni stanów. Co prawda taki zabieg
+wydłuży czas uczenia (więcej stanów oznacza, że agent będzie musiał zagrać
+więcej gier, aby obliczyć wartości $Q$ dla każdego z nich), ale zwiększy
+precyzje z jaką agent podejmuje decyzje.
+\begin{figure}[!htb]
+	\begin{center}
+		\input{plots/plotGrid5x5TopPipePenalty.pgf}
+	\end{center}
+	\caption{Wykres gry od wyniku po zwiększeniu przestrzeni stanów}
+	\label{plot_gird_5x5}
+\end{figure}
 
-\chapter{Podsumowanie}
-Wyniki osiągane są w miarę ok ale mogło by być lepiej bo są na internecie lepsze
-podejścia do tego problemu -- być może wynika to z tego ze sam implementowałem grę
-i nie jest ona tak dobrze przetestowana jak ta dostępna na GitHub?
-\section{Co można by ulepszyć}
-Tutaj będę pisał co mogłem zrobić gdybym poświęcił więcej czasu np:
-\begin{itemize}
-\item uczenie bez wizualizacji pygamowej
-\item zrównoleglenie by paru agentów na raz mogło się uczyć
-\item doszlifowanie algorytmu??
-\item Zrobienie wersji bez wizualizacji, tzn 1 tykniecie procka - 1 tykniecie
-	gry =  szybsze uczenie!
-\end{itemize}
+Postanowiłem zwiększyć przestrzeń stanów czterokrotnie -- w tym podejściu stany
+generuję z dokładnością do wielokrotności liczby $5$ to znaczy wartości $X$ i
+$Y$ przedstawione na listingu \ref{qval_init} generowane są co $5$ a nie co
+$10$. Analogicznie wartości obserwowane przez agenta ze środowiska są
+pomniejszane o resztę z dzielenia przez $5$. W tym przypadku zbiór stanów ma
+$532 800$ elementów, co dalej stanowi około $\frac{1}{24}$ ilości elementów
+zbioru stanów, gdzie żadnej optymalizacji nie zastosowano. W związku z takim
+powiększeniem przestrzeni stanów zwiększyłem ilość gier, które rozegrał agent
+(ponownie, agent uczył się od nowa, po wyzerowaniu wartości $Q$). Początkowo
+chciałem by było to $4$ razy więcej gier niż poprzednio, jednak okazało się,
+że agent po około $8000$ gier bardzo często zdobywał wyniki powyżej $200$ co
+sprawiało, że rozgrywane gry trwały zdecydowanie dłużej. W tym układzie
+rozegranie $15000$ gier zajęło około $36$ godzin przy najszybszym trybie gry
+czyli $120$ klatkach na sekundę. Ponownie agentowi nie udało się pobić
+największego wyniku z pierwszego podejścia, uzyskał on maksymalnie $907$
+punktów, w grze $14424$, co mimo wszystko jest lepszym wynikiem od poprzedniego
+podejścia. Średnia w tym podejściu pod koniec była najlepsza i wynosiła
+$135.6$, czyli o $13.6\%$ więcej niż poprzednio.
 
+\chap{Podsumowanie}
+Przedstawiona w ninejszej pracy problematyka nie wyczerpuje w całości
+zagadnienia uczenia przez wzmacnianie, jednak szczegółowo opisuje działanie
+algorytm Q-Learning. Samodzielne zaimplementowanie gry ``Flappy Bird'' pomogło
+mi w zrozumieniu i opisaniu jak agent działa w środowisku. Uważam, że wybrane
+przezemnie technologie były trafionym pomysłem, były łatwe w użyciu i
+pozwoliły mi na całkowite zrealizowanie mojej pracy.
+
+Największą komplikacją okazał się sam czas uczenia, mimo, że specjalnie dla 
+agenta wprowadziłem możliwość uruchomienia szybszej rozgrywki, to przejście
+przez agenta $20000$ gier okazało się zabierać zdecydowanie za dużo czasu.
+Osiągane przez agenta wyniki mimo moich optymalizacji nie są też zbyt wysokie w
+porównaniu do innych rozwiązań, jak na przykład Tonego Xu, któremu udało się
+tak zoptymalizować algorytm, by agent w ogóle nie mógl
+przegrać\cite{tds_rl_score}. Myślę, że mógłym bardziej optymalizować swój
+algorytm, jednak potrzebnaby była modyfikacja programu by ta nie przedstawiała
+graficznej wizualizacji gry (wszak agent potrzebuje tylko informacji o
+położeniu najbliższego obiektu rury, nie potrzeba wizualizacji). Wtedy mógłbym
+zaimplementować tak główną pętlę programową by ta nie wykonywała się raz na
+tyknięcie symulowanego zegara, a tak szybko jak pozwalałby na to procesor, na
+którym program został uruchomiony. Niestety do dalszych optymalizacji zabrakło
+mi czasu.
+	
+Ninejsza praca pokazuje jak skomplikowanym i fascynującym zagadnieniem może
+być uczenie przez wzmacnianie. Od samego wymyślenia algorytmu do jego
+optymalizacji wymaga nie tylko ogromnej wiedzy z zakresu prawdopodobieństwa,
+ale i kreatywnego myślenia.
+
+Podsumowując, chociaż osiągane przez agenta wyniki nie są najlepsze (w
+porównaniu do innych tego typu rozwiązań, nie do graczy będących ludźmi)
+mimo wszystko stosując algorytm uczenia przez wzmacnianie udało mi się
+wytrenować agenta do grania w grę, nie mniej jednak zalecany byłby większy
+nakład pracy by osiągać naprawde dobre wyniki.
+
+
+%\listoftables{} % jeśli są tabele
+%\addcontentsline{toc}{chapter}{Spis tabel}
+%
+%\listoffigures{} % jeśli są obrazki
+%\addcontentsline{toc}{chapter}{Spis rysunków}
+%
+%\lstlistoflistings
+%\addcontentsline{toc}{chapter}{Spis listingów}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
 \bibliographystyle{IEEEtran}
