@@ -117,22 +117,42 @@
 %\newpage
 
 \chap{Wstęp}
-Jedną z większych dziedzin uczenia maszynowego jest uczenie przez wzmacnianie 
-(ang. \textit{reinforcement learning}) W odróżnieniu od zarówno uczenia 
-nadzorowanego i nienadzorowanego nie potrzebujemy w tym przypadku żadnych
-gotowych danych wejściowych i wyjściowych. Zamiast tego, algorytm pozyskuje
-dane na bieżąco ze środowiska do, którego jest zastosowany. Dzięki temu,
-że algorytmy uczenia przez wzmacnianie nie mają tego ograniczenia możemy
-zastosować je do problemów takich jak gra na giełdzie
-\cite{trading_reinforcement}, czy nauka grania w gry, w swojej pracy
-skupię się na tym drugim.
+\textbf{Uczenie maszynowe} (ang. \textit{machine learning}) jest dziedziną
+zajmującą się tworzeniem metod, które potrafią się ``uczyć'' to znaczy,
+wykorzystywać dane aby poprawiać wydajność w rozwiązywaniu pewnych
+problemów\cite{machine_learning_definition}.
+Do głównych technik uczenia maszynowego zaliczają się:
+\begin{itemize}
+	\setlength\itemsep{-0.4em}
+\item Uczenie nadzorowane gdzie komputer dostaje przykładowe dane wejściowe i
+	pożądane dane wyjściowe, jego celem jest nauczyć się generalnej zasady
+	przypisywania danych wejściowych do wyjściowych
+\item Uczenie nienadzorowane gdzie dane wejściowe nie są w żaden sposób
+	oznaczone a algorytm uczenia musi sam znaleźć ukryte wzory w danych.
+\item \textbf{Uczenie przez wzmacnianie}
+	(ang. \textit{reinforcement learning}) W odróżnieniu od zarówno uczenia 
+	nadzorowanego i nienadzorowanego nie potrzebujemy w tym przypadku
+	żadnych	gotowych danych wejściowych i wyjściowych. Zamiast tego,
+	algorytm pozyskuje dane na bieżąco ze środowiska, do którego jest
+	zastosowany. Następnie wykorzystuje zaobserwowane dane, by osiągnąć
+	określony cel.
+\end{itemize}
 
-Celem pracy jest zaimplementowanie algorytmu uczenia przez wzmacnianie\\
-Q-Learningu. Następnie zoptymalizowaniu go tak by po zastosowaniu go do
-własnoręcznie zaimplementowanej gry był w stanie osiągnąć w niej możliwie
-najwyższy wynik. Do zrealizowania tego zostanie użyty język python oraz moduł
+Właśnie dzięki temu, że algorytmy uczenia przez wzmacnianie nie potrzebują do
+nauki gotowych
+zestawów danych możemy zastosować je do problemów takich jak gra na giełdzie
+\cite{trading_reinforcement}, nauka grania w gry, tworzenie autonomicznych
+pojazdów, uczenie chodzenia robotów z nogami czy optymalne chłodzenie
+serwerowni\cite{reinforcement_applications}.
+
+Celem niniejszej pracy jest zaproponowanie, implementacja oraz analiza
+algorytmu uczenia przez wzmacnianie zdolnego do kierowania agentem w popularnej
+grze. W toku analizy został wybrany algorytm \textbf{Q-Learning}, który
+został zastosowany do wytrenowania agenta realizującego prostą grę ``Flappy
+Bird''. Implementacja została zrealizowana z użyciem języka python oraz modułu
 pygame.
 
+% YYY popraw ogólniki na konkretne numery rozdziałów
 Na początku przedstawię jaką grę wybrałem, opiszę jej zasady oraz zaprezentuję
 szczegóły jej implementacji. Następnie  przybliżę zagadnienie uczenia przez
 wzmacnianie oraz algorytmu Q\dywiz learning. Pod koniec pokażę jak
@@ -141,11 +161,11 @@ które zastosowałem.
 \newpage{}
 
 \chapter{Gra}
-Problem, który postawiłem przed Q-learningiem to nauczenie się grania w
-``Flappy Bird'' -- grę z 2013 autorstwa wietnamskiego developera Dong Nguyena
-\cite{flappy_bird_author}. Zdecydowałem się właśnie na tą grę,
-gdyż sterowanie w niej jest bardzo proste -- jest tylko jeden przycisk do
-kontrolowania toteż jedna akcja do podjęcia przez algorytm.
+Problem, który postawiłem przed uczeniem przez wzmacnianie to nauczenie się
+grania w ``Flappy Bird'', grę z 2013 autorstwa wietnamskiego developera Dong
+Nguyena\cite{flappy_bird_author}. Wybrałem tę grę ze względu na ograniczoną
+ilość akcji jaką może podjąć gracz.
+% YYY tu skończyłeś
 \section{Zasady gry} 
 \begin{figure}[h] 
 	\begin{center}
@@ -1046,8 +1066,9 @@ nową wartością a poprzednią przewidywaną wartością.
 W uczeniu przez wzmacnianie, wartości (skumulowane nagrody) są efektami akcji.
 Nowsze wartości są bardziej dokładne od poprzednich ponieważ agent się uczy i
 przez to nowsze wartości powinny mieć większą wagę.
-% http://artint.info/2e/html/ArtInt2e.Ch12.S4.html
+
 \section{Q\dywiz learning}
+% http://artint.info/2e/html/ArtInt2e.Ch12.S4.html
 Autorem algorytmu Q-learning jest Christ Watkins, który zaprezentował go w
 swojej pracy doktorskiej zatytułowanej : ``Learning from Delayed
 Rewards''\cite{qlearning_inventor}.
@@ -1184,7 +1205,7 @@ ponad połowa szerokości obiektu rur w pixelach.
 
 Przestrzeń stanów jest inicjalizowana w następujący sposób:
 \begin{lstlisting}[language=Python, label={qval_init}, caption={Inicjalizacja
-Q-Values}]
+Q-Values}, captionpos=t]
 qval = {}
 for x in list(range(-80, 510, 10)):
     for y in list(range(-300, 800, 10)):
@@ -1222,7 +1243,7 @@ doświadczenia do pierwszego. Pomyślałem, że to pomoże w szybszym propagowan
 informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał akcję, która
 doprowadziła do śmierci obiektu ptaka. 
 \begin{lstlisting}[language=Python, label={qlearning_python},
-caption={Zaimplementowany algorytm Q-Learning}]
+caption={Zaimplementowany algorytm Q-Learning}, captionpos=t]
 def update_scores(self):
     history = list(reversed(self.moves))
 
@@ -1259,7 +1280,7 @@ wartość $Q$ zgodnie ze wzorem \ref{qvalue_1} i wypisywana odpowiednio do
 słownika \textit{qvalues} dla odpowiedniego stanu i akcji. 
 
 \begin{lstlisting}[language=Python, label={act_python},
-caption={Metoda wybierająca akcję agenta}]
+caption={Metoda wybierająca akcję agenta}, captionpos=t]
 def act(self, xdif, ydif, vel):
     state = self.map_state(xdif, ydif, vel)
     self.moves.append((self.last_state, self.last_action, state))
@@ -1311,7 +1332,8 @@ wartości zaokrąglając je w dół do części dziesiątych.
 Tak zaimplementowany algorytm i grę uruchomiłem otrzymując następujące wyniki:
 \begin{figure}[!htb]
 	\begin{center}
-		\input{plots/plotFirstApproach.pgf}
+		%\input{plots/plotFirstApproach.pgf} YYY
+		\includegraphics{plotFirstApproach.png}
 	\end{center}
 	\caption{Wykres gry od wyniku}
 	\label{plot_first_approach}
@@ -1347,7 +1369,8 @@ $=1$) i flaga była włączona, dla tego stanu przyznawałem nagrodę $-1000$. P
 takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 \begin{figure}[!htb]
 	\begin{center}
-		\input{plots/plotTopPipeDeathPenalty.pgf}
+		%\input{plots/plotTopPipeDeathPenalty.pgf} YYY
+		\includegraphics{plotTopPipeDeathPenalty.png}
 	\end{center}
 	\caption{Wykres gry od wyniku po zmianie algorytmu}
 	\label{plot_top_pipe_penalty}
@@ -1373,7 +1396,8 @@ więcej gier, aby obliczyć wartości $Q$ dla każdego z nich), ale zwiększy
 precyzje z jaką agent podejmuje decyzje.
 \begin{figure}[!htb]
 	\begin{center}
-		\input{plots/plotGrid5x5TopPipePenalty.pgf}
+		%\input{plots/plotGrid5x5TopPipePenalty.pgf} YYY
+		\includegraphics{plotGrid5x5TopPipePenalty.png}
 	\end{center}
 	\caption{Wykres gry od wyniku po zwiększeniu przestrzeni stanów}
 	\label{plot_gird_5x5}
