@@ -152,44 +152,45 @@ został zastosowany do wytrenowania agenta realizującego prostą grę ``Flappy
 Bird''. Implementacja została zrealizowana z użyciem języka python oraz modułu
 pygame.
 
-% YYY popraw ogólniki na konkretne numery rozdziałów
-Na początku przedstawię jaką grę wybrałem, opiszę jej zasady oraz zaprezentuję
-szczegóły jej implementacji. Następnie  przybliżę zagadnienie uczenia przez
-wzmacnianie oraz algorytmu Q\dywiz learning. Pod koniec pokażę jak
-zaimplementowałem wspomniany algorytm, oraz testy po optymalizacjach algorytmu,
+W rozdziale ``\nameref{chapter:gra}'' przedstawię jaką grę wybrałem, opiszę jej
+zasady oraz zaprezentuję szczegóły jej implementacji. Następnie w rozdziale
+``\nameref{chapter:uczenie}'' przybliżę zagadnienie uczenia przez
+wzmacnianie. Algorytm Q\dywiz learning oraz jego implementację opiszę w
+rozdziale ``\nameref{chapter:qlearning}''. Na koniec w rozdziale
+``\nameref{chapter:testy}'' przedstawię testy po optymalizacjach algorytmu,
 które zastosowałem.
 \newpage{}
 
 \chapter{Gra}
-Problem, który postawiłem przed uczeniem przez wzmacnianie to nauczenie się
-grania w ``Flappy Bird'', grę z 2013 autorstwa wietnamskiego developera Dong
-Nguyena\cite{flappy_bird_author}. Wybrałem tę grę ze względu na ograniczoną
-ilość akcji jaką może podjąć gracz.
-% YYY tu skończyłeś
+\label{chapter:gra}
+W celu realizacji założonych celów pracy zdecydowałem się na zaimplementowanie
+popularnej gry z 2013 roku ``Flappy Bird'',  autorstwa wietnamskiego developera
+Dong Nguyena\cite{flappy_bird_author}. Wybrałem tę grę ze względu na
+ograniczoną ilość akcji jaką może podjąć gracz.
 \section{Zasady gry} 
 \begin{figure}[h] 
 	\begin{center}
 		\includegraphics[scale=0.40]{flappy_bird.png}
-		\caption{Zrzut ekranu z gry}
+		\caption{Zrzut ekranu z gry.}
 		\label{flappy_screenshot}
 	\end{center}
 \end{figure}
 
-Gracz kontroluje obiekt reprezentowany w grze jako żółty ptak,
-jego zadaniem jest tak nim sterować by omijać obiekty reprezentowane przez 
+Gracz kontroluje obiekt reprezentowany w grze przez żółtego ptaka.
+Zadaniem gracza jest tak nim sterować by omijać obiekty reprezentowane przez 
 czerwone rury oraz nie pozwolić na to by siła grawitacji doprowadziła do
 kolizji obiektu ptaka z obiektem ziemi (na rysunku \ref{flappy_screenshot}
 zielona część na dole). Na obiekt ptaka działa jedynie siła grawitacji a
 obiekty rur przesuwane są w lewo w jego stronę ze stałą prędkością. Gracz
-ma możliwość kontrolować jedynie czy obiekt, którym steruje zwiększy swoją
+może kontrolować jedynie to czy obiekt, którym steruje zwiększy swoją
 wysokość o stałą, zakodowaną ilość jednostek czy tego nie zrobi i obiekt
 reprezentowany przez ptaka zmniejszy swoją wysokość. Gra kończy się gdy
-dojdzie do kolizji obiektu ptaka z, którymkolwiek obiektem rur -- dolnej
-bądź górnej albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi uda
-się ominąć nadchodzące przeszkody przelatując przez szczelinę między nimi.
+dojdzie do kolizji obiektu ptaka z, którymkolwiek obiektem rur: dolną
+bądź górną albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi uda
+się ominąć nadchodzące przeszkody przelatując górną szczelinę między nimi.
 Za każde ominięcie przyznawany jest jeden punkt. Na górze rysunku
 \ref{flappy_screenshot} białymi cyframi wypisana jest ilość osiągniętych przez
-gracza punktów. Jak widać gracz ominął już trzydzieści cztery pary rur.
+gracza punktów. W tym przypadku gracz ominął już trzydzieści cztery pary rur.
 Podsumowując -- gra sprowadza się do kontrolowania wysokości ptaka tak by ten
 przelatywał między nadchodzącymi rurami.
 
@@ -199,22 +200,24 @@ interpretowanego języka \textbf{python} w wersji 3.8. Python jest dostępny na
 większości współczesnych platform oraz jest to język  open\dywiz source.
 Dodatkowo wykorzystałem moduł \textbf{pygame}.
 
-Pygame dodaje funkcjonalność do biblioteki SDL. Simple DirectMedia Layer(SDL)
+Pygame używa funkcjonalności biblioteki SDL. Simple DirectMedia Layer(SDL)
 jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do
 audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick oraz
-sprzętu graficznego (za pomocą OpenGL i Direct3D). Technologia open source
-zaimplementowana w C. Używana w grach firm takich jak \textit{Valve Software}
-czy \textit{SuperTuxCart}\cite{sdl_ref}. To za pomocą tej biblioteki pygame
-może odczytywać wejście czy rysować wyjście na ekranie.
+sprzętu graficznego (za pomocą OpenGL i Direct3D). Jest to technologia open
+source, która została zaimplementowana w C. Używana w grach firm takich jak
+\textit{Valve Software} czy \textit{SuperTuxCart}\cite{sdl_ref}. Pygame używa
+tej biblioteki do odczytywania wejścia z klawiatury/myszy oraz rysowania
+wyjścia na ekran.
 
 Pygame pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne
 w pythonie. Zaletami pygame są między innymi : podstawowe funkcje używają
-zoptymalizowanego kodu w C oraz Assembly, dostępny podobnie jak python na
+zoptymalizowanego kodu w C oraz Assemblerze, dostępny podobnie jak python na
 większości współczesnych platform. Ponadto jest modularny co pozwala
 programiście używać tylko tych komponentów, których naprawdę potrzebuje.
 Gier stworzonych z użyciem pygame na samej stronie projektu jest ponad 660
 \cite{pygame_about_ref}.
 \section{Implementacja}
+% YYY ta cała sekcja do poprawy
 Głównym elementem implementacji jest nieskończona pętla, w której sprawdzam
 zdarzenia, które zaszły, sprawdzam czy mamy wejście od gracza, i aktualizuję
 obiekty gry oraz ekran. Na rysunku \ref{game_flow_chart} opisana jako 
@@ -274,7 +277,7 @@ obiekty gry oraz ekran. Na rysunku \ref{game_flow_chart} opisana jako
 \draw [arrow] (phantom_display_update) |- (main_loop);
 \end{tikzpicture}
 \end{center}
-\caption{Uproszczony diagram przepływu gry}
+\caption{Uproszczony diagram przepływu gry.}
 \label{game_flow_chart}
 \end{figure}
 \newpage{}
@@ -316,11 +319,11 @@ się z większą prędkością. Rozgrywka staje się zdecydowanie dynamiczniejsz
 i przez to również trudniejsza, ale tylko dla ludzi. Q-learningowy agent
 dostaje informacje o grze co tyknięcie zegara i jeszcze w tym samym tyknięciu
 podejmuje decyzje o ruchu, ale więcej o tym w rozdziale
-\nameref{chapter:implementacja_qlearningu}
+\nameref{chapter:qlearning}
 \begin{figure}
 	\begin{center}
 		\includegraphics[scale=0.50]{impossible_pipes.png}
-		\caption{Często generowane obiekty rur}
+		\caption{Często generowane obiekty rur.}
 		\label{frequent_pipes}
 	\end{center}
 \end{figure}
@@ -390,7 +393,7 @@ logikę ``latania''.
 \begin{figure} 
 	\begin{center}
 		\includegraphics[scale=1.10]{flappy_scoring.png}
-		\caption{Granice \textit{rect} obiektów \textit{sprite}}
+		\caption{Granice \textit{rect} obiektów \textit{sprite}.}
 		\label{flappy_scoring_fig}
 	\end{center}
 \end{figure}
@@ -492,8 +495,11 @@ dopóki nie zostanie wciśnięty lewy przycisk myszy, wtedy gra jest resetowana,
 to znaczy wszystkie zmienne są ustawiane do stanu początkowego co powoduje
 rozpoczęcie gry na nowo.
 
+
 \chapter{Uczenie maszynowe}
+\label{chapter:uczenie}
 \section{Czym jest sztuczna inteligencja}
+% http://artint.info/2e/html/ArtInt2e.Ch1.S1.html
 \textbf{Sztuczna inteligencja} (ang. \textit{artificial intelligence}) to
 dziedzina nauki, która zajmuje się syntezowaniem oraz analizowaniem
 obliczeniowych agentów, którzy potrafią podejmować inteligentne decyzje.
@@ -513,19 +519,20 @@ Mówimy, że agent działa/podejmuje decyzje inteligentnie gdy:
 		krótko i długo terminowe konsekwencje
 \end{itemize}
 
-\textbf{Obliczeniowy agent} to taki agent, którego podejmowane decyzje mogą
-zostać wyjaśnione pod względem obliczeniowym. To znaczy decyzja może zostać
-rozbita na podstawowe operacje czyli takie, które mogą zostać zaimplementowane
-na fizycznym urządzeniu. Takie obliczenia mogą przyjmować wiele różnych form.
-U ludzi są one wykonywane w mózgu, w przypadku komputerów na procesorach.
+\textbf{Obliczeniowy agent} to taki agent, którego podjęte decyzje mogą
+zostać wyjaśnione za pomocą prymitywnych operacji obliczeniowych
+czyli takich, które mogą zostać zaimplementowane na fizycznym urządzeniu
+(komputerze). Takie obliczenia mogą przyjmować wiele różnych form.
 
 Wszyscy agenci mają swoje ograniczenia. Żaden agent nie jest wszechmocny czy 
 wszechwiedzący. Agenci mogą jedynie obserwować swoje ograniczone środowisko
-w bardzo wyspecjalizowanych domenach. Agenci mają skończoną pamięć oraz nie
-mają nieskończonej ilości czasu na podjęcie decyzji.
+w bardzo wyspecjalizowanych domenach. Agenci mają skończoną pamięć oraz
+określoną ilość czasu na podjęcie decyzji.
 
-Naukowym celem sztucznej inteligencji jest zrozumienie zasad, które sprawiają,
-że inteligentne zachowania są możliwe w naturalnych czy sztucznych systemach.
+Jednym z naukowych celów sztucznej inteligencji jest zrozumienie podstawowych
+zasad inteligentnego zachowania, które są zastosowywane zarówno do
+naturalnych (zwierzęta) jak i sztucznych
+agentów\cite{ai_foundations_scientific_goal}.
 Jest on osiągany przez:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
@@ -536,20 +543,21 @@ Jest on osiągany przez:
 		obliczeniowymi, które wykonują zadania powszechnie uważane
 		za wymagające inteligencji
 \end{itemize}
-Inżynieryjnym celem sztucznej inteligencji jest projektowanie i syntezowanie
+Inżynieryjnym celem sztucznej inteligencji odpowiadającym wspomnianemu wyżej
+celu naukowemu jest projektowanie i syntezowanie
 użytecznych inteligentnych artefaktów. Chcemy tworzyć agentów, którzy będą
 działać inteligentnie. Tacy agenci są użyteczni w wielu problemach.
 
 \section{Interakcja agenta  ze środowiskiem}
 Kwintesencją sztucznej inteligencji jest praktyczne rozumowanie, czyli
-rozumowanie w celu osiągnięcia jakiegoś celu. Na agenta składa się zespojenie
-percepcji, rozumowania oraz podejmowania działań. Agent podejmuje działania w
+rozumowanie w celu osiągnięcia jakiegoś celu. Agenta definiują:
+percepcja, rozumowanie oraz podejmowanie działań. Agent podejmuje działania w
 \textbf{środowisku}.
 
 Agentem może być na przykład komputer z sensorami i siłownikami, innymi słowy
-robot, gdzie jego środowiskiem jest świat rzeczywisty. Może być to samo
-prowadzący się samochód, lub jak w moim przypadku może być to program, który
-działa w czysto obliczeniowym środowisku -- agent programowy (ang.
+robot, gdzie jego środowiskiem jest świat rzeczywisty. Może być to autonomiczny
+samochód lub jak w moim przypadku może być to program, który
+działa w czysto obliczeniowym środowisku to znaczy agent programowy (ang.
 \textit{software agent}).
 \begin{figure}[!htb] 
 \begin{center}
@@ -576,7 +584,7 @@ działa w czysto obliczeniowym środowisku -- agent programowy (ang.
 		[near start, right] {Zdolności} (Agent.31);
 \end{tikzpicture}
 \end{center}
-\caption{Schemat interakcji agenta ze środowiskiem}
+\caption{Schemat interakcji agenta ze środowiskiem.}
 \label{rl_figure}
 \end{figure}
 
@@ -601,20 +609,21 @@ W czarnej skrzynce, agent jest w pewnym stanie wiedzy, może być to wiedza o
 ten stan bazując na bodźcach ze środowiska. Na podstawie stanu wiedzy decyduje
 o swoich działaniach\cite{ai_foundations_agents_situated}.
 
-% http://artint.info/2e/html/ArtInt2e.Ch3.S2.html
 \section{Wiedza agenta} 
-W najprostszym przypadku, kiedy agent decyduje co powinien zrobić odnosi się
-do modelu środowiska opartego o stany, z celem do osiągnięcia i bez żadnych
-niepewności. Agent jest w stanie ustalić jak osiągnąć swój cel przeszukując
-przestrzeń stanów środowiska, tak by ze swojego obecnego stanu przejść do
-stanu, w którym cel jest osiągnięty. Mając kompletną przestrzeń stanów, próbuje
-znaleźć sekwencję działań, których podjęcie sprawi, że osiągnie cel, zanim
-podejmie jakiekolwiek działania.
+% http://artint.info/2e/html/ArtInt2e.Ch3.S2.html
+W najprostszym przypadku, agent w celu podjęcia decyzji pozyskuje ze środowiska
+(opartego o przestrzeń stanów) stan, ma określony do osiągnięcia cel i nie ma
+żadnych niepewności. Agent jest w stanie ustalić jak osiągnąć swój cel
+przeszukując przestrzeń stanów środowiska, tak by ze swojego obecnego stanu
+przejść do stanu, w którym cel jest osiągnięty. Mając kompletną przestrzeń
+stanów, próbuje znaleźć sekwencję działań, których podjęcie sprawi, że osiągnie
+cel, zanim podejmie jakiekolwiek działania.
 
 \textbf{Przestrzeń stanów} (ang. \textit{state space}) to jedno z ogólnych
 sformułowań inteligentnych działań. \textbf{Stan} zawiera wszystkie informacje
 potrzebne do przewidzenia efektów danego działania i ustalenia, czy tenże stan
-jest potrzebny do osiągnięcia celu. Przeszukiwanie przestrzeni stanów zakłada:
+jest potrzebny do osiągnięcia celu. Przeszukiwanie przestrzeni stanów zakłada,
+że:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
 \item Agent ma całkowitą wiedzę o przestrzeni stanów i zakłada, że istnieje
@@ -629,12 +638,13 @@ obecnego stanu do stanu, który spełnia cel.
 
 \section{Proces decyzyjny}
 W poprzednim podrozdziale założyłem, że rozwiązanie to skończona sekwencja
-działań, co jednak, jeżeli problem, który agent, musi rozważyć trwający proces
-lub nie wie ile działań będzie musiał jeszcze podjąć. Takie problemy nazywane
+działań. Co jednak jeżeli problem, który agent musi rozważyć to trwający
+proces lub nie wiadomo ile działań agent będzie musiał jeszcze podjąć by
+osiągnąć cel. Takie problemy nazywane
 są \textbf{problemami nieskończonego horyzontu} (ang. \textit{infinite horizon
 problems}), gdzie proces może trwać wiecznie, jak na przykład problem grania
 we ``Flappy Bird''. Albo też \textbf{problemami nieokreślonego horyzontu} (ang.
-\textit{indefinite horizon problems}), w którym agent w końcu zakończy
+\textit{indefinite horizon problems}), w których agent w końcu zakończy
 podejmowanie działań, ale nie wie kiedy to nastąpi.
 
 Dla trwających procesów, może nie mieć sensu rozważanie użyteczności na końcu
@@ -643,7 +653,7 @@ otrzymać sekwencję \textbf{nagród} (ang. \textit{rewards}).
 Negatywne nagrody nazywane są \textbf{karami} (ang. \textit{punishments}).
 Problemy niezdefiniowanego horyzontu mogą być wymodelowane używając stanu
 stop. \textbf{Stan stop} bądź \textbf{stan absorbujący} to stan, w którym
-wszystkie działania nie mają żadnego efektu to znaczy jeżeli agent znajdzie
+wszystkie działania nie mają żadnego efektu. To znaczy jeżeli agent znajdzie
 się w tym stanie to wszystkie jego działania dostają zerową nagrodę ze
 środowiska.
 
@@ -664,9 +674,9 @@ $Y$ nie ma wpływu na przekonanie o $X$.
 % http://artint.info/2e/html/ArtInt2e.Ch8.S3.html
 Pojęcie warunkowej niezależności jest użyte by nadać zwięzłą reprezentację
 wielu domenom. Chodzi o to, że jeżeli mamy daną losową zmienną $X$, to może
-istnieć kilka zmiennych, które bezpośrednio wpływają na wartość $X$, w pewnym
-sensie $X$ jest warunkowo niezależne od innych zmiennych biorąc pod uwagę te
-zmienne. Zbiór lokalnie wpływających na $X$ zmiennych jest nazwany
+istnieć zbiór zmiennych $W$, które bezpośrednio wpływają na wartość $X$. W
+pewnym sensie $X$ jest warunkowo niezależne od pozostałych zmiennych biorąc pod
+uwagę  zmienne $W$. Zbiór lokalnie wpływających na $X$ zmiennych jest nazwany
 \textbf{ogrodzeniem Markova} (ang. \textit{Markov blanket}). Ta lokalność
 jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
 
@@ -674,7 +684,7 @@ jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
 \textbf{Sieć przekonań} (ang. \textit{belief network}), również nazywana
 \textbf{siecią Bayesa} to acykliczny graf skierowany, gdzie wierzchołki są
 losowymi zmiennymi. Ponadto istnieje ścieżka od każdego elementu ze zbioru
-$\text{rodzice}(X_i)$ do $X_i$. Powiązany z siecią przekonań jest zbiór
+$\text{rodzice}(X_i)$ do $X_i$. Z siecią przekonań powiązany jest zbiór
 rozkładu prawdopodobieństw warunkowych, które określają warunkowe
 prawdopodobieństwo między każdą zmienną a jej rodzicami (co włącza wcześniejsze
 prawdopodobieństwa zmiennych bez rodziców). A więc sieć przekonań składa się z:
@@ -683,15 +693,15 @@ prawdopodobieństwa zmiennych bez rodziców). A więc sieć przekonań składa s
 \item Grafu acyklicznego skierowanego, gdzie każdy wierzchołek jest oznaczony
 	losową zmienną
 \item Dziedziny dla każdej losowej zmiennej
-\item Zbioru rozkładu prawdopodobieństw warunkowych przypisujący
+\item Zbioru rozkładu prawdopodobieństw warunkowych przypisującego
 	$P(X|\text{rodzice}(X))$ dla każdej zmiennej $X$
 \end{itemize}
 
 % http://artint.info/2e/html/ArtInt2e.Ch8.S5.SS1.html
-\textbf{Łańcuch Markova} to sieć przekonań z losowymi zmiennymi w sekwencji,
-gdzie każda zmienna bezpośrednio zależy od swojego poprzednika w sekwencji.
-Łańcuchy Markova są używane do reprezentowania sekwencji wartości jak
-na przykład sekwencja stanów w dynamicznym systemie lub sekwencja słów w
+\textbf{Łańcuch Markova} to sieć przekonań z losowymi zmiennymi ułożonymi w
+sekwencję, gdzie każda zmienna bezpośrednio zależy od swojego poprzednika w
+sekwencji. Łańcuchy Markova są używane do reprezentowania sekwencji wartości
+jak na przykład sekwencja stanów w dynamicznym systemie lub sekwencja słów w
 zdaniu. Każdy punkt w sekwencji jest nazywany \textbf{etapem} (ang.
 \textit{stage}).
 \begin{figure}[!htb]
@@ -708,14 +718,14 @@ zdaniu. Każdy punkt w sekwencji jest nazywany \textbf{etapem} (ang.
     \draw[->] (s2) -- (s3);
     \draw[->] (s3) -- (s4);
 \end{tikzpicture}
-\caption{Łańcuch Markova jako sieć przekonań}
+\caption{Łańcuch Markova jako sieć przekonań.}
 \label{markov_chain}
 \end{center}
 \end{figure}
-Rysunek \ref{markov_chain} pokazuje ogólny łańcuch Markova jako sieć przekonań.
-Sieć ma pięć etapów, ale nie musi zatrzymywać się na $s_4$, może rozrastać
-się w nieskończoność. Sieci przekonań przekazują założenie niezależności:
-\[P(S_{i+1} | S_0, \dots , S_i) = P(S_{i+1} | S_i),\]
+Rysunek \ref{markov_chain} pokazuje ogólny przypadek łańcucha Markova jako sieć
+przekonań. Sieć ma pięć etapów, ale nie musi zatrzymywać się na $s_4$, może
+rozrastać się w nieskończoność. Sieci przekonań opierają się na założeniu
+niezależności: \[P(S_{i+1} | S_0, \dots , S_i) = P(S_{i+1} | S_i),\]
 które jest nazywane \textbf{założeniem Markova}
 
 Często sekwencje są rozłożone w czasie, wtedy $S_t$ reprezentuje stan w
@@ -726,7 +736,7 @@ jest warunkowo niezależna od przeszłości''
 
 Mówimy, że łańcuch Markova jest \textbf{modelem stacjonarnym} (ang.
 \textit{stationary model}) oraz \textbf{modelem czasowo homogenicznym } (ang.
-\textit{time-homogenous model}) jeżeli wszystkie zmienne mają tą samą dziedzinę
+\textit{time-homogenous model}) jeżeli wszystkie zmienne mają tę samą dziedzinę
 oraz wszystkie prawdopodobieństwa przejść są takie same dla każdego etapu, to
 znaczy:
 \[\forall i \ge 0, P(S_{i+1}|S_i) = P(S_1|S_0)\]
@@ -754,7 +764,7 @@ Stacjonarne łańcuchy Markova interesują nas z kilku względów:
 Zazwyczaj agent nie podejmuje decyzji bez wcześniejszych obserwacji środowiska,
 nie podejmuje też tylko jednej decyzji. Bardziej typowy scenariusz wygląda
 następująco -- agent obserwuje swoje środowisko, decyduje jaką akcję podjąć,
-wykonuje tą akcję, obserwuje zmienione po jego akcji środowisko, i tak dalej.
+wykonuje tę akcję, obserwuje zmienione po jego akcji środowisko, i tak dalej.
 Następujące po sobie (sekwencyjne) akcje agenta mogą zależeć od tego co agent
 zaobserwuje, a to co zaobserwuje może zależeć od poprzednich podjętych przez
 niego akcji. W takim wypadku, często jedynym powodem dla wykonania jakiejś
@@ -767,7 +777,7 @@ nowych informacji jak i wywarciu jakiejś zmiany na środowisku.
 \textbf{Sekwencyjny model decyzyjny} specyfikuje:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item Które akcje są dostępne dla agenta, w którym etapie
+	\item Jakie akcje są dostępne dla agenta w danym etapie
 	\item Jaka informacja jest, albo będzie dostępna dla agenta, kiedy
 		będzie musiał podjąć akcję
 	\item Efekty akcji na środowisko
@@ -814,7 +824,7 @@ wierzchołkami:
 	\draw[->, thick] (umbrella) -- (utility);
 	\draw[->, thick] (weather) -- (utility);
 \end{tikzpicture}
-\caption{Sieć decyzyjna reprezentująca decyzję, czy wziąć parasolkę}
+\caption{Sieć decyzyjna reprezentująca decyzję, czy wziąć parasolkę.}
 \label{decision_network_umbrella}
 \end{center}
 \end{figure}
@@ -904,7 +914,7 @@ się z:
     \draw[->, thick] (a2) -- (s3);
     \draw[->, thick] (s3) -- (r2);
 \end{tikzpicture}
-\caption{Sieć decyzyjna reprezentująca skończoną część MDP}
+\caption{Sieć decyzyjna reprezentująca skończoną część MDP.}
 \label{markov_decision_process}
 \end{center}
 \end{figure}
@@ -916,9 +926,9 @@ agent łączy obecną nagrodę z innymi nagrodami w przyszłości. Załóżmy, �
 otrzyma następującą sekwencję nagród: $r_1, r_2, r_3, r_4, \dots$
 
 Trzema najczęstszymi sposobami połączenia sekwencji nagród w nagrodę
-skumulowaną $V$ to:
+skumulowaną $V$ są
 
-\textbf{Całkowita nagroda} (ang. \textit{total reward}) $V =
+\textbf{Nagroda całkowita} (ang. \textit{total reward}) $V =
 \sum_{i=1}^{\infty} r_i$. W tym przypadku nagroda skumulowana to suma
 wszystkich nagród. Metoda ta działa kiedy możemy zagwarantować, że suma jest
 skończona. Jeżeli nie możemy tego założyć to nie możemy określić, która
@@ -934,8 +944,8 @@ dla każdego odcinka czasu. Dopóki nagrody są skończone dopóty $V$ też będ
 wartością skończoną.
 
 \textbf{Dyskontowa nagroda} (ang. \textit{discount reward}) $V = r_1 + \gamma
-r_2 + \gamma^2 r_3 + \dots + \gamma^{i-1} r_i + \dots$, gdzie $\gamma$ -- stopa
-dyskontowa to liczba w zakresie $0 \leq \gamma < 1$. Przy tych założeniach
+r_2 + \gamma^2 r_3 + \dots + \gamma^{i-1} r_i + \dots$, gdzie $\gamma$ to stopa
+dyskontowa będąca liczbą w zakresie $0 \leq \gamma < 1$. Przy tych założeniach
 przyszłe nagrody są warte mniej niż obecna nagroda. Jeżeli $\gamma$ byłaby
 równa $1$, to byłby to przypadek całkowitej nagrody. Jeżeli $\gamma = 0$ to
 znaczy, że agent ignoruje wszystkie przyszłe nagrody. To, że $0 \leq \gamma <
@@ -951,17 +961,17 @@ nagroda również będzie skończona. Nagrodę dyskontową można zapisać jako:
 Załóżmy, że $V_k$ to nagroda skumulowana od czasu $k$:
 \begin{equation} \label{discount_reward_2}
 \begin{split}
-	V &= r_k + \gamma(r_{k+1} +\gamma(r_{k+2} + \dots))\\
+	V_k &= r_k + \gamma(r_{k+1} +\gamma(r_{k+2} + \dots))\\
 	&= r_k + \gamma V_{k+1}
 \end{split}
 \end{equation}
-W dalszej części pracy będę rozważał nagrodę skumluowaną jako nagrodę
+W dalszej części pracy będę rozważał nagrodę skumulowaną jako nagrodę
 dyskontową.
 
 % http://artint.info/2e/html/ArtInt2e.Ch9.S5.SS1.html
 \subsection{Funkcja polityki}
-\textbf{Polityka} (ang. \textit{policy}) precyzuje co agent powinien zrobić
-jako funkcja od stanu, w którym obecnie się znajduje\cite{sawka_ml}.
+\textbf{Polityka} (ang. \textit{policy}) precyzuje co agent powinien robić
+w stanie, w którym obecnie się znajduje\cite{sawka_ml}.
 \textbf{Stacjonarna polityka} to funkcja $\pi : S \rightarrow A$ (gdzie $S$ to
 zbiór stanów środowiska a $A$ to zbiór dostępnych dla agenta akcji).
 
@@ -970,9 +980,9 @@ nagrodę skumulowaną dla każdego stanu. Niech $V^{\pi}(s)$ będzie spodziewan
 nagrodą skumulowaną użycia polityki $\pi$ w stanie $s$. To znaczy, jaką nagrodę
 skumulowaną agent oczekuje, że otrzyma po zastosowaniu tej polityki w tym
 stanie. Mówimy, że $\pi$ jest \textbf{polityką optymalną}, jeżeli nie istnieje
-polityka $\pi'$ dla dowlonego stanu $s$, że $V^{\pi'}(s) > V^{\pi}(s)$. To
+polityka $\pi'$ dla dowolnego stanu $s$ taka, że $V^{\pi'}(s) > V^{\pi}(s)$. To
 znaczy, taka polityka, która ma większą spodziewaną nagrodę skumulowaną dla
-każdego stanu, niż jakakolwiek inna polityka.
+każdego stanu, niż jakakolwiek polityka optymalna.
 
 Dla problemów nieskończonego horyzontu, stacjonarny proces decyzyjny Markova
 zawsze ma optymalną stacjonarną politykę.\cite{ai_foundations_policies}
@@ -988,9 +998,10 @@ $s$.
 	&= R(s,a) + \gamma \sum_{s'}P(s'|s,a) \gamma V^*(s').
 \end{split}
 \end{equation}
-gdzie $R(s,a) = \sum_{s'}P(s'|s,a)R(s,a,s')$.
-$V^*(s)$ otrzymywane jest przez wykonywanie akcji, która daje najlepszą wartość
-w każdym stanie:
+gdzie $R(s,a) = \sum_{s'}P(s'|s,a)R(s,a,s')$ a $s'$ to stan, do którego
+przeszedł agent ze stanu $s$ po wykonaniu akcji $a$.
+$V^*(s)$ otrzymywane jest przez wykonywanie akcji, która daje najwyższą nagrodę
+skumulowaną w każdym stanie:
 \begin{equation} \label{optimal_policy_2}
 \begin{split}
 	V^*(s) &= \max_{a} Q^*(s,a).
@@ -1067,7 +1078,9 @@ W uczeniu przez wzmacnianie, wartości (skumulowane nagrody) są efektami akcji.
 Nowsze wartości są bardziej dokładne od poprzednich ponieważ agent się uczy i
 przez to nowsze wartości powinny mieć większą wagę.
 
-\section{Q\dywiz learning}
+
+\chapter{Algorytm Q-Learning}
+\label{chapter:qlearning}
 % http://artint.info/2e/html/ArtInt2e.Ch12.S4.html
 Autorem algorytmu Q-learning jest Christ Watkins, który zaprezentował go w
 swojej pracy doktorskiej zatytułowanej : ``Learning from Delayed
@@ -1097,10 +1110,11 @@ podjąć. $Q[s,a]$ reprezentuje obecne przybliżenie $Q^*(s,a)$
 
 Doświadczenie $\langle s,a,r,s' \rangle$ zapewnia jeden punkt danych dla
 wartości $Q(s,a)$. Zawiera informację o tym, że agent otrzymał przyszłą wartość
-$r + \gamma V(s')$, gdzie $V(s') = \max_{a'}Q(s',a')$. To jest aktualną
-rzeczywistą nagrodę plus dyskontowa oszacowana przyszła nagroda skumulowana.
-Agent może użyć równania na różnicę czasową \ref{td_3} by zaktualizować swoje
-oszacowanie dla $Q(s,a)$:
+$r + \gamma V(s')$, gdzie $V(s') = \max_{a'}Q(s',a')$ (tutaj $a'$ to akcja
+podjęta dla stanu $s'$ czyli taka akcja, która daje najlepszą wartość $Q$).
+To jest aktualną rzeczywistą nagrodę plus dyskontowa
+oszacowana przyszła nagroda skumulowana. Agent może użyć równania na różnicę
+czasową \ref{td_3} by zaktualizować swoje oszacowanie dla $Q(s,a)$:
 \begin{equation}
 Q[s,a] := Q[s,a] + \alpha * \left(r + \gamma \max_{a'} Q[s',a'] -
 Q[s,a]\right)
@@ -1161,8 +1175,7 @@ jak agent wystarczająco eksploruje i nie ma ograniczenia co do tego ile razy
 może spróbować wykonania akcji w dowolnym stanie.
 
 
-\chapter{Implementacja Q\dywiz learningu}
-\label{chapter:implementacja_qlearningu}
+\section{Implementacja Q-Learningu}
 W mojej implementacji Q-Learningu, \textbf{przestrzeń stanów} zdyskretyzowałem
 (to znaczy ograniczyłem do zmiennych o skończonej ilości) nad następującymi
 parametrami:
@@ -1178,7 +1191,7 @@ parametrami:
 	\begin{center}
 	\includegraphics[scale=0.80]{agent_vision.png}
 	\end{center}
-	\caption{Wizja agenta}
+	\caption{Wizja agenta.}
 	\label{agent_vision}
 \end{figure}
 
@@ -1218,7 +1231,7 @@ prędkość spadania. Jest to odpowiednik tablicy $Q[S,A]$ z algorytmu
 \ref{qlearning_algorithm}. Wartości $X$ są generowane co dziesięć w zakresie
 $[-80,510)$, wartości $Y$ co dziesięć w zakresie $[-300,800)$, a wartość $V$ w
 zakresie $[-10,9)$. O tym dlaczego wartości $X$ i $Y$ są generowane co dziesięć
-piszę w następnym podrozdziale. Wartość $V$ jest ma taki zakres, gdyż jest tak
+piszę w następnym podrozdziale. Wartość $V$ ma taki zakres, gdyż jest tak
 ograniczona przez sam program gry, gdzie wartość $8$ oznacza, że obiekt ptaka
 spada najszybciej jak może, a wartość $-10$ to, że podlatuje do góry.
 
@@ -1244,8 +1257,8 @@ informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał akcję, któ
 doprowadziła do śmierci obiektu ptaka. 
 \begin{lstlisting}[language=Python, label={qlearning_python},
 caption={Zaimplementowany algorytm Q-Learning}, captionpos=t]
-def update_scores(self):
-    history = list(reversed(self.moves))
+def update_scores():
+    history = list(reversed(moves))
 
     t = 1
     for experience in history:
@@ -1254,43 +1267,43 @@ def update_scores(self):
         res_state = experience[2]
 
         if t == 1 or t == 2:
-            cur_reward = self.reward[1]
+            cur_reward = reward[1]
         else:
-            cur_reward = self.reward[0]
+            cur_reward = reward[0]
 
-        self.qvalues[state][act] = (1 - self.lr) * (
-            self.qvalues[state][act]
-        ) + self.lr * (cur_reward + self.discount * max(self.qvalues[res_state]))
+        qvalues[state][act] = (1 - lr) * (qvalues[state][act]) + lr * \
+	    (cur_reward + discount * max(qvalues[res_state]))
 
         t += 1
-    self.moves = []
+    moves = []
 \end{lstlisting}
-\textit{self.moves} to tablica doświadczeń $(s, a, s')$, gdzie $s$ to poprzedni
+Na listingu \ref{qlearning_python} \textit{moves} to tablica doświadczeń
+$(s, a, s')$, gdzie $s$ to poprzedni
 stan, $a$ to poprzednia akcja jaką wykonał agent a $s'$ to obecny stan. Tablica
 ta jest uzupełniana o nowe doświadczenie, za każdym razem, gdy program gry 
-wywołuję metodę agenta proszącą go o wybór akcji. \textit{self.reward} zwraca
+wywołuję metodę agenta proszącą go o wybór akcji. \textit{reward} zwraca
 wartość $1$ dla indeksu $0$, oraz wartość $-1000$ dla indeksu $1$. To oznacza,
 że dla ostatnich dwóch stanów, jest przyznawana nagroda $-1000$. Dzieje się tak
 ponieważ to one, skoro były ostatnie (a metoda jest wywoływana w momencie końca
 gry) to doprowadziły do porażki. Pozostałym stanom przyznawana jest nagroda
 $1$, ponieważ akcje podjęte dla tych stanów sprawiały, że agent omijał obiekty
-rur. \textit{self.discount} to liczba określająca stopę dyskontową i jest to
+rur. \textit{discount} to liczba określająca stopę dyskontową i jest to
 stała wynosząca $0.7$ Oczywiście dla każdego doświadczenia aktualizowana jest
 wartość $Q$ zgodnie ze wzorem \ref{qvalue_1} i wypisywana odpowiednio do
 słownika \textit{qvalues} dla odpowiedniego stanu i akcji. 
 
 \begin{lstlisting}[language=Python, label={act_python},
 caption={Metoda wybierająca akcję agenta}, captionpos=t]
-def act(self, xdif, ydif, vel):
-    state = self.map_state(xdif, ydif, vel)
-    self.moves.append((self.last_state, self.last_action, state))
-    self.last_state = state
+def act(xdif, ydif, vel):
+    state = map_state(xdif, ydif, vel)
+    moves.append((last_state, last_action, state))
+    last_state = state
 
-    if self.qvalues[state][0] >= self.qvalues[state][1]:
-        self.last_action = 0
+    if qvalues[state][0] >= qvalues[state][1]:
+        last_action = 0
         return 0
     else:
-        self.last_action = 1
+        last_action = 1
         return 1
 \end{lstlisting}
 Program gry przystosowany dla agenta, różni się niewiele od tego
@@ -1313,10 +1326,21 @@ zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące
 	resetowana tyle razy ile poda się przy uruchamianiu programu.
 \end{itemize}
 
+\chapter{Testy i rezultaty}
+\label{chapter:testy}
 \section{Optymalizacja pod względem rozmiaru przestrzeni stanów}
+\begin{figure}[!htb]
+	\begin{center}
+		%\input{plots/plotFirstApproach.pgf} YYY
+		\includegraphics{plotFirstApproach.png}
+	\end{center}
+	\caption{Wykres gry od wyniku.}
+	\label{plot_first_approach}
+\end{figure}
+
 Przestrzeń stanów to zbiór $S$, którego elementy wyglądają następująco:
-\[\forall x \in [-80, 509] \cap \mathbb{Z} \ \forall y \in [-300,799] \cap
-\mathbb{Z} \ \forall v \in [-10,8] \cap \mathbb{Z}\ \  \{x, y, v\}\]
+\[x \in [-80, 509] \cap \mathbb{Z} \ y \in [-300,799] \cap
+\mathbb{Z} \ v \in [-10,8] \cap \mathbb{Z}\ \  \{x, y, v\}\]
 
 Co daje nam $(509 + 80 + 1) * (300 + 799 + 1) * (10 + 8 +1) = 12 331 000$
 stanów. Wyuczenie agenta -- to znaczy wypełnienie wartości $Q$ dla większości
@@ -1328,24 +1352,16 @@ $10$. W ten sposób przestrzeń stanów ma $(50 + 8 + 1) * (30 + 79 + 1) * (10 +
 pomniejszeniem ilości elementów w przestrzeni stanów. Środowisko dalej zwraca
 agentowi ``pełne liczby'', jednak ten zanim podejrzy wartość $Q$ mapuje te
 wartości zaokrąglając je w dół do części dziesiątych.
-
-Tak zaimplementowany algorytm i grę uruchomiłem otrzymując następujące wyniki:
-\begin{figure}[!htb]
-	\begin{center}
-		%\input{plots/plotFirstApproach.pgf} YYY
-		\includegraphics{plotFirstApproach.png}
-	\end{center}
-	\caption{Wykres gry od wyniku}
-	\label{plot_first_approach}
-\end{figure}
+Tak zaimplementowany algorytm i grę uruchomiłem po czym otrzymałem wyniki
+widoczne na wykresie \ref{plot_first_approach}.
 
 Wykres \ref{plot_first_approach} pokazuje jaką ilość punktów agent otrzymywał w
 danej grze -- te dane są zaznaczone na wykresie czarnymi punktami. Agent
 rozegrał $5000$ gier. Maksymalny wynik jaki udało mu się osiągnąć to $1003$ w
 grze o numerze $4152$. Jest to jednak bardzo odizolowany przypadek. Niebieską
-linia to wykres średniej. Gdzie średnia ta jest liczona w każdym punkcie
-dla ostatnich $100$ gier (z wyjątkiem $100$ pierwszych gier). Po $5000$ gier
-średnia wynosiła $69,09$.
+linia to wykres średniej kroczącej. Gdzie średnia ta jest liczona w każdym
+punkcie dla ostatnich $100$ gier (z wyjątkiem $100$ pierwszych gier). Po $5000$
+gier średnia wynosiła $69,09$.
 
 \section{Optymalizacja algorytmu}
 Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony na
@@ -1354,17 +1370,17 @@ rysunku \ref{agent_top_pipe}.
 	\begin{center}
 		\includegraphics[scale=0.35]{agent_top_pipe_penalty.png}
 	\end{center}
-	\caption{Agent wybiera złą akcję}
+	\caption{Agent wybiera złą akcję.}
 	\label{agent_top_pipe}
 \end{figure}
 Gdy wygenerowana szczelina znajdowała się wysoko, a następna za nią
 zdecydowanie niżej, agent bardzo często wybierał by podskoczyć zamiast dać czas
 obiektowi ptaka na zmniejszenie swojej wysokości co oczywiście sprawiało,
-że przegrywał tą grę. Nie mogłem znaleźć przyczyny takiego zachowania dlatego
+że przegrywał tę grę. Nie mogłem znaleźć przyczyny takiego zachowania dlatego
 postanowiłem lekko zmodyfikować algorytm przedstawiony w listingu
 \ref{qlearning_python}. Dodałem flagę, która jest włączana, gdy różnica w
 pionie między obiektem ptaka a dolną rurą była wystarczająco wysoka. Wtedy,
-jeżeli ostatnią akcją agenta było podskoczenie (\textit{self.last\_action}
+jeżeli ostatnią akcją agenta było podskoczenie (\textit{last\_action}
 $=1$) i flaga była włączona, dla tego stanu przyznawałem nagrodę $-1000$. Po
 takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 \begin{figure}[!htb]
@@ -1372,7 +1388,7 @@ takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 		%\input{plots/plotTopPipeDeathPenalty.pgf} YYY
 		\includegraphics{plotTopPipeDeathPenalty.png}
 	\end{center}
-	\caption{Wykres gry od wyniku po zmianie algorytmu}
+	\caption{Wykres gry od wyniku po zmianie algorytmu.}
 	\label{plot_top_pipe_penalty}
 \end{figure}
 
@@ -1399,7 +1415,7 @@ precyzje z jaką agent podejmuje decyzje.
 		%\input{plots/plotGrid5x5TopPipePenalty.pgf} YYY
 		\includegraphics{plotGrid5x5TopPipePenalty.png}
 	\end{center}
-	\caption{Wykres gry od wyniku po zwiększeniu przestrzeni stanów}
+	\caption{Wykres gry od wyniku po zwiększeniu przestrzeni stanów.}
 	\label{plot_gird_5x5}
 \end{figure}
 
@@ -1437,13 +1453,12 @@ Osiągane przez agenta wyniki mimo moich optymalizacji nie są też zbyt wysokie
 porównaniu do innych rozwiązań, jak na przykład Tonego Xu, któremu udało się
 tak zoptymalizować algorytm, by agent w ogóle nie mógł
 przegrać\cite{tds_rl_score}. Myślę, że mógłbym bardziej optymalizować swój
-algorytm, jednak potrzebna by była modyfikacja programu by ten nie przedstawiał
-graficznej wizualizacji gry (wszak agent potrzebuje tylko informacji o
-położeniu najbliższego obiektu rury, nie potrzeba wizualizacji). Wtedy mógłbym
-zaimplementować tak główną pętlę programową by ta nie wykonywała się raz na
-tyknięcie symulowanego zegara, a tak szybko jak pozwalałby na to procesor, na
-którym program został uruchomiony. Niestety do dalszych optymalizacji zabrakło
-mi czasu.
+algorytm. Potrzebny byłby nakład pracy przyszłej w formie modyfikacji programu
+by ten nie przedstawiał graficznej wizualizacji gry (wszak agent potrzebuje
+tylko informacji o położeniu najbliższego obiektu rury, nie potrzeba
+wizualizacji). Wtedy mógłbym zaimplementować tak główną pętlę programową by ta
+nie wykonywała się raz na tyknięcie symulowanego zegara, a tak szybko jak
+pozwalałby na to procesor, na którym program został uruchomiony.
 	
 Niniejsza praca pokazuje jak skomplikowanym i fascynującym zagadnieniem może
 być uczenie przez wzmacnianie. Od samego wymyślenia algorytmu do jego
@@ -1467,6 +1482,7 @@ nakład pracy by osiągać naprawdę dobre wyniki.
 %\addcontentsline{toc}{chapter}{Spis listingów}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
+% YYY styl bibliografii do poprawy z tym co jest na teams
 \bibliographystyle{IEEEtran}
 \bibliography{praca_licencjacka}
 
