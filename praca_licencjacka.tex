@@ -128,13 +128,14 @@ problemów\cite{machine_learning_definition}.
 Do głównych technik uczenia maszynowego zaliczają się:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-\item Uczenie nadzorowane gdzie komputer dostaje przykładowe dane wejściowe i
+\item Uczenie nadzorowane, gdzie komputer dostaje przykładowe dane wejściowe i
 	pożądane dane wyjściowe, jego celem jest nauczyć się generalnej zasady
 	przypisywania danych wejściowych do wyjściowych
-\item Uczenie nienadzorowane gdzie dane wejściowe nie są w żaden sposób
+\item Uczenie nienadzorowane, gdzie dane wejściowe nie są w żaden sposób
 	oznaczone a algorytm uczenia musi sam znaleźć ukryte wzory w danych.
 \item \textbf{Uczenie przez wzmacnianie}
-	(ang. \textit{reinforcement learning}) W odróżnieniu od zarówno uczenia 
+	(ang. \textit{reinforcement learning}) gdzie w odróżnieniu od zarówno
+	uczenia 
 	nadzorowanego i nienadzorowanego nie potrzebujemy w tym przypadku
 	żadnych	gotowych danych wejściowych i wyjściowych. Zamiast tego,
 	algorytm pozyskuje dane na bieżąco ze środowiska, do którego jest
@@ -144,10 +145,10 @@ Do głównych technik uczenia maszynowego zaliczają się:
 
 Właśnie dzięki temu, że algorytmy uczenia przez wzmacnianie nie potrzebują do
 nauki gotowych
-zestawów danych możemy zastosować je do problemów takich jak gra na giełdzie
-\cite{trading_reinforcement}, nauka grania w gry, tworzenie autonomicznych
-pojazdów, uczenie chodzenia robotów z nogami czy optymalne chłodzenie
-serwerowni\cite{reinforcement_applications}.
+zestawów danych możemy zastosować je do problemów takich jak gra na
+giełdzie\cite{trading_reinforcement}, nauka grania w gry, tworzenie
+autonomicznych pojazdów, uczenie chodzenia robotów z nogami czy optymalne
+chłodzenie serwerowni\cite{reinforcement_applications}.
 
 Celem niniejszej pracy jest zaproponowanie, implementacja oraz analiza
 algorytmu uczenia przez wzmacnianie zdolnego do kierowania agentem w popularnej
@@ -156,7 +157,8 @@ został zastosowany do wytrenowania agenta realizującego prostą grę ``Flappy
 Bird''. Implementacja została zrealizowana z użyciem języka python oraz modułu
 pygame.
 
-W rozdziale ``\nameref{chapter:gra}'' przedstawię jaką grę wybrałem, opiszę jej
+W rozdziale ``\nameref{chapter:gra}'' przedstawię jaką grę ``Flappy Bird'',
+opiszę jej
 zasady oraz zaprezentuję szczegóły jej implementacji. Następnie w rozdziale
 ``\nameref{chapter:uczenie}'' przybliżę zagadnienie uczenia przez
 wzmacnianie. Algorytm Q\dywiz learning oraz jego implementację opiszę w
@@ -168,8 +170,8 @@ które zastosowałem.
 \chapter{Gra}
 \label{chapter:gra}
 W celu realizacji założonych celów pracy zdecydowałem się na zaimplementowanie
-popularnej gry z 2013 roku ``Flappy Bird'',  autorstwa wietnamskiego developera
-Dong Nguyena\cite{flappy_bird_author}. Wybrałem tę grę ze względu na
+popularnej gry z 2013 roku o nazwie ``Flappy Bird'',  autorstwa wietnamskiego
+developera Dong Nguyena\cite{flappy_bird_author}. Wybrałem tę grę ze względu na
 ograniczoną ilość akcji jaką może podjąć gracz.
 \section{Zasady gry} 
 \begin{figure}[h] 
@@ -189,9 +191,9 @@ obiekty rur przesuwane są w lewo w jego stronę ze stałą prędkością. Gracz
 może kontrolować jedynie to czy obiekt, którym steruje zwiększy swoją
 wysokość o stałą, zakodowaną ilość jednostek czy tego nie zrobi i obiekt
 reprezentowany przez ptaka zmniejszy swoją wysokość. Gra kończy się gdy
-dojdzie do kolizji obiektu ptaka z, którymkolwiek obiektem rur: dolną
-bądź górną albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi uda
-się ominąć nadchodzące przeszkody przelatując górną szczelinę między nimi.
+dojdzie do kolizji obiektu ptaka z, którymkolwiek obiektem rury: dolnym
+bądź górnym albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi uda
+się ominąć nadchodzące przeszkody przelatując przez szczelinę między nimi.
 Za każde ominięcie przyznawany jest jeden punkt. Na górze rysunku
 \ref{flappy_screenshot} białymi cyframi wypisana jest ilość osiągniętych przez
 gracza punktów. W tym przypadku gracz ominął już trzydzieści cztery pary rur.
@@ -215,18 +217,17 @@ wyjścia na ekran.
 
 Pygame pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne
 w pythonie. Zaletami pygame są między innymi : podstawowe funkcje używają
-zoptymalizowanego kodu w C oraz Assemblerze, dostępny podobnie jak python na
-większości współczesnych platform. Ponadto jest modularny co pozwala
+zoptymalizowanego kodu w C oraz Assemblerze, dostępny jest podobnie jak python
+na większości współczesnych platform. Ponadto jest modularny co pozwala
 programiście używać tylko tych komponentów, których naprawdę potrzebuje.
-Gier stworzonych z użyciem pygame na samej stronie projektu jest ponad 660
-\cite{pygame_about_ref}.
-\section{Implementacja}
-% YYY ta cała sekcja do poprawy
+Gier stworzonych z użyciem pygame na samej stronie projektu jest ponad
+660\cite{pygame_about_ref}.
+\section{Implementacja} 
 Głównym elementem implementacji jest nieskończona pętla, w której sprawdzam
-zdarzenia, które zaszły, sprawdzam czy mamy wejście od gracza, i aktualizuję
+zdarzenia, które zaszły, czy dostałem wejście od gracza i aktualizuję
 obiekty gry oraz ekran. Na rysunku \ref{game_flow_chart} opisana jako 
 \textit{Main game loop}.
-\begin{figure}
+\begin{figure}[!htbp]
 \begin{center}
 \begin{tikzpicture}[node distance = 1.5cm]
 \node [terminator] at (0,0) (start) {\textbf{Start}};
@@ -285,220 +286,80 @@ obiekty gry oraz ekran. Na rysunku \ref{game_flow_chart} opisana jako
 \label{game_flow_chart}
 \end{figure}
 \newpage{}
-Program zaczyna od wczytania wczytania zasobów gry -- obrazków reprezentujących
-tło, rurę, ziemię, ptaka. Każdemu z tych zasobów tworzy obiekt klasy
-\textit{pygame.image}, wczytywane są za pomocą metody \textit{load}.
-Do śledzenia czasu w grze wykorzystywany jest obiekt klasy
-\textit{pygame.time.Clock}.
 
-Stałe deklarowane na początku programu to na
-przykład: ilość jednostek o ile przesunąć w lewo obiekty rur przy każdym
-tyknięciu zegara, szerokość szczeliny między obiektami rur, czy czas po jakim
-generować nowe rury. W tym miejscu przypisujemy wartość stałej opisującej co
-jaki czas mamy generować nowe obiekty rur. Jest wyliczana ze wzoru:
-\begin{equation}
-	P_f = 900 * (30 \div F)
-\end{equation}
-Gdzie $P_f$ to czas po jakim generowane są nowe obiekty rur
-(ang. \textit{pipe frequency}), $F$ to ilość klatek na sekundę
-(ang. \textit{frames per second}). Dzięki takiemu podejściu gra może częściej
-generować obiekty rur przy większej ilości klatek na sekundę, przez co
-odległość między nimi zostaje taka sama bez względu na tempo gry.
-
-Przy uruchamianiu programu użytkownik ma opcję wybrać wartość parametru 
-klatek na sekundę : 30, 60 bądź 120. Domyślnie jest to 30, stąd we wzorze
-znajduje się ta liczba. W ten sposób przy 30 klatkach na sekundę nowe obiekty
-rur będą generowane co 900 milisekund, przy 60 co 450 milisekund i co 225
-milisekund w przypadku 120 klatek na sekundę. Po kilku próbach stwierdziłem,
-że częstsze generowanie obiektów rur sprawiało, że gra była zbyt trudna dla
-gracza lub w najgorszym wypadku sprawiało, że gra była nie do przejścia
-jak na przykład w scenariuszu przedstawionym na rysunku \ref{frequent_pipes}
-gdzie obiekt ptaka nie będzie miał wystarczająco czasu by wznieść się na 
-odpowiednią wysokość a potem opaść by ominąć rury. Częstsze generowanie 
-obiektów rur nie ma wpływu przy większej ilości klatek na sekundę, gdyż te
-przemieszczają się w lewo co tyknięcie zegara o stałą ilość jednostek, a
-tykanie zegara uzależnione jest od ilości klatek na sekundę -- większa ilość
-klatek na sekundę oznacza częstsze tykanie zegara przez co rury przemieszczają
-się z większą prędkością. Rozgrywka staje się zdecydowanie dynamiczniejsza
-i przez to również trudniejsza, ale tylko dla ludzi. Q-learningowy agent
-dostaje informacje o grze co tyknięcie zegara i jeszcze w tym samym tyknięciu
-podejmuje decyzje o ruchu, ale więcej o tym w rozdziale
-\nameref{chapter:qlearning}
+\textbf{Tempo rozgrywki} jest uzależnione od ilości klatek na sekundę (ang.
+\textit{frames per second} FPS). To znaczy od tego z jaką częstotliwością
+generowany jest obraz w grze. Im większa liczba liczba FPS tym rozgrywka
+jest dynamiczniejsza. Oznacza to, że obiekty rur generowane są częściej i
+szybciej przesuwane w stronę obiektu ptaka.
 \begin{figure}
 	\begin{center}
-		\includegraphics[scale=0.50]{impossible_pipes.png}
-		\caption{Często generowane obiekty rur.}
-		\label{frequent_pipes}
-	\end{center}
+	\includegraphics[scale=0.45]{impossible_pipes.png}
+	\caption{Zbyt często generowane obiekty rur.}
+	\label{impossible_pipes}
+\end{center}
 \end{figure}
 
-Po określeniu wartości stałych tworzymy trzy instancje klasy
-\textit{pygame.sprite.Group}, jedną dla obiektu ptaka, drugą dla obiektów rur
-dolnych oraz jedną dla obiektów rur górnych. Będą nam potrzebne później przy
-sprawdzaniu czy zaszła kolizja między obiektem ptaka a obiektami rur.
-Sam obiekt ptaka jest instancją klasy \textit{Bird} dziedziczącej po
-\textit{pygame.sprite.Sprite}. Wspomniana klasa jest przeznaczona dla obiektów,
-które mają być widoczne na ekranie, zawiera między innymi
-pole na obrazek reprezentujący obiekt oraz metodę
-\textit{update}\cite{pygame_sprite_documentation}, którą będę wywoływał co
-każdy obrót głównej pętli programowej. W przypadku obiektu ptaka w
-przeładowanej metodzie \textit{update} znajduje się logika ``latania'' --
-co wywołanie metody update inkrementuję zmienną która mówi o ile ma
-być przesunięty obiekt ptaka w dół do maksymalnej wartości ośmiu jednostek.
-Jeżeli został wciśnięty lewy przycisk myszy to wartość ta jest zmniejszana o
-dziesięć (minusowe wartości tej zmiennej powodują, że obiekt zostanie
-przesunięty w górę).
+Generowanie obiektów rur odbywa się co $P_f$ milisekund, liczba ta jest
+obliczana w następujący sposób:
+\[P_f = 900 * (30 \div F)\]
+gdzie $F$ to FPS (domyślnie $30$ stąd ta liczba we wzorze)
+podawana przy starcie programu. Domyślnie będzie to wartość 900 milisekund.
+Uznałem, że taka wartość jest optymalna dla graczy będących ludźmi. 
+Dodatkowo, jeżeli liczba ta byłaby zbyt mała mogłoby dojść do scenariuszu
+pokazanego na obrazku \ref{impossible_pipes}, w którym gra jest nie do
+przejścia. W tym wypadku obiekt ptaka nie ma nawet możliwości ominięcia
+nadchodzących przeszkód. 
+Możliwość zmiany tempa rozgrywki wprowadziłem specjalnie dla agenta sterowanego
+algorytmem uczenia przez wzmacnianie. To jak szybko toczy się rozgrywka nie ma
+dla niego znaczenia. Nowo wygenerowane obiekty rur umieszczane są za prawą
+granicą ekranu. Rura dolna jest oddalona od górnej o losowo wygenerowaną
+ilość jednostek.
 
-Po tym zaczyna się główna pętla programowa. Co $P_f$ czasu generujemy nowe rury
--- polega to na stworzeniu dwóch instancji klasy \textit{Pipe} dziedziczącej
-po \textit{pygame.sprite.Sprite}. Generuję liczbę losową $r$ z zakresu
-$(-100, 100)$, która będzie potrzebna w ustaleniu wysokości, na której 
-wygeneruję obiekty rur. W konstruktorze nadaję obiektom odpowiedni
-obrazek. Po wczytaniu obrazku używam \textit{get\_rect}
-będącej metodą klasy \textit{pygame.Surface}, której instancją jest nadany w
-konstruktorze obrazek. Zwrócony obiekt przypisuję do pola \textit{rect}.
-Metoda ta mapuje obrazek na najmniejszy prostokąt, w którym zmieści się
-wczytany obrazek. Mamy dzięki temu dostęp do jego krawędzi, którym możemy
-nadawać współrzędne na ekranie, w których ma zostać narysowany.
-Wszystkie obiekty rysowane są w przestrzeni kartezjańskiej, gdzie punkt
-$(0,0)$ jest lewym górnym rogiem tła.
-Górnej lewej krawędzi obiektu dolnej rury nadajemy współrzędne:
-\[(W, H \div 2 + r + G \div 2)\]
-Natomiast dolnej lewej krawędzi obiektu górnej rury nadajemy współrzędne:
-\[(W, H \div 2 + r - G \div 2)\]
-Gdzie $W$ to szerokość tła ustalona na początku, $H$ to wysokość tła, a
-$G$ to stała oznaczająca odległość między dolną a górną rurą, przypisywana
-na początku programu. 
-Tak wygenerowane obiekty rur zostaną narysowane zaraz za ekranem z prawej
-strony, przesunięte od środka ekranu w pionie o $r$ oraz połowę odległości
-ustalonej na początku
-działania programu. Tak wygenerowane obiekty dodaję do odpowiednich instancji
-\textit{pygame.sprite.Group}. Jako, że klasa \textit{Pipe} dziedziczy po
-\textit{pygame.sprite.Sprite} (tak samo jak klasa \textit{Bird}), to powinna
-przeładowywać metodę \textit{update}\cite{pygame_sprite_documentation}.
-W przypadku klasy reprezentującej rury jest tam tylko logika przesuwania
-obiektu w lewo co sprowadza się do zmniejszenia współrzędnej $x$ 
-zmiennej \textit{rect} oraz ewentualnym usunięciu go jeżeli współrzędna ta
-po zmniejszeniu staje się ujemna (oznacza to, że jest po za lewą krawędzią
-ekranu przez co jest nie widoczna i nie potrzebna). Usuwanie polega na
-wywołaniu metody \textit{kill}, co powoduje, że obiekt zostaje usunięty
-z każdej grupy, której był elementem.
+\begin{lstlisting}[language=Python, label={score_check}, caption={Algorytm
+przyznawania puntków}, captionpos=t]
+if( bird_group.sprites()[0].rect.left
+    > bottom_pipe_group.sprites()[0].rect.left
+    and bird_group.sprites()[0].rect.right
+    < bottom_pipe_group.sprites()[0].rect.right
+    and WAS_PIPE_PASSED is False
+):
+    WAS_PIPE_PASSED = True
+if WAS_PIPE_PASSED is True:
+    if (bird_group.sprites()[0].rect.left
+    	> bottom_pipe_group.sprites()[0].rect.right):
+            score += 1
+            WAS_PIPE_PASSED = False
+\end{lstlisting}
+Listing \ref{score_check} przedstawia algorytm \textbf{przyznawania punktów}
+graczowi. Najpierw sprawdzam, czy obiekt ptaka ominął obiekt rury znajdujący
+się najbardziej z lewej strony na ekranie. To znaczy czy \textbf{hitbox}
+(prostokąt ograniczający obiekt, wyznaczający jego położenie na ekranie, który
+jest generowany na podstawie wymiarów obrazku reprezentującego obiekt)
+obiektu ptaka znalazł się po prawej stronie
+hitboxu obiektu dolnej rury. Jeżeli tak się stało ustawiam flagę dla
+takiego zdarzenia. Następne sprawdzam, czy obiekt ptaka ominął obszar
+między dolną a górną rurą i czy jest podniesiona wcześniej wspomniana flaga.
+Jeżeli tak jest to w
+tym momencie przyznaję punkt. Takie rozwiązanie gwarantuje, że punkt nie będzie
+przyznany jeżeli dojdzie do kolizji w obszarze szczeliny między rurami oraz to,
+że punkty nie będą przyznawane jeżeli gracz ominął już parę rur, która znajduje
+się w obecnym obrocie pętli najbardziej po lewej, ale nie zniknęła jeszcze z
+ekranu.
 
-W następnym kroku rysuję na ekranie obiekt ptaka za pomocą metody \textit{draw}
-wywoływanej na grupie, do której ten obiekt należy. Metoda ta korzysta z
-nadanego w konstruktorze obrazka, oraz zmapowanego obiektu prostokąta
-(\textit{sprite.Rect}) do określenia pozycji, na której ma zostać
-narysowany\cite{pygame_group_draw_documentation}. Rysowanie obiektów rur odbywa
-się w ten sam sposób, z tym, że wspomniana metoda jest wywoływana na
-odpowiednio grupie obiektów rur dolnych i górnych. Następnie na grupie, do
-której należy obiekt ptaka wywołuję metodę \textit{update}, która obsługuje
-logikę ``latania''.
+Obiekt ptaka w każdym obrocie głównej pętli programowej jest przesuwany
+w pionie o wartość $V$. Jeżeli $V > 0$ to obiekt jest przesuwany w dół,
+w przeciwnym przypadku przesuwany jest w górę. Początkowo wartość $V$ wynosi
+$0$. Z każdym obrotem pętli jest powiększana o $1$ do maksymalnej wartości $8$.
+Jeżeli gracz wciśnie lewy przycisk myszy wartość ta jest zmniejszana o $10$ do
+minimalnej wartości $-10$.
 
-\begin{figure} 
-	\begin{center}
-		\includegraphics[scale=1.10]{flappy_scoring.png}
-		\caption{Granice \textit{rect} obiektów \textit{sprite}.}
-		\label{flappy_scoring_fig}
-	\end{center}
-\end{figure}
-Najbliższym z prawej strony obiektem rury jest zawsze obiekt o indeksie zero
-z grupy dolnych bądź górnych rur, jest tak dzięki logice metody \textit{update}
-klasy \textit{Pipe}. Aby sprawdzić, czy przyznać graczowi punkt sprawdzamy
-najpierw, czy obiekt ptaka znalazł się w strefie między dwoma rurami, w tym
-celu wystarczy sprawdzić czy współrzędna $x$ pola \textit{rect.left} obiektu
-ptaka(na rysunku \ref{flappy_scoring_fig} zwizualizowana jako lewa krawędź
-czerwonego prostokąta wokół obiektu ptaka) jest większa tej samej współrzędnej
-obiektu dolnej rury. Na rysunku \ref{flappy_scoring_fig} jest to zaznaczone
-czarną przerywaną linią z lewej strony. Jeżeli tak jest to ustawiam logiczną
-flagę reprezentującą to zajście.
-W następnych obrotach głównej pętli programowej sprawdzane jest, czy ta flaga
-jest ustawiona i jeżeli tak jest to sprawdzam, czy ptak opuścił strefę między
-dwoma rurami. Dzieje się to analogicznie do sprawdzania, czy wszedł z tą
-różnicą, że porównuję $x$ pola \textit{rect.right} obiektu dolnej rury (to
-znaczy współrzędną prawej krawędzi dolnej rury, na rysunku
-\ref{flappy_scoring_fig} oznaczona białą przerywaną linią z prawej strony) z
-współrzędną $x$ pola \textit{rect.left} obiektu ptaka. Jeżeli tak się stało to
-punkt zostaje przyznany a wcześniej wspomnianą flaga zresetowana. Powody
-takiego rozwiązania są dwa:
-\begin{itemize}
-	\setlength\itemsep{-0.4em}
-	\item Jeżeli sprawdzałbym tylko czy ptak ominął tylko lewą, albo tylko
-		prawą cześć pola \textit{rect} obiektu dolnej rury to punkty
-		byłyby naliczane przy każdym obrocie głównej pętli programowej
-		gdy obiekt rury najbliższej z prawej został ominięty a nie
-		dotarł jeszcze za lewą granicę ekranu i nie został jeszcze
-		usunięty.
-	\item Jeżeli przyznawałbym punkt, gdy tylko obiekt ptaka znajdzie się
-		w strefie między dwoma obiektami rurami to byłaby szansa, że
-		gracz wpadnie na obiekt rury zaraz po przyznaniu punktu --
-		byłoby to nieprawidłowe zachowanie
-\end{itemize}
-
-Aby sprawdzić, czy zaszła kolizja obiektu ptaka z ziemią wystarczy sprawdzić,
-czy współrzędna $y$ dolnej części \textit{rect} (czyli \textit{rect.bottom})
-będąca zmienną obiektu ptaka jest większa od $H$ (przypomnę, że w
-\textit{pygame} układ współrzędnych kartezjańskich ma swój początek w lewym
-górnym rogu ekranu a współrzędne z osi $OY$ ``rosną w dół''), gdzie $H$ to
-wysokość tła przypisana na początku. Sprawdzenie kolizji między obiektem ptaka
-a obiektami rur dzięki \textit{pygame} sprowadza się do wywołania metody
-\textbf{pygame.sprite.groupcollide}, która sprawdza, czy doszło do kolizji
-pomiędzy dwiema grupami podanymi jako argumenty i zwraca słownik, gdzie
-kluczami są obiekty z grupy podanej jako pierwszy argument a wartościami każdy
-obiekt z grupy podanej jako drugi argument, z którym obiekt będący kluczem
-wszedł w kolizję. Pod spodem metoda ta sprawdza tak naprawdę czy zmienne
-\textit{rect} obiektu z każdej grupy nie nachodzą na
-siebie\cite{pygame_groupcollide_documentation}. Jako, że grupa
-obiektów \textit{Bird} ma tylko jeden element, to wystarczy, że wspomniana
-metoda zwróci cokolwiek by stwierdzić, że zaszła kolizja między obiektem ptaka
-a obiektami rur i zakończyć grę.
-
-\textbf{Pygame.event} to moduł, który pozwala na interakcję z kolejką wydarzeń,
-które odbywają się w systemie np. wciśnięto lub zwolniono przycisk przycisk
-myszy bądź klawiatury, zmieniono rozdzielczość ekranu, wyłączono program.
-To ten moduł komunikuje się z biblioteką SDL. Jest zależny od modułu
-\textbf{pygame.display}\cite{pygame_event_documentation}, który zarządza
-wyświetlaniem okna programu na ekranie.
-Okno programu jest inicjalizowane na początku działania programu na podstawie
-wymiarów obrazków reprezentujących tło i ziemię w grze. Sprawdzanie wydarzeń
-polega na iteracji kolejki, którą \textit{pygame} udostępnia za pomocą metody
-\textit{pygame.event.get}. Jeżeli zajdzie się w niej wydarzenie o typie
-\textit{pygame.QUIT} albo \textit{pygame.KEYDOWN} (został wciśnięty przycisk
-klawiatury) oraz \textit{pygame.event.key} to \textit{pygame.K\_ESCAPE}
-(wciśnięty klawisz to escape) to podobnie jak w przypadku wykrycia kolizji
-gra jest zakańczana.
-
-Dodatkowo \textit{pygame} umożliwia komunikację ze sprzętem bezpośrednio, nie
-przez sprawdzanie kolejki wydarzeń. Mysz obsługiwana jest przez moduł
-\textbf{pygame.mouse}. Pozwala na sprawdzenie w każdym momencie, które
-przyciski na myszy są wciśnięte za pomocą metody
-\textit{pygame.mouse.get\_pressed}, która zwraca tablicę wartości logicznych
-reprezentujących przyciski na myszy.
-Sprawdzenie, czy gracz wcisnął lewy przycisk myszy jest sprawdzane w metodzie
-\textit{update} obiektu ptaka i polega na sprawdzeniu dwóch warunków:
-\begin{itemize}
-	\setlength\itemsep{-0.4em}
-	\item Czy lewy przycisk myszy jest wciśnięty
-	\item Czy lewy przycisk myszy był wciśnięty w ostatnim obrocie głównej
-		pętli programowej
-\end{itemize}
-Jeżeli przycisk nie był wciśnięty to obiekt ptaka podlatuje i ustawiana jest
-flaga logiczna mówiąca o tym, że lewy przycisk myszy jest wciśnięty. Flaga
-ta jest resetowana, gdy przy następnym obrocie głównej pętli programowej
-przycisk nie będzie wciśnięty. Takie sprawdzanie jest konieczne, inaczej jedno
-wciśnięcie lewego przycisku myszy powodowałoby, że obiekt ptaka podlatywał by
-do góry o dużą ilość jednostek, dopóki przycisk nie zostałby zwolniony.
-
-Na końcu aktualizowane jest okno gry dzięki użyciu metody
-\textbf{pygame.display.update}, która wysyła zaktualizowany obraz na ekran.
-Optymalizacja jaka jest zastosowana w tej metodzie, sprawia, że aktualizowane
-są tylko te części obrazu, które faktycznie się zmieniły a nie całość.
-
-Gdy gra zostaje zakończona, na ekranie rysowany przycisk reset oraz ustawiana
-flaga logiczna zatrzymująca wykonywanie opisanych w tym rozdziale dyrektyw
-dopóki nie zostanie wciśnięty lewy przycisk myszy, wtedy gra jest resetowana,
-to znaczy wszystkie zmienne są ustawiane do stanu początkowego co powoduje
-rozpoczęcie gry na nowo.
-
+Sprawdzanie \textbf{kolizji} między obiektem ptaka a obiektami rur polega na
+wywołaniu metody \textit{groupcollide} na \textbf{grupie} (jest to lista
+agregująca obiekty rysowane na ekranie) obiektów rur bądź grupie obiektu ptaka. 
+Jeżeli wspomniana metoda zwróci cokolwiek to znaczy, że doszło do kolizji
+między obiektem ptaka a jakimś obiektem rury. W tym wypadku i w wypadku, gdy
+gracz wciśnie klawisz \textit{esc} gra jest zakańczana.
 
 \chapter{Uczenie maszynowe}
 \label{chapter:uczenie}
@@ -670,14 +531,14 @@ gdzie prawdopodobieństwa są dobrze zdefiniowane (żadne nie jest równe $0$).
 Zapis $P(X| Y, Z_s)$ oznacza prawdopodobieństwo zajścia $X$ pod
 warunkiem, że zajdzie $Y$ oraz $Z_s$. To oznacza, że dla każdego $x \in
 \text{dziedzina}(X)$, dla każdego $y \in \text{dziedzina}(Y)$ oraz dla każdego
-$z \in \text{dziedzina}(Z_s)$ jeżeli $P(Y = y \wedge Z_s = z) > 0,$
+$z \in \text{dziedzina}(Z_s)$ jeżeli $P(Y = y \wedge Z_s = z) > 0$ to:
 \[P(X=x|Y=y \wedge Z_s = z) = P(X=x|Z_s = z).\]
 To znaczy, mając wartość każdej zmiennej $Z_s$, wiedza o prawdopodobieństwie
 $Y$ nie ma wpływu na przekonanie o $X$.
 
 % http://artint.info/2e/html/ArtInt2e.Ch8.S3.html
 Pojęcie warunkowej niezależności jest użyte by nadać zwięzłą reprezentację
-wielu domenom. Chodzi o to, że jeżeli mamy daną losową zmienną $X$, to może
+wielu domenom. Chodzi o to, że jeżeli mamy daną zmienną losową $X$, to może
 istnieć zbiór zmiennych $W$, które bezpośrednio wpływają na wartość $X$. W
 pewnym sensie $X$ jest warunkowo niezależne od pozostałych zmiennych biorąc pod
 uwagę  zmienne $W$. Zbiór lokalnie wpływających na $X$ zmiennych jest nazwany
@@ -687,7 +548,7 @@ jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
 % http://artint.info/2e/html/ArtInt2e.Ch8.S1.SS3.html#Ch8.Thmtheorem3
 \textbf{Sieć przekonań} (ang. \textit{belief network}), również nazywana
 \textbf{siecią Bayesa} to acykliczny graf skierowany, gdzie wierzchołki są
-losowymi zmiennymi. Ponadto istnieje ścieżka od każdego elementu ze zbioru
+zmiennymi losowymi. Ponadto istnieje ścieżka od każdego elementu ze zbioru
 $\text{rodzice}(X_i)$ do $X_i$. Z siecią przekonań powiązany jest zbiór
 rozkładu prawdopodobieństw warunkowych, które określają warunkowe
 prawdopodobieństwo między każdą zmienną a jej rodzicami (co włącza wcześniejsze
@@ -767,7 +628,7 @@ Stacjonarne łańcuchy Markova interesują nas z kilku względów:
 \subsection{Sieć decyzyjna}
 Zazwyczaj agent nie podejmuje decyzji bez wcześniejszych obserwacji środowiska,
 nie podejmuje też tylko jednej decyzji. Bardziej typowy scenariusz wygląda
-następująco -- agent obserwuje swoje środowisko, decyduje jaką akcję podjąć,
+następująco: agent obserwuje swoje środowisko, decyduje jaką akcję podjąć,
 wykonuje tę akcję, obserwuje zmienione po jego akcji środowisko, i tak dalej.
 Następujące po sobie (sekwencyjne) akcje agenta mogą zależeć od tego co agent
 zaobserwuje, a to co zaobserwuje może zależeć od poprzednich podjętych przez
@@ -811,8 +672,8 @@ wierzchołkami:
 \item \textbf{Wierzchołek użyteczności}, rysowany jako romb reprezentuje
 	użyteczność. Zarówno wierzchołki szansy jak i wierzchołki decyzji mogą
 	być rodzicami wierzchołka użyteczności. Mówimy tutaj o użyteczności w
-	odniesieniu do wyników akcji agenta -- tego jaki wpływ na jego cel mają
-	wyniki jego akcji.
+	odniesieniu do wyników akcji agenta, czyli tego jaki wpływ na jego cel
+	mają wyniki jego akcji.
 \end{itemize}
 \begin{figure}[!htb]
 \begin{center}
@@ -857,7 +718,7 @@ działania agenta oraz nagrodę dla agenta. W każdym etapie agent decyduje jaki
 działanie podjąć, nagroda i nowy stan zależą od podjętego przez agenta
 działania oraz poprzedniego stanu. 
 
-Rozważę jedynie stacjonarne modele łańcuchu Markova, gdzie przejścia między
+Rozważę jedynie stacjonarne modele łańcucha Markova, gdzie przejścia między
 stanami oraz nagrody nie zależą od czasu. 
 
 Proces decyzyjny Markova (ang. \textit{Markov decision process (MDP)}) składa
@@ -869,14 +730,16 @@ się z:
 	\item $P: S\times S\times A\rightarrow [0,1]$ -- funkcja, która określa
 		\textbf{dynamikę}. Zapis $P(s' | s, a)$ oznacza
 		prawdopodobieństwo, że agent przejdzie do stanu $s'$ pod
-		warunkiem, że był w stanie $s$ i podjął akcję $a$, czyli:
+		warunkiem, że był w stanie $s$ i podjął akcję $a$. Występuje
+		tutaj następująca zależność między prawdopodobieństwami:
 		\[\forall s\in S \ \forall a\in A \sum_{s' \in S}P(s'|s,a)=1\]
 	\item $R:S\times S\times A\times S \rightarrow \mathfrak{R}$, gdzie
 		$R(s,a,s')$ to \textbf{funkcja nagrody}, dająca oczekiwaną
 		natychmiastową nagrodę za wykonanie działania $a$ i przejścia
 		do stanu $s'$ ze stanu $s$. Czasem wygodnie jest użyć zapisu
-		$R(s,a)$ -- oczekiwana wartość wykonania $a$ w stanie $s$,
-		która równa jest $R(s,a)=\sum _{s'}R(s,a,s') * P(s'|s,a)$.
+		$R(s,a)$, który oznacza oczekiwaną wartość wykonania $a$ w
+		stanie $s$, która równa jest
+		$R(s,a)=\sum _{s'}R(s,a,s') * P(s'|s,a)$.
 \end{itemize}
 
 \begin{figure}[!htb]
@@ -930,16 +793,17 @@ agent łączy obecną nagrodę z innymi nagrodami w przyszłości. Załóżmy, �
 otrzyma następującą sekwencję nagród: $r_1, r_2, r_3, r_4, \dots$
 
 Trzema najczęstszymi sposobami połączenia sekwencji nagród w nagrodę
-skumulowaną $V$ są
+skumulowaną $V$ są:
 
 \textbf{Nagroda całkowita} (ang. \textit{total reward}) $V =
 \sum_{i=1}^{\infty} r_i$. W tym przypadku nagroda skumulowana to suma
 wszystkich nagród. Metoda ta działa kiedy możemy zagwarantować, że suma jest
 skończona. Jeżeli nie możemy tego założyć to nie możemy określić, która
 sekwencja nagród jest preferowana. Na przykład: Sekwencja nagród po 1zł sumuje
-się do tej samej $V$ co sekwencja nagród 100zł (obie są nieskończone). Nagroda
-jest skończona na przykład w przypadku, gdzie występują stany stopu a agent ma
-zawsze nie zerowe prawdopodobieństwo wejścia w taki stan.
+się do tej samej $V$ co sekwencja nagród 100zł jeżeli obie sekwencje są
+nieskończone. Nagroda jest skończona na przykład w przypadku, gdzie występują
+stany stopu a agent ma zawsze nie zerowe prawdopodobieństwo wejścia w taki
+stan.
 
 \textbf{Średnia nagród} (ang. \textit{average reward}) $V =
 \lim_{n\to\infty}\frac{(r_1 + \dots + r_n)}{n}$. W tym przypadku, skumulowana
@@ -1073,7 +937,8 @@ Różnicę $v_k - A_{k-1}$ nazywamy \textbf{błędem różnicy czasowej}. Okreś
 bardzo różni się nowa wartość $v_k$, od starej prognozy $A_{k-1}$. Stare
 przybliżenie $A_{k-1}$ jest zaktualizowane o $\alpha_k$ razy błąd różnicy
 czasowej by otrzymać nowe przybliżenie $A_k$. Interpretacja wzoru na różnicę
-czasową jest następująca: jeżeli nowa wartość jest większa niż poprzednia,
+czasową jest następująca: jeżeli nowa wartość jest większa niż poprzednia
+przewidywana,
 zwiększ przewidywaną wartość; jeżeli nowa wartość jest mniejsza niż poprzednia
 zmniejsz przewidywaną wartość. Zmiana jest proporcjonalna do różnicy między
 nową wartością a poprzednią przewidywaną wartością.
@@ -1116,7 +981,7 @@ Doświadczenie $\langle s,a,r,s' \rangle$ zapewnia jeden punkt danych dla
 wartości $Q(s,a)$. Zawiera informację o tym, że agent otrzymał przyszłą wartość
 $r + \gamma V(s')$, gdzie $V(s') = \max_{a'}Q(s',a')$ (tutaj $a'$ to akcja
 podjęta dla stanu $s'$ czyli taka akcja, która daje najlepszą wartość $Q$).
-To jest aktualną rzeczywistą nagrodę plus dyskontowa
+To znaczy aktualną rzeczywista nagroda plus dyskontowa
 oszacowana przyszła nagroda skumulowana. Agent może użyć równania na różnicę
 czasową \ref{td_3} by zaktualizować swoje oszacowanie dla $Q(s,a)$:
 \begin{equation}
@@ -1185,15 +1050,15 @@ W mojej implementacji Q-Learningu, \textbf{przestrzeń stanów} zdyskretyzowałe
 parametrami:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item Odległość w pionie obiektu ptaka od obiektu najbliższej od prawej
+	\item Odległość w pionie obiektu ptaka od obiektu najbliższej po prawej
 		dolnej rury
-	\item Odległość w poziomie obiektu ptaka od obiektu najbliższej od 
+	\item Odległość w poziomie obiektu ptaka od obiektu najbliższej po 
 		prawej dolnej rury
 	\item Prędkość spadania obiektu ptaka.
 \end{itemize}
 \begin{figure}[!htb]
 	\begin{center}
-	\includegraphics[scale=0.80]{agent_vision.png}
+	\includegraphics[scale=0.50]{agent_vision.png}
 	\end{center}
 	\caption{Wizja agenta.}
 	\label{agent_vision}
@@ -1209,9 +1074,9 @@ rury jest najbliższym z prawej nie mogę jak poprzednio (gdzie wystarczyło
 ustalić, który obiekt rury jest najbliżej, nie ważne czy z lewej czy z prawej)
 wziąć obiektu o indeksie zero z grupy dolnych obiektów rur. Przypomnę, że grupa
 obiektów rur działa jak tablica, gdzie obiekty są ponumerowane indeksami od
-zera w odniesieniu ich pozycji na ekranie -- obiekt najbardziej z lewej ma
-indeks zero. Istnieje scenariusz, w którym agent dopiero co ominął obiekt rury,
-ale powinien zacząć już rozpatrywać następne obiekty z prawej strony.
+zera w odniesieniu do ich pozycji na ekranie, gdzie obiekt najbardziej z lewej
+ma indeks zero. Istnieje scenariusz, w którym agent dopiero co ominął obiekt
+rury, ale powinien zacząć już rozpatrywać następne obiekty z prawej strony.
 Rozpatrywanie obiektu o indeksie zero z grupy obiektów rur byłoby tutaj błędne.
 Wystarczy rozważyć różnicę między współrzędną $x$ obiektu ptaka a obiektu rury
 o indeksie zero z grupy obiektów rur dolnych. Jeżeli ta jest większa niż $-30$
@@ -1235,30 +1100,31 @@ prędkość spadania. Jest to odpowiednik tablicy $Q[S,A]$ z algorytmu
 \ref{qlearning_algorithm}. Wartości $X$ są generowane co dziesięć w zakresie
 $[-80,510)$, wartości $Y$ co dziesięć w zakresie $[-300,800)$, a wartość $V$ w
 zakresie $[-10,9)$. O tym dlaczego wartości $X$ i $Y$ są generowane co dziesięć
-piszę w następnym podrozdziale. Wartość $V$ ma taki zakres, gdyż jest tak
-ograniczona przez sam program gry, gdzie wartość $8$ oznacza, że obiekt ptaka
-spada najszybciej jak może, a wartość $-10$ to, że podlatuje do góry.
+piszę w rozdziale \nameref{chapter:testy}. Wartość $V$ ma taki zakres, gdyż
+jest tak ograniczona przez sam program gry, gdzie wartość $8$ oznacza, że
+obiekt ptaka spada najszybciej jak może, a wartość $-10$ to, że podlatuje do
+góry.
 
 Agent ma możliwość podjąć jedynie \textbf{dwie akcje} -- kliknąć lewy przycisk
 myszy (to znaczy podlecieć), albo nie robić nic i pozwolić obiektowi ptaka
 zmniejszyć wysokość.
 
 Takim kluczom jest przypisywana tablica z dwoma zerami, gdzie
-indeks zerowy jest $Q$ jeżeli dla tego stanu nie została podjęta akcja,
-a indeks jeden jest $Q$ dla tego stanu, jeżeli agent zdecydował się
-podjąć akcję. Te wyzerowane wartości $Q$ stanowią jedynie symbol zastępczy,
+indeks zerowy reprezentuje wartość $Q$ jeżeli dla tego stanu agent nie zrobił
+nic, a indeks jeden jest wartością $Q$ dla tego stanu, jeżeli agent zdecydował
+się podjąć akcję. Te wyzerowane wartości $Q$ stanowią jedynie symbol zastępczy,
 potem będą wyliczane ze wzoru \ref{qvalue_1}.
 
-\textbf{Funkcja nagrody} $R$ przyznaje $1$ punkt za każdym razem, kiedy obiekt
-ptaka sterowany przez agenta żyje oraz $-1000$ punktów jeżeli nie żyje.
+\textbf{Funkcja nagrody} $R$ zwraca $1$ za każdym razem, kiedy obiekt
+ptaka sterowany przez agenta żyje oraz zwraca $-1000$ jeżeli nie żyje.
 
 Jedyną zasadniczą modyfikacją jakiej dokonałem względem algorytmu
-\ref{qlearning_algorithm}, jest to, że zamiast aktualizować $Q$ (krok z linii
-17 w algorytmie) co każde zaobserwowane doświadczenie, obliczam je od tyłu po
-każdej rozegranej przez agenta grze -- tak, że $Q$ jest obliczane od ostatniego
-doświadczenia do pierwszego. Pomyślałem, że to pomoże w szybszym propagowaniu
-informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał akcję, która
-doprowadziła do śmierci obiektu ptaka. 
+\ref{qlearning_algorithm}, jest to, że zamiast aktualizować wartość $Q$ (krok z
+linii 17 w algorytmie) co każde zaobserwowane doświadczenie, obliczam je od
+tyłu po każdej rozegranej przez agenta grze. To znaczy, że $Q$ jest obliczane
+od ostatniego doświadczenia do pierwszego. Pomyślałem, że to pomoże w szybszym
+propagowaniu informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał
+akcję, która doprowadziła do śmierci obiektu ptaka. 
 \begin{lstlisting}[language=Python, label={qlearning_python},
 caption={Zaimplementowany algorytm Q-Learning}, captionpos=t]
 def update_scores():
@@ -1275,7 +1141,7 @@ def update_scores():
         else:
             cur_reward = reward[0]
 
-        qvalues[state][act] = (1 - lr) * (qvalues[state][act]) + lr * \
+        qvalues[state][act] = (1 - lr) * (qvalues[state][act]) + lr *
 	    (cur_reward + discount * max(qvalues[res_state]))
 
         t += 1
@@ -1285,7 +1151,7 @@ Na listingu \ref{qlearning_python} \textit{moves} to tablica doświadczeń
 $(s, a, s')$, gdzie $s$ to poprzedni
 stan, $a$ to poprzednia akcja jaką wykonał agent a $s'$ to obecny stan. Tablica
 ta jest uzupełniana o nowe doświadczenie, za każdym razem, gdy program gry 
-wywołuję metodę agenta proszącą go o wybór akcji. \textit{reward} zwraca
+wywołuję metodę agenta proszącą go o wybór akcji. \textit{Reward} zwraca
 wartość $1$ dla indeksu $0$, oraz wartość $-1000$ dla indeksu $1$. To oznacza,
 że dla ostatnich dwóch stanów, jest przyznawana nagroda $-1000$. Dzieje się tak
 ponieważ to one, skoro były ostatnie (a metoda jest wywoływana w momencie końca
@@ -1335,8 +1201,8 @@ zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące
 \section{Optymalizacja pod względem rozmiaru przestrzeni stanów}
 \begin{figure}[!htb]
 	\begin{center}
-		%\input{plots/plotFirstApproach.pgf} YYY
-		\includegraphics{plotFirstApproach.png}
+		\input{plots/plotFirstApproach.pgf}
+		%\includegraphics{plotFirstApproach.png}
 	\end{center}
 	\caption{Wykres gry od wyniku.}
 	\label{plot_first_approach}
@@ -1353,10 +1219,8 @@ wykonuje akcje na rzecz ograniczenia ilości stanów. Dlatego jak w wcześniej
 wspominałem stany są inicjalizowane z wartościami $x$ i $y$ generowanymi co
 $10$. W ten sposób przestrzeń stanów ma $(50 + 8 + 1) * (30 + 79 + 1) * (10 + 8
 + 1) = 123 310$ stanów, co jak można się spodziewać jest prawie stukrotnym
-pomniejszeniem ilości elementów w przestrzeni stanów. Środowisko dalej zwraca
-agentowi ``pełne liczby'', jednak ten zanim podejrzy wartość $Q$ mapuje te
-wartości zaokrąglając je w dół do części dziesiątych.
-Tak zaimplementowany algorytm i grę uruchomiłem po czym otrzymałem wyniki
+pomniejszeniem ilości elementów w przestrzeni stanów. Tak zaimplementowany 
+algorytm i grę uruchomiłem po czym otrzymałem wyniki
 widoczne na wykresie \ref{plot_first_approach}.
 
 Wykres \ref{plot_first_approach} pokazuje jaką ilość punktów agent otrzymywał w
@@ -1372,7 +1236,7 @@ Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony
 rysunku \ref{agent_top_pipe}.
 \begin{figure}[!htb] 
 	\begin{center}
-		\includegraphics[scale=0.35]{agent_top_pipe_penalty.png}
+		\includegraphics[scale=0.45]{agent_top_pipe_penalty.png}
 	\end{center}
 	\caption{Agent wybiera złą akcję.}
 	\label{agent_top_pipe}
@@ -1389,8 +1253,8 @@ $=1$) i flaga była włączona, dla tego stanu przyznawałem nagrodę $-1000$. P
 takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 \begin{figure}[!htb]
 	\begin{center}
-		%\input{plots/plotTopPipeDeathPenalty.pgf} YYY
-		\includegraphics{plotTopPipeDeathPenalty.png}
+		\input{plots/plotTopPipeDeathPenalty.pgf}
+		%\includegraphics{plotTopPipeDeathPenalty.png}
 	\end{center}
 	\caption{Wykres gry od wyniku po zmianie algorytmu.}
 	\label{plot_top_pipe_penalty}
@@ -1398,11 +1262,11 @@ takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 
 Agent uczył się tutaj od początku (wszystkie wartości $Q$ zostały wyzerowane
 dla każdego stanu przed uruchomieniem programu).
-Jak widać na wykresie \ref{plot_top_pipe_penalty} chociaż maksymalny wynik jaki 
-udało mu się osiągnąć jest mniejszy niż w poprzedniej grze -- jest to $933$
-uzyskanych punktów w grze $4652$ czyli aż o $70$ punktów mniej niż poprzednio
-to średni wynik po $5000$ rozegranych gier wynosi już $119,36$, czyli o 
-$72.7\%$ więcej. Ponadto w porównaniu do poprzedniej nauki agent po około
+Jak widać na wykresie \ref{plot_top_pipe_penalty} maksymalny wynik jaki 
+udało mu się osiągnąć jest mniejszy niż w poprzedniej grze. Jest to $933$
+uzyskanych punktów w grze $4652$, czyli aż o $70$ punktów mniej niż poprzednio
+Mimo tego średni wynik po $5000$ rozegranych gier wynosi już $119,36$, czyli o 
+$72.7\%$ więcej. Ponadto agent po około
 $3500$ grach zdecydowanie częściej osiąga wyniki powyżej $200$ punktów, w
 porównaniu do poprzedniego podejścia, gdzie nawet po tylu grach zdarzało się,
 że agent zdobywał niskie wyniki, właśnie ze względu na zachowanie przedstawione
@@ -1416,8 +1280,8 @@ więcej gier, aby obliczyć wartości $Q$ dla każdego z nich), ale zwiększy
 precyzje z jaką agent podejmuje decyzje.
 \begin{figure}[!htb]
 	\begin{center}
-		%\input{plots/plotGrid5x5TopPipePenalty.pgf} YYY
-		\includegraphics{plotGrid5x5TopPipePenalty.png}
+		\input{plots/plotGrid5x5TopPipePenalty.pgf}
+		%\includegraphics{plotGrid5x5TopPipePenalty.png}
 	\end{center}
 	\caption{Wykres gry od wyniku po zwiększeniu przestrzeni stanów.}
 	\label{plot_gird_5x5}
@@ -1435,7 +1299,7 @@ powiększeniem przestrzeni stanów zwiększyłem ilość gier, które rozegrał 
 chciałem by było to $4$ razy więcej gier niż poprzednio, jednak okazało się,
 że agent po około $8000$ gier bardzo często zdobywał wyniki powyżej $200$ co
 sprawiało, że rozgrywane gry trwały zdecydowanie dłużej. W tym układzie
-rozegranie $15000$ gier zajęło około $36$ godzin przy najszybszym trybie gry
+rozegranie $15000$ gier zajęło około $36$ godzin przy najszybszym trybie gry,
 czyli $120$ klatkach na sekundę. Ponownie agentowi nie udało się pobić
 największego wyniku z pierwszego podejścia, uzyskał on maksymalnie $907$
 punktów, w grze $14424$, co mimo wszystko jest lepszym wynikiem od poprzedniego
@@ -1452,7 +1316,7 @@ pozwoliły mi na całkowite zrealizowanie mojej pracy.
 
 Największą komplikacją okazał się sam czas uczenia, mimo, że specjalnie dla 
 agenta wprowadziłem możliwość uruchomienia szybszej rozgrywki, to przejście
-przez agenta $20000$ gier okazało się zabierać zdecydowanie za dużo czasu.
+przez niego $20000$ gier okazało się zabierać zdecydowanie za dużo czasu.
 Osiągane przez agenta wyniki mimo moich optymalizacji nie są też zbyt wysokie w
 porównaniu do innych rozwiązań, jak na przykład Tonego Xu, któremu udało się
 tak zoptymalizować algorytm, by agent w ogóle nie mógł
@@ -1461,8 +1325,9 @@ algorytm. Potrzebny byłby nakład pracy przyszłej w formie modyfikacji program
 by ten nie przedstawiał graficznej wizualizacji gry (wszak agent potrzebuje
 tylko informacji o położeniu najbliższego obiektu rury, nie potrzeba
 wizualizacji). Wtedy mógłbym zaimplementować tak główną pętlę programową by ta
-nie wykonywała się raz na tyknięcie symulowanego zegara, a tak szybko jak
-pozwalałby na to procesor, na którym program został uruchomiony.
+nie wykonywała się raz na tyknięcie symulowanego zegara uzależnionego od
+ustalonej liczby FPS, a tak szybko jak pozwalałby na to procesor, na którym
+program został uruchomiony.
 	
 Niniejsza praca pokazuje jak skomplikowanym i fascynującym zagadnieniem może
 być uczenie przez wzmacnianie. Od samego wymyślenia algorytmu do jego
@@ -1486,7 +1351,8 @@ nakład pracy by osiągać naprawdę dobre wyniki.
 %\addcontentsline{toc}{chapter}{Spis listingów}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
-\bibliographystyle{iopart-num}
+%\bibliographystyle{iopart-num}
+\bibliographystyle{nar}
 \bibliography{praca_licencjacka}
 
 \end{document}
