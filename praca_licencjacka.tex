@@ -25,6 +25,10 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{pgf}
+\usepackage[hyphens]{url}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{breaklinks=true}
+\urlstyle{same}
 \usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
 
@@ -1482,8 +1486,7 @@ nakład pracy by osiągać naprawdę dobre wyniki.
 %\addcontentsline{toc}{chapter}{Spis listingów}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
-% YYY styl bibliografii do poprawy z tym co jest na teams
-\bibliographystyle{IEEEtran}
+\bibliographystyle{iopart-num}
 \bibliography{praca_licencjacka}
 
 \end{document}
