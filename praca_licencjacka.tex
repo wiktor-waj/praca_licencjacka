@@ -210,10 +210,10 @@ Pygame używa funkcjonalności biblioteki SDL. Simple DirectMedia Layer(SDL)
 jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do
 audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick oraz
 sprzętu graficznego (za pomocą OpenGL i Direct3D). Jest to technologia open
-source, która została zaimplementowana w C. Używana w grach firm takich jak
-\textit{Valve Software} czy \textit{SuperTuxCart}\cite{sdl_ref}. Pygame używa
-tej biblioteki do odczytywania wejścia z klawiatury/myszy oraz rysowania
-wyjścia na ekran.
+source, która została zaimplementowana w C. Została użyta przy produkcjach gier
+firmy \textit{Valve Software} czy gry \textit{SuperTuxCart}\cite{sdl_ref}.
+Pygame używa tej biblioteki do odczytywania wejścia z klawiatury/myszy oraz
+rysowania wyjścia na ekran.
 
 Pygame pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne
 w pythonie. Zaletami pygame są między innymi : podstawowe funkcje używają
@@ -303,7 +303,7 @@ szybciej przesuwane w stronę obiektu ptaka.
 Generowanie obiektów rur odbywa się co $P_f$ milisekund, liczba ta jest
 obliczana w następujący sposób:
 \[P_f = 900 * (30 \div F)\]
-gdzie $F$ to FPS (domyślnie $30$ stąd ta liczba we wzorze)
+gdzie $F$ to liczba FPS (domyślnie $30$ stąd ta liczba we wzorze)
 podawana przy starcie programu. Domyślnie będzie to wartość 900 milisekund.
 Uznałem, że taka wartość jest optymalna dla graczy będących ludźmi. 
 Dodatkowo, jeżeli liczba ta byłaby zbyt mała mogłoby dojść do scenariuszu
@@ -337,7 +337,7 @@ się najbardziej z lewej strony na ekranie. To znaczy czy \textbf{hitbox}
 (prostokąt ograniczający obiekt, wyznaczający jego położenie na ekranie, który
 jest generowany na podstawie wymiarów obrazku reprezentującego obiekt)
 obiektu ptaka znalazł się po prawej stronie
-hitboxu obiektu dolnej rury. Jeżeli tak się stało ustawiam flagę dla
+hitboxu obiektu dolnej rury. Jeżeli tak się stało to ustawiam flagę dla
 takiego zdarzenia. Następne sprawdzam, czy obiekt ptaka ominął obszar
 między dolną a górną rurą i czy jest podniesiona wcześniej wspomniana flaga.
 Jeżeli tak jest to w
@@ -422,8 +422,8 @@ percepcja, rozumowanie oraz podejmowanie działań. Agent podejmuje działania w
 Agentem może być na przykład komputer z sensorami i siłownikami, innymi słowy
 robot, gdzie jego środowiskiem jest świat rzeczywisty. Może być to autonomiczny
 samochód lub jak w moim przypadku może być to program, który
-działa w czysto obliczeniowym środowisku to znaczy agent programowy (ang.
-\textit{software agent}).
+działa w czysto obliczeniowym środowisku. Takiego agenta nazywamy agentem
+programowym (ang. \textit{software agent}).
 \begin{figure}[!htb] 
 \begin{center}
 \begin{tikzpicture}[node distance = 6em, auto, thick]
@@ -516,7 +516,7 @@ Dla trwających procesów, może nie mieć sensu rozważanie użyteczności na k
 procesu ponieważ agent może nigdy nie dojść do końca. Zamiast tego agent może
 otrzymać sekwencję \textbf{nagród} (ang. \textit{rewards}).
 Negatywne nagrody nazywane są \textbf{karami} (ang. \textit{punishments}).
-Problemy niezdefiniowanego horyzontu mogą być wymodelowane używając stanu
+Problemy nieokreślonego horyzontu mogą być wymodelowane używając stanu
 stop. \textbf{Stan stop} bądź \textbf{stan absorbujący} to stan, w którym
 wszystkie działania nie mają żadnego efektu. To znaczy jeżeli agent znajdzie
 się w tym stanie to wszystkie jego działania dostają zerową nagrodę ze
@@ -632,12 +632,12 @@ następująco: agent obserwuje swoje środowisko, decyduje jaką akcję podjąć
 wykonuje tę akcję, obserwuje zmienione po jego akcji środowisko, i tak dalej.
 Następujące po sobie (sekwencyjne) akcje agenta mogą zależeć od tego co agent
 zaobserwuje, a to co zaobserwuje może zależeć od poprzednich podjętych przez
-niego akcji. W takim wypadku, często jedynym powodem dla wykonania jakiejś
+niego akcji. W takim wypadku, często jedynym powodem do wykonania jakiejś
 akcji jest to by dostarczyć kontekst dla przyszłych akcji. Akcje wykonywane
 tylko po to by nabyć informacje nazywane są \textbf{akcjami poszukującymi
 informacji}. Formalnie nie muszę odróżniać akcji poszukujących informacji od
 innych akcji. Zazwyczaj podjęte akcje będą prowadziły zarówno do pozyskania
-nowych informacji jak i wywarciu jakiejś zmiany na środowisku.
+nowych informacji jak i wywarcia jakiejś zmiany na środowisku.
 
 \textbf{Sekwencyjny model decyzyjny} specyfikuje:
 \begin{itemize}
@@ -702,10 +702,10 @@ użyteczność zależy.
 
 Mówimy, że \textbf{agent nie zapomina}, jeżeli decyzje, które podjął są
 uporządkowane w czasie, i agent pamięta swoje poprzednie decyzje i każdą
-informację, która była dostępna przy poprzedniej decyzji.
+informację, która była dostępna tych decyzjach.
 
 Mówimy, że \textbf{sieć decyzyjna nie zapomina}, jeżeli jej wierzchołki decyzji
-są całkowicie uporządkowane, to znaczy, jeżeli wierzchołek decyzyjny $D_i$ jest
+są całkowicie uporządkowane. To znaczy, jeżeli wierzchołek decyzyjny $D_i$ jest
 przed $D_j$ to znaczy, że $D_i$ jest rodzicem $D_j$ i każdy rodzic $D_i$ jest
 również rodzicem $D_j$. A to oznacza, że każda informacja dostępna dla $D_i$
 jest dostępna dla każdej późniejszej decyzji w sekwencji i akcja wybrana dla
@@ -912,7 +912,7 @@ $v_i$. Może to być zaimplementowane poprzez utrzymywanie bieżącej średniej:
 
 Niech $A_k$ będzie oszacowaną oczekiwaną wartością bazującą na pierwszych $k$
 punktach danych $v_1, \dots, v_k$. Przybliżeniem może być po prostu średnia:
-\[A_k = \frac{v_1 + \dots + v_k}{k}\].
+\[A_k = \frac{v_1 + \dots + v_k}{k}\]
 Po przemnożeniu przez $k$:
 \begin{equation} \label{td_1}
 \begin{split}
@@ -940,8 +940,8 @@ czasowej by otrzymać nowe przybliżenie $A_k$. Interpretacja wzoru na różnic�
 czasową jest następująca: jeżeli nowa wartość jest większa niż poprzednia
 przewidywana,
 zwiększ przewidywaną wartość; jeżeli nowa wartość jest mniejsza niż poprzednia
-zmniejsz przewidywaną wartość. Zmiana jest proporcjonalna do różnicy między
-nową wartością a poprzednią przewidywaną wartością.
+przewidywana zmniejsz przewidywaną wartość. Zmiana jest proporcjonalna do
+różnicy między nową wartością a poprzednią przewidywaną wartością.
 
 W uczeniu przez wzmacnianie, wartości (skumulowane nagrody) są efektami akcji.
 Nowsze wartości są bardziej dokładne od poprzednich ponieważ agent się uczy i
@@ -968,7 +968,7 @@ Historię interakcji traktujemy jako sekwencję doświadczeń, gdzie
 \[\langle s, a, r, s' \rangle\]
 co oznacza, że agent był w stanie $s$, wykonał akcję $a$ za co otrzymał nagrodę
 $r$ i przeszedł do stanu $s'$. Te doświadczenia będą danymi, na podstawie
-których agent będzie się uczył co robić. Tak jak w planowaniu decyzji celem
+których agent będzie się uczył co robić. Tak jak w planowaniu decyzji, celem
 jest by agent zmaksymalizował swoją nagrodę skumulowaną, która zazwyczaj jest
 nagrodą dyskontową.
 
@@ -1072,7 +1072,7 @@ rur, które są po jego prawej stronie, te po lewej zostały ominięte co oznacz
 że agent osiągnął swój cel w odniesieniu do nich. Aby stwierdzić, który obiekt
 rury jest najbliższym z prawej nie mogę jak poprzednio (gdzie wystarczyło
 ustalić, który obiekt rury jest najbliżej, nie ważne czy z lewej czy z prawej)
-wziąć obiektu o indeksie zero z grupy dolnych obiektów rur. Przypomnę, że grupa
+wziąć obiektu o indeksie zero z grupy dolnych obiektów rur. Grupa
 obiektów rur działa jak tablica, gdzie obiekty są ponumerowane indeksami od
 zera w odniesieniu do ich pozycji na ekranie, gdzie obiekt najbardziej z lewej
 ma indeks zero. Istnieje scenariusz, w którym agent dopiero co ominął obiekt
@@ -1124,7 +1124,7 @@ linii 17 w algorytmie) co każde zaobserwowane doświadczenie, obliczam je od
 tyłu po każdej rozegranej przez agenta grze. To znaczy, że $Q$ jest obliczane
 od ostatniego doświadczenia do pierwszego. Pomyślałem, że to pomoże w szybszym
 propagowaniu informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał
-akcję, która doprowadziła do śmierci obiektu ptaka. 
+akcję, która doprowadziła do kolizji obiektu ptaka. 
 \begin{lstlisting}[language=Python, label={qlearning_python},
 caption={Zaimplementowany algorytm Q-Learning}, captionpos=t]
 def update_scores():
@@ -1157,8 +1157,8 @@ wartość $1$ dla indeksu $0$, oraz wartość $-1000$ dla indeksu $1$. To oznacz
 ponieważ to one, skoro były ostatnie (a metoda jest wywoływana w momencie końca
 gry) to doprowadziły do porażki. Pozostałym stanom przyznawana jest nagroda
 $1$, ponieważ akcje podjęte dla tych stanów sprawiały, że agent omijał obiekty
-rur. \textit{discount} to liczba określająca stopę dyskontową i jest to
-stała wynosząca $0.7$ Oczywiście dla każdego doświadczenia aktualizowana jest
+rur. \textit{Discount} to liczba określająca stopę dyskontową i jest to
+stała wynosząca $0.7$. Oczywiście dla każdego doświadczenia aktualizowana jest
 wartość $Q$ zgodnie ze wzorem \ref{qvalue_1} i wypisywana odpowiednio do
 słownika \textit{qvalues} dla odpowiedniego stanu i akcji. 
 
@@ -1213,7 +1213,7 @@ Przestrzeń stanów to zbiór $S$, którego elementy wyglądają następująco:
 \mathbb{Z} \ v \in [-10,8] \cap \mathbb{Z}\ \  \{x, y, v\}\]
 
 Co daje nam $(509 + 80 + 1) * (300 + 799 + 1) * (10 + 8 +1) = 12 331 000$
-stanów. Wyuczenie agenta -- to znaczy wypełnienie wartości $Q$ dla większości
+stanów. Wyuczenie agenta, to znaczy wypełnienie wartości $Q$ dla większości
 stanów zajęłoby bardzo dużo czasu. Postanowiłem poświęcić precyzję z jaką agent
 wykonuje akcje na rzecz ograniczenia ilości stanów. Dlatego jak w wcześniej
 wspominałem stany są inicjalizowane z wartościami $x$ i $y$ generowanymi co
@@ -1226,7 +1226,7 @@ widoczne na wykresie \ref{plot_first_approach}.
 Wykres \ref{plot_first_approach} pokazuje jaką ilość punktów agent otrzymywał w
 danej grze -- te dane są zaznaczone na wykresie czarnymi punktami. Agent
 rozegrał $5000$ gier. Maksymalny wynik jaki udało mu się osiągnąć to $1003$ w
-grze o numerze $4152$. Jest to jednak bardzo odizolowany przypadek. Niebieską
+grze o numerze $4152$. Jest to jednak bardzo odizolowany przypadek. Niebieska
 linia to wykres średniej kroczącej. Gdzie średnia ta jest liczona w każdym
 punkcie dla ostatnich $100$ gier (z wyjątkiem $100$ pierwszych gier). Po $5000$
 gier średnia wynosiła $69,09$.
@@ -1247,9 +1247,9 @@ obiektowi ptaka na zmniejszenie swojej wysokości co oczywiście sprawiało,
 że przegrywał tę grę. Nie mogłem znaleźć przyczyny takiego zachowania dlatego
 postanowiłem lekko zmodyfikować algorytm przedstawiony w listingu
 \ref{qlearning_python}. Dodałem flagę, która jest włączana, gdy różnica w
-pionie między obiektem ptaka a dolną rurą była wystarczająco wysoka. Wtedy,
+pionie między obiektem ptaka a dolną rurą była wystarczająco duża. Wtedy,
 jeżeli ostatnią akcją agenta było podskoczenie (\textit{last\_action}
-$=1$) i flaga była włączona, dla tego stanu przyznawałem nagrodę $-1000$. Po
+$=1$) i flaga była włączona to dla tego stanu przyznawałem nagrodę $-1000$. Po
 takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 \begin{figure}[!htb]
 	\begin{center}
