@@ -124,7 +124,7 @@
 \textbf{Uczenie maszynowe} (ang. \textit{machine learning}) jest dziedziną
 zajmującą się tworzeniem metod, które potrafią się ``uczyć'' to znaczy,
 wykorzystywać dane aby poprawiać wydajność w rozwiązywaniu pewnych
-problemów\cite{machine_learning_definition}.
+problemów \cite{machine_learning_definition}.
 Do głównych technik uczenia maszynowego zaliczają się:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
@@ -146,9 +146,9 @@ Do głównych technik uczenia maszynowego zaliczają się:
 Właśnie dzięki temu, że algorytmy uczenia przez wzmacnianie nie potrzebują do
 nauki gotowych
 zestawów danych możemy zastosować je do problemów takich jak gra na
-giełdzie\cite{trading_reinforcement}, nauka grania w gry, tworzenie
+giełdzie \cite{trading_reinforcement}, nauka grania w gry, tworzenie
 autonomicznych pojazdów, uczenie chodzenia robotów z nogami czy optymalne
-chłodzenie serwerowni\cite{reinforcement_applications}.
+chłodzenie serwerowni \cite{reinforcement_applications}.
 
 Celem niniejszej pracy jest zaproponowanie, implementacja oraz analiza
 algorytmu uczenia przez wzmacnianie zdolnego do kierowania agentem w popularnej
@@ -171,7 +171,7 @@ które zastosowałem.
 \label{chapter:gra}
 W celu realizacji założonych celów pracy zdecydowałem się na zaimplementowanie
 popularnej gry z 2013 roku o nazwie ``Flappy Bird'',  autorstwa wietnamskiego
-developera Dong Nguyena\cite{flappy_bird_author}. Wybrałem tę grę ze względu na
+developera Dong Nguyena \cite{flappy_bird_author}. Wybrałem tę grę ze względu na
 ograniczoną ilość akcji jaką może podjąć gracz.
 \section{Zasady gry} 
 \begin{figure}[h] 
@@ -191,7 +191,7 @@ obiekty rur przesuwane są w lewo w jego stronę ze stałą prędkością. Gracz
 może kontrolować jedynie to czy obiekt, którym steruje zwiększy swoją
 wysokość o stałą, zakodowaną ilość jednostek czy tego nie zrobi i obiekt
 reprezentowany przez ptaka zmniejszy swoją wysokość. Gra kończy się gdy
-dojdzie do kolizji obiektu ptaka z, którymkolwiek obiektem rury: dolnym
+dojdzie do kolizji obiektu ptaka z którymkolwiek obiektem rury: dolnym
 bądź górnym albo z obiektem ziemi. Punkty przyznawane są jeżeli graczowi uda
 się ominąć nadchodzące przeszkody przelatując przez szczelinę między nimi.
 Za każde ominięcie przyznawany jest jeden punkt. Na górze rysunku
@@ -211,17 +211,17 @@ jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do
 audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick oraz
 sprzętu graficznego (za pomocą OpenGL i Direct3D). Jest to technologia open
 source, która została zaimplementowana w C. Została użyta przy produkcjach gier
-firmy \textit{Valve Software} czy gry \textit{SuperTuxCart}\cite{sdl_ref}.
+firmy \textit{Valve Software} czy gry \textit{SuperTuxCart} \cite{sdl_ref}.
 Pygame używa tej biblioteki do odczytywania wejścia z klawiatury/myszy oraz
 rysowania wyjścia na ekran.
 
 Pygame pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne
-w pythonie. Zaletami pygame są między innymi : podstawowe funkcje używają
+w pythonie. Zaletami pygame są między innymi: podstawowe funkcje używają
 zoptymalizowanego kodu w C oraz Assemblerze, dostępny jest podobnie jak python
 na większości współczesnych platform. Ponadto jest modularny co pozwala
 programiście używać tylko tych komponentów, których naprawdę potrzebuje.
 Gier stworzonych z użyciem pygame na samej stronie projektu jest ponad
-660\cite{pygame_about_ref}.
+660 \cite{pygame_about_ref}.
 \section{Implementacja} 
 Głównym elementem implementacji jest nieskończona pętla, w której sprawdzam
 zdarzenia, które zaszły, czy dostałem wejście od gracza i aktualizuję
@@ -317,7 +317,7 @@ granicą ekranu. Rura dolna jest oddalona od górnej o losowo wygenerowaną
 ilość jednostek.
 
 \begin{lstlisting}[language=Python, label={score_check}, caption={Algorytm
-przyznawania puntków}, captionpos=t]
+przyznawania puntków.}, captionpos=t]
 if( bird_group.sprites()[0].rect.left
     > bottom_pipe_group.sprites()[0].rect.left
     and bird_group.sprites()[0].rect.right
@@ -397,7 +397,7 @@ określoną ilość czasu na podjęcie decyzji.
 Jednym z naukowych celów sztucznej inteligencji jest zrozumienie podstawowych
 zasad inteligentnego zachowania, które są zastosowywane zarówno do
 naturalnych (zwierzęta) jak i sztucznych
-agentów\cite{ai_foundations_scientific_goal}.
+agentów \cite{ai_foundations_scientific_goal}.
 Jest on osiągany przez:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
@@ -472,7 +472,7 @@ i wyjściami. W dowolnym momencie agent jest zależny od:
 W czarnej skrzynce, agent jest w pewnym stanie wiedzy, może być to wiedza o
 środowisku, o tym co próbuje osiągnąć i co zamierza zrobić. Agent aktualizuje
 ten stan bazując na bodźcach ze środowiska. Na podstawie stanu wiedzy decyduje
-o swoich działaniach\cite{ai_foundations_agents_situated}.
+o swoich działaniach \cite{ai_foundations_agents_situated}.
 
 \section{Wiedza agenta} 
 % http://artint.info/2e/html/ArtInt2e.Ch3.S2.html
@@ -543,7 +543,7 @@ istnieć zbiór zmiennych $W$, które bezpośrednio wpływają na wartość $X$.
 pewnym sensie $X$ jest warunkowo niezależne od pozostałych zmiennych biorąc pod
 uwagę  zmienne $W$. Zbiór lokalnie wpływających na $X$ zmiennych jest nazwany
 \textbf{ogrodzeniem Markova} (ang. \textit{Markov blanket}). Ta lokalność
-jest wykorzystywana w sieciach przekonań\cite{ai_foundations_belief_networks}.
+jest wykorzystywana w sieciach przekonań \cite{ai_foundations_belief_networks}.
 
 % http://artint.info/2e/html/ArtInt2e.Ch8.S1.SS3.html#Ch8.Thmtheorem3
 \textbf{Sieć przekonań} (ang. \textit{belief network}), również nazywana
@@ -621,7 +621,7 @@ Stacjonarne łańcuchy Markova interesują nas z kilku względów:
 		dynamika środowiska zazwyczaj nie zmienia się w czasie.
 	\item Sieć może się rozrastać w nieskończoność. Określenie małej liczby
 		parametrów daje nam nieskończoną
-		sieć\cite{ai_foundations_markov_chains}.
+		sieć \cite{ai_foundations_markov_chains}.
 \end{itemize}
 
 % http://artint.info/2e/html/ArtInt2e.Ch9.S3.html
@@ -652,7 +652,7 @@ nowych informacji jak i wywarcia jakiejś zmiany na środowisku.
 % http://artint.info/2e/html/ArtInt2e.Ch9.S3.SS1.html
 \textbf{Sieć decyzyjna} zwana również \textbf{diagramem wpływu} to graficzna
 reprezentacja skończonego problemu decyzji
-sekwencyjnych\cite{ai_foundations_decision_networks}. Sieć decyzyjna
+sekwencyjnych \cite{ai_foundations_decision_networks}. Sieć decyzyjna
 rozszerza sieć przekonań by zawierać zmienne decyzji (akcji) i użyteczności.
 
 W szczególności, sieć decyzyjna to skierowany graf acykliczny, z następującymi
@@ -839,7 +839,7 @@ dyskontową.
 % http://artint.info/2e/html/ArtInt2e.Ch9.S5.SS1.html
 \subsection{Funkcja polityki}
 \textbf{Polityka} (ang. \textit{policy}) precyzuje co agent powinien robić
-w stanie, w którym obecnie się znajduje\cite{sawka_ml}.
+w stanie, w którym obecnie się znajduje \cite{sawka_ml}.
 \textbf{Stacjonarna polityka} to funkcja $\pi : S \rightarrow A$ (gdzie $S$ to
 zbiór stanów środowiska a $A$ to zbiór dostępnych dla agenta akcji).
 
@@ -853,7 +853,7 @@ znaczy, taka polityka, która ma większą spodziewaną nagrodę skumulowaną dl
 każdego stanu, niż jakakolwiek polityka optymalna.
 
 Dla problemów nieskończonego horyzontu, stacjonarny proces decyzyjny Markova
-zawsze ma optymalną stacjonarną politykę.\cite{ai_foundations_policies}
+zawsze ma optymalną stacjonarną politykę. \cite{ai_foundations_policies}
 
 Jak zatem obliczyć nagrodę skumulowaną optymalnej polityki? Niech $Q^*(s,a)$,
 gdzie $s$ to stan, $a$ to akcja będzie oczekiwaną nagrodą skumulowaną wykonania
@@ -952,8 +952,8 @@ przez to nowsze wartości powinny mieć większą wagę.
 \label{chapter:qlearning}
 % http://artint.info/2e/html/ArtInt2e.Ch12.S4.html
 Autorem algorytmu Q-learning jest Christ Watkins, który zaprezentował go w
-swojej pracy doktorskiej zatytułowanej : ``Learning from Delayed
-Rewards''\cite{qlearning_inventor}.
+swojej pracy doktorskiej zatytułowanej: ``Learning from Delayed
+Rewards'' \cite{qlearning_inventor}.
 W Q-learningu agent próbuje nauczyć się optymalnej polityki z historii
 interakcji ze środowiskiem. \textbf{Historia} agenta to sekwencja
 stanu-akcji\dywiz nagrody:
@@ -996,7 +996,7 @@ Q[s',a'] \right)
 \label{qvalue_2}
 \end{equation}
 \begin{algorithm}
-	\caption{Algorytm Q-Learning\cite{ai_foundations_qlearning}}
+	\caption{Algorytm Q-Learning \cite{ai_foundations_qlearning}}
 \begin{algorithmic}[1]
 	\Procedure{Q-Learning}{$S, A, \gamma, \alpha$} \\
 	\hspace{\algorithmicindent}\textbf{Zmienne wejściowe} \\
@@ -1087,7 +1087,7 @@ ponad połowa szerokości obiektu rur w pixelach.
 
 Przestrzeń stanów jest inicjalizowana w następujący sposób:
 \begin{lstlisting}[language=Python, label={qval_init}, caption={Inicjalizacja
-Q-Values}, captionpos=t]
+Q-Values.}, captionpos=t]
 qval = {}
 for x in list(range(-80, 510, 10)):
     for y in list(range(-300, 800, 10)):
@@ -1126,7 +1126,7 @@ od ostatniego doświadczenia do pierwszego. Pomyślałem, że to pomoże w szybs
 propagowaniu informacji o ``złym stanie'' to znaczy takim, gdzie agent wybrał
 akcję, która doprowadziła do kolizji obiektu ptaka. 
 \begin{lstlisting}[language=Python, label={qlearning_python},
-caption={Zaimplementowany algorytm Q-Learning}, captionpos=t]
+caption={Zaimplementowany algorytm Q-Learning.}, captionpos=t]
 def update_scores():
     history = list(reversed(moves))
 
@@ -1163,7 +1163,7 @@ wartość $Q$ zgodnie ze wzorem \ref{qvalue_1} i wypisywana odpowiednio do
 słownika \textit{qvalues} dla odpowiedniego stanu i akcji. 
 
 \begin{lstlisting}[language=Python, label={act_python},
-caption={Metoda wybierająca akcję agenta}, captionpos=t]
+caption={Metoda wybierająca akcję agenta.}, captionpos=t]
 def act(xdif, ydif, vel):
     state = map_state(xdif, ydif, vel)
     moves.append((last_state, last_action, state))
@@ -1320,7 +1320,7 @@ przez niego $20000$ gier okazało się zabierać zdecydowanie za dużo czasu.
 Osiągane przez agenta wyniki mimo moich optymalizacji nie są też zbyt wysokie w
 porównaniu do innych rozwiązań, jak na przykład Tonego Xu, któremu udało się
 tak zoptymalizować algorytm, by agent w ogóle nie mógł
-przegrać\cite{tds_rl_score}. Myślę, że mógłbym bardziej optymalizować swój
+przegrać \cite{tds_rl_score}. Myślę, że mógłbym bardziej optymalizować swój
 algorytm. Potrzebny byłby nakład pracy przyszłej w formie modyfikacji programu
 by ten nie przedstawiał graficznej wizualizacji gry (wszak agent potrzebuje
 tylko informacji o położeniu najbliższego obiektu rury, nie potrzeba
