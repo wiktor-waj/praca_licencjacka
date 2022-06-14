@@ -130,7 +130,7 @@ Do głównych technik uczenia maszynowego zaliczają się:
 	\setlength\itemsep{-0.4em}
 \item Uczenie nadzorowane, gdzie komputer dostaje przykładowe dane wejściowe i
 	pożądane dane wyjściowe, jego celem jest nauczyć się generalnej zasady
-	przypisywania danych wejściowych do wyjściowych
+	przypisywania danych wejściowych do wyjściowych.
 \item Uczenie nienadzorowane, gdzie dane wejściowe nie są w żaden sposób
 	oznaczone a algorytm uczenia musi sam znaleźć ukryte wzory w danych.
 \item \textbf{Uczenie przez wzmacnianie}
@@ -206,7 +206,7 @@ interpretowanego języka \textbf{python} w wersji 3.8. Python jest dostępny na
 większości współczesnych platform oraz jest to język  open\dywiz source.
 Dodatkowo wykorzystałem moduł \textbf{pygame}.
 
-Pygame używa funkcjonalności biblioteki SDL. Simple DirectMedia Layer(SDL)
+Pygame używa funkcjonalności biblioteki SDL. Simple DirectMedia Layer (SDL)
 jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do
 audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick oraz
 sprzętu graficznego (za pomocą OpenGL i Direct3D). Jest to technologia open
@@ -376,12 +376,12 @@ samoloty czy roboty.
 Mówimy, że agent działa/podejmuje decyzje inteligentnie gdy:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item Uczy się na podstawie swojego doświadczenia
+	\item Uczy się na podstawie swojego doświadczenia.
 	\item Jest elastyczny na zmieniające się środowisko i zmieniające się
-		cele
+		cele.
 	\item Decyzje, które podejmuje są właściwe dla okoliczności, w których
 		się znajduje oraz celów, które ma osiągnąć, biorące pod uwagę
-		krótko i długo terminowe konsekwencje
+		krótko i długo terminowe konsekwencje.
 \end{itemize}
 
 \textbf{Obliczeniowy agent} to taki agent, którego podjęte decyzje mogą
@@ -401,12 +401,12 @@ agentów \cite{ai_foundations_scientific_goal}.
 Jest on osiągany przez:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item Analizę naturalnych i sztucznych agentów
+	\item Analizowanie naturalnych i sztucznych agentów.
 	\item Formułowanie i sprawdzanie hipotez dotyczących czego potrzeba
-		by skonstruować inteligentnych agentów
+		by skonstruować inteligentnych agentów.
 	\item Projektowanie, budowanie  i eksperymentowanie z systemami
 		obliczeniowymi, które wykonują zadania powszechnie uważane
-		za wymagające inteligencji
+		za wymagające inteligencji.
 \end{itemize}
 Inżynieryjnym celem sztucznej inteligencji odpowiadającym wspomnianemu wyżej
 celu naukowemu jest projektowanie i syntezowanie
@@ -457,17 +457,17 @@ Rysunek \ref{rl_figure} pokazuje widok czarnej skrzynki agenta z wejściami
 i wyjściami. W dowolnym momencie agent jest zależny od:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item \textbf{Wcześniejszej wiedzy} o sobie samym i środowisku
+	\item \textbf{Wcześniejszej wiedzy} o sobie samym i środowisku.
 	\item \textbf{Bodźców} otrzymanych od obecnego
 		środowiska, które mogą zawierać obserwacje o
 		środowisku, ale również akcje, które środowisko
-		narzuca agentowi
+		narzuca agentowi.
 	\item \textbf{Przeszłych doświadczeń} z poprzednich
 		działań i bodźców lub innych danych, z których
-		może się uczyć
-	\item \textbf{Celów}, które musi starać się osiągnąć
+		może się uczyć.
+	\item \textbf{Celów}, które musi starać się osiągnąć.
 	\item \textbf{Zdolności}, czyli prymitywnych działań, które
-		może wykonać
+		może wykonać.
 \end{itemize}
 W czarnej skrzynce, agent jest w pewnym stanie wiedzy, może być to wiedza o
 środowisku, o tym co próbuje osiągnąć i co zamierza zrobić. Agent aktualizuje
@@ -493,10 +493,10 @@ jest potrzebny do osiągnięcia celu. Przeszukiwanie przestrzeni stanów zakład
 	\setlength\itemsep{-0.4em}
 \item Agent ma całkowitą wiedzę o przestrzeni stanów i zakłada, że istnieje
 	stan, w którym będzie obserwował to w jakim stanie się znajduje --
-	jest całkowita obserwowalność
+	jest całkowita obserwowalność.
 \item Agent ma zbiór akcji, które mają znane, deterministyczne efekty na
-	środowisko
-\item Agent może ustalić czy stan spełnia cel
+	środowisko.
+\item Agent może ustalić czy stan spełnia cel.
 \end{itemize}
 \textbf{Rozwiązanie} to sekwencja działań, które przeniosą agenta z jego
 obecnego stanu do stanu, który spełnia cel.
@@ -556,10 +556,10 @@ prawdopodobieństwa zmiennych bez rodziców). A więc sieć przekonań składa s
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
 \item Grafu acyklicznego skierowanego, gdzie każdy wierzchołek jest oznaczony
-	losową zmienną
-\item Dziedziny dla każdej losowej zmiennej
+	losową zmienną.
+\item Dziedziny dla każdej losowej zmiennej.
 \item Zbioru rozkładu prawdopodobieństw warunkowych przypisującego
-	$P(X|\text{rodzice}(X))$ dla każdej zmiennej $X$
+	$P(X|\text{rodzice}(X))$ dla każdej zmiennej $X$.
 \end{itemize}
 
 % http://artint.info/2e/html/ArtInt2e.Ch8.S5.SS1.html
@@ -609,14 +609,14 @@ By określić stacjonarny łańcuch Markova, podano dwa prawdopodobieństwa
 warunkowe:
 \begin{itemize}
 		\setlength\itemsep{-0.4em}
-	\item $P(S_0)$ specyfikuje wszystkie początkowe warunki
+	\item $P(S_0)$ specyfikuje wszystkie początkowe warunki.
 	\item $P(S_{i+1} | S_i)$ specyfikuje \textbf{dynamikę}, która jest taka
-		sama dla każdego $i \ge 0$
+		sama dla każdego $i \ge 0$.
 \end{itemize}
 Stacjonarne łańcuchy Markova interesują nas z kilku względów:
 \begin{itemize}
 		\setlength\itemsep{-0.4em}
-	\item Zapewniają prosty model, który jest łatwy do określenia
+	\item Zapewniają prosty model, który jest łatwy do określenia.
 	\item Założenie stacjonarności jest często naturalnym modelem, ponieważ
 		dynamika środowiska zazwyczaj nie zmienia się w czasie.
 	\item Sieć może się rozrastać w nieskończoność. Określenie małej liczby
@@ -642,11 +642,11 @@ nowych informacji jak i wywarcia jakiejś zmiany na środowisku.
 \textbf{Sekwencyjny model decyzyjny} specyfikuje:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-	\item Jakie akcje są dostępne dla agenta w danym etapie
+	\item Jakie akcje są dostępne dla agenta w danym etapie.
 	\item Jaka informacja jest, albo będzie dostępna dla agenta, kiedy
-		będzie musiał podjąć akcję
-	\item Efekty akcji na środowisko
-	\item To jak pożądane te efekty będą z perspektywy osiągnięcia celu
+		będzie musiał podjąć akcję.
+	\item Efekty akcji na środowisko.
+	\item To jak pożądane te efekty będą z perspektywy osiągnięcia celu.
 \end{itemize}
 
 % http://artint.info/2e/html/ArtInt2e.Ch9.S3.SS1.html
@@ -725,14 +725,14 @@ Proces decyzyjny Markova (ang. \textit{Markov decision process (MDP)}) składa
 się z:
 \begin{itemize}
 		\setlength\itemsep{-0.4em}
-	\item $S$ -- zbiór stanów środowiska
-	\item $A$ -- zbiór decyzji (akcji możliwych do podjęcia przez agenta)
+	\item $S$ -- zbiór stanów środowiska.
+	\item $A$ -- zbiór decyzji (akcji możliwych do podjęcia przez agenta).
 	\item $P: S\times S\times A\rightarrow [0,1]$ -- funkcja, która określa
 		\textbf{dynamikę}. Zapis $P(s' | s, a)$ oznacza
 		prawdopodobieństwo, że agent przejdzie do stanu $s'$ pod
 		warunkiem, że był w stanie $s$ i podjął akcję $a$. Występuje
 		tutaj następująca zależność między prawdopodobieństwami:
-		\[\forall s\in S \ \forall a\in A \sum_{s' \in S}P(s'|s,a)=1\]
+		\[\forall s\in S \ \forall a\in A \sum_{s' \in S}P(s'|s,a)=1\].
 	\item $R:S\times S\times A\times S \rightarrow \mathfrak{R}$, gdzie
 		$R(s,a,s')$ to \textbf{funkcja nagrody}, dająca oczekiwaną
 		natychmiastową nagrodę za wykonanie działania $a$ i przejścia
@@ -893,9 +893,9 @@ charakteryzują następujące cechy:
 	\setlength\itemsep{-0.4em}
 \item Agent ma dane możliwe stany, w których może się znaleźć oraz zbiór akcji,
 	które może wykonać.
-\item Za każdym razem, po zaobserwowaniu stanu środowiska wykonuje akcję
+\item Za każdym razem, po zaobserwowaniu stanu środowiska wykonuje akcję.
 \item Celem agenta jest zmaksymalizowanie nagrody dyskontowej, dla jakiejś
-	stopy dyskontowej $\gamma$
+	stopy dyskontowej $\gamma$.
 \end{itemize}
 Uczenie przez wzmacnianie może być sformalizowane pod kątem procesu Decyzyjnego
 Markova, w którym agent początkowo zna tylko zbiór możliwych stanów oraz zbiór
@@ -1051,9 +1051,9 @@ parametrami:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
 	\item Odległość w pionie obiektu ptaka od obiektu najbliższej po prawej
-		dolnej rury
+		dolnej rury.
 	\item Odległość w poziomie obiektu ptaka od obiektu najbliższej po 
-		prawej dolnej rury
+		prawej dolnej rury.
 	\item Prędkość spadania obiektu ptaka.
 \end{itemize}
 \begin{figure}[!htb]
@@ -1180,7 +1180,7 @@ Program gry przystosowany dla agenta, różni się niewiele od tego
 zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące:
 \begin{itemize}
 \setlength\itemsep{-0.4em}
-\item Nie jest sprawdzane, żadne wejście
+\item Nie jest sprawdzane, żadne wejście.
 \item Co obrót głównej pętli programowej agent jest pytany o swoją akcję, do
 	podjęcia której program daje agentowi wcześniej wspomniane wartości,
 	które stanowią ``obserwację'' agenta. Sam wybór akcji polega na
@@ -1351,8 +1351,8 @@ nakład pracy by osiągać naprawdę dobre wyniki.
 %\addcontentsline{toc}{chapter}{Spis listingów}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
-%\bibliographystyle{iopart-num}
-\bibliographystyle{nar}
+\bibliographystyle{iopart-num}
+%\bibliographystyle{nar}
 \bibliography{praca_licencjacka}
 
 \end{document}
