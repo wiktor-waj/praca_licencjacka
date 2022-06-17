@@ -1,17 +1,11 @@
-\documentclass[a4paper, 12pt,oneside]{book}
+\documentclass[a4paper, 12pt,twoside]{report}
 
-% pakiety
 \usepackage{polski}
-%\usepackage[utf8]{inputenc} % nie można używać as per 
-			     % https://tex.stackexchange.com/a/480069/177956
-\usepackage{fancyhdr} % nagłówki i stopki
-\usepackage{indentfirst} % WAŻNE, MA BYĆ!
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
 \usepackage{graphicx} % to do wstawiania rysunków
-\usepackage{amsmath} % to do dodatkowych symboli, przydatne
-\usepackage[pdftex,
-            left=1in,right=1in,
-            top=1in,bottom=1in]{geometry} % marginesy
-\usepackage{amssymb} % to też do dodatkowych symboli, też przydatne
+\usepackage{tabularx} % do wstawiania tabeli
+\usepackage{amsfonts, amsmath, amsthm, amssymb} % dodatkowe symbole
 \usepackage{pdfpages}
 \usepackage{lipsum}
 \usepackage{multirow}
@@ -19,20 +13,30 @@
 \usepackage{booktabs}
 \usepackage{subcaption}
 \usepackage{nameref} % do robienia referencji do chapterów
-\usepackage{tikz}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
+\usepackage{tikz} % do rysowania grafów
+\usepackage{algorithm} % wstawianie algorytmu
+\usepackage{algpseudocode} % wstawianie algorytmu
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage{pgf}
+\usepackage{epstopdf} % konwersja logo umcs z eps do pdf
+\usepackage{pgf} % diagramy z matplotlib
 \usepackage[hyphens]{url}
 \usepackage[hidelinks]{hyperref}
+
+% marginesy i interlinia
+\usepackage{geometry}
+\geometry{lmargin=3.5cm, rmargin=2.0cm, tmargin=1in, bmargin=1in}
+\linespread{1.25}
+
+% ustawienia do linków 
 \hypersetup{breaklinks=true}
 \urlstyle{same}
+
+% wybierz figury używane z tikz
 \usetikzlibrary{shapes.geometric, arrows, positioning, angles, quotes}
 \graphicspath{ {./img/} }
 
-% tikz shapes for flow diagram
+% kształty tikz dla diagramu przepływu
 \tikzstyle{terminator} = [rectangle, draw, text centered, rounded corners,
                           minimum height=2em]
 \tikzstyle{process} = [rectangle, draw, text centered, minimum height=2em]
@@ -46,79 +50,101 @@
 \tikzstyle{block} = [rectangle, draw, 
     text width=8em, text centered, rounded corners, minimum height=4em]
 \tikzstyle{line} = [draw, -latex]
-% tikz shapes for Markov chains
+% kształty tikz dla łańcuchów Markova
 \tikzstyle{state}=[thick,draw=black,circle]
 \tikzstyle{reward}=[thick,draw=black,diamond]
 \tikzstyle{action}=[thick,draw=black,rectangle]
 
-% listings style taken from https://www.overleaf.com/learn/latex/Code_listing
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
+% styl listingów
+\definecolor{lstbackground}{rgb}{0.95, 0.95, 0.95}
+\lstset{
+  backgroundcolor = \color{lstbackground},
+  frame             	= single,
+  keywordstyle=\color{blue},  
+  basicstyle        	= \linespread{1}\ttfamily,
+  columns           	= fullflexible,
+  keepspaces=true,
+  showstringspaces  = false,
+  commentstyle      	= \color{gray}\upshape,
+  numbers           	= left,
+  numbersep         	= 5pt,
+  stepnumber        	= 1,
+  captionpos        	= t,
+  numberstyle      	= \tiny,
 }
 
-\lstset{style=mystyle}
-
-% definicje nagłówków i stopek
-\pagestyle{fancy}
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 % komenda która sprawi że nie numerowany chapter (chapter*) jest dodany do TOC
 \newcommand\chap[1]{%
   \chapter*{#1}%
   \addcontentsline{toc}{chapter}{#1}}
-\fancyhf{}
-\fancyhead[LE,RO]{\footnotesize\thepage}
-\fancyhead[LO]{\footnotesize\rightmark}
-\fancyhead[RE]{\footnotesize\leftmark}
-\renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\footrulewidth}{0pt}
-\addtolength{\headheight}{1.5pt}
-\fancypagestyle{plain}{\fancyhead{}\cfoot{\footnotesize\thepage}\renewcommand{\headrulewidth}{0pt}}
-
-
-% interlinia
-\linespread{1.25}
-
 
 % treść
 \begin{document}
-% strona tytułowa
-\sloppy
-\thispagestyle{empty}
-\includepdf{strona_tytulowa}
-\newpage{}
 
-\thispagestyle{empty}
-\newpage{}
+% strona tytułowa
+\makeatother
+
+\author{\textbf{Wiktor Wajszczuk}}
+\title{Zastosowanie uczenia przez wzmacnianie w środowisku agentowym.}
+\date{{\textbf{Lublin, rok \the\year}}}
+\def\engtitle{Application of reinforcement learning in an agent\dywiz based
+	      environment}
+
+\def\kierunek{Informatyka}
+\def\specjalnosc{.....}
+\def\nralbumu{ 296534 }
+
+\def\rodzaj{licencjacka}
+\def\jednostka{Katedrze Oprogramowania Systemów Informatycznych}
+\def\promotor{dr Marcina Denkowskiego}
+
+\makeatletter
+
+\renewcommand{\maketitle}{
+\begin{titlepage}
+\begin{table}
+\begin{tabular}{c@{\hspace{10mm}}|@{\hspace{3mm}}l}
+\multicolumn{2}{@{\hspace{15mm}}l}{\vspace{-31mm}} \\
+\multicolumn{2}{l}{\hspace{0mm}\includegraphics[scale=0.4]
+					{UMCS_logotyp_gray}} \\
+\multicolumn{2}{@{\hspace{16mm}}l}{\vspace{7mm}} \\
+
+\multicolumn{2}{@{\hspace{1mm}}l}{\Large UNIWERSYTET MARII
+					CURIE-SKŁODOWSKIEJ} \\
+\multicolumn{2}{@{\hspace{1mm}}l}{\vspace{-4mm}} \\
+\multicolumn{2}{@{\hspace{1mm}}l}{\Large W LUBLINIE} \\
+\multicolumn{2}{@{\hspace{1mm}}l}{\vspace{-4mm}} \\
+\multicolumn{2}{@{\hspace{1mm}}l}{\Large Wydział Matematyki, Fizyki i
+					Informatyki} \\
+\multicolumn{2}{@{\hspace{1mm}}l}{\vspace{16mm}} \\
+
+& \multicolumn{1}{m{13cm}}{Kierunek: \kierunek} \\
+& \\
+& \multicolumn{1}{m{13cm}}{\@author} \\
+& \multicolumn{1}{m{13cm}}{nr albumu: \nralbumu} \\
+& \\
+& \\
+& \multicolumn{1}{m{13cm}}{\Large\textbf{\@title}} \\
+& \\
+& \multicolumn{1}{m{13cm}}{\engtitle} \\
+& \\
+& \\
+& \multicolumn{1}{m{13cm}}{Praca \rodzaj} \\
+& \vspace{-7mm} \\
+& \multicolumn{1}{m{13cm}}{napisana w \jednostka} \\
+& \vspace{-7mm} \\
+& \multicolumn{1}{m{13cm}}{pod kierunkiem \promotor} \\
+\multicolumn{2}{@{\hspace{0mm}}l}{\vspace{7mm}} \\
+\multicolumn{2}{@{\hspace{0mm}}l}{\@date}
+\end{tabular}
+\end{table}
+\end{titlepage}
+}
+
+\maketitle
 
 % spis treści
 \tableofcontents{}
-\newpage
-
-% pusta strona - narazie zakomentowana
-%\thispagestyle{empty}
-%\
-%\newpage
 
 \chap{Wstęp}
 \textbf{Uczenie maszynowe} (ang. \textit{machine learning}) jest dziedziną
@@ -331,6 +357,7 @@ if WAS_PIPE_PASSED is True:
             score += 1
             WAS_PIPE_PASSED = False
 \end{lstlisting}
+
 Listing \ref{score_check} przedstawia algorytm \textbf{przyznawania punktów}
 graczowi. Najpierw sprawdzam, czy obiekt ptaka ominął obiekt rury znajdujący
 się najbardziej z lewej strony na ekranie. To znaczy czy \textbf{hitbox}
@@ -1056,6 +1083,10 @@ parametrami:
 		prawej dolnej rury.
 	\item Prędkość spadania obiektu ptaka.
 \end{itemize}
+
+Te informacje są zwracane bezpośrednio agentowi od silnika gry, sam 
+\textbf{agent nie ma zaimplementowanych} algorytmów wizji komputerowej.
+
 \begin{figure}[!htb]
 	\begin{center}
 	\includegraphics[scale=0.50]{agent_vision.png}
@@ -1063,9 +1094,6 @@ parametrami:
 	\caption{Wizja agenta.}
 	\label{agent_vision}
 \end{figure}
-
-Te informacje są zwracane bezpośrednio agentowi od silnika gry, sam 
-\textbf{agent nie ma zaimplementowanych} algorytmów wizji komputerowej.
 
 Jak widać na rysunku \ref{agent_vision} agent musi rozpatrywać tylko obiekty
 rur, które są po jego prawej stronie, te po lewej zostały ominięte co oznacza,
@@ -1085,7 +1113,8 @@ prawej rurą będzie ta o indeksie jeden z grupy obiektów rur. W przeciwnym
 wypadku najbliższa będzie ta o indeksie zero. Skąd liczba $30$? Jest to lekko
 ponad połowa szerokości obiektu rur w pixelach.
 
-Przestrzeń stanów jest inicjalizowana w następujący sposób:
+Przestrzeń stanów jest inicjalizowana w sposób przedstawiony na listingu
+\ref{qval_init}.
 \begin{lstlisting}[language=Python, label={qval_init}, caption={Inicjalizacja
 Q-Values.}, captionpos=t]
 qval = {}
@@ -1177,7 +1206,8 @@ def act(xdif, ydif, vel):
         return 1
 \end{lstlisting}
 Program gry przystosowany dla agenta, różni się niewiele od tego
-zaprezentowanego na diagramie \ref{game_flow_chart}. Różnice są następujące:
+zaprezentowanego na diagramie z rysunku \ref{game_flow_chart}. Różnice są
+następujące:
 \begin{itemize}
 \setlength\itemsep{-0.4em}
 \item Nie jest sprawdzane, żadne wejście.
@@ -1221,10 +1251,9 @@ $10$. W ten sposób przestrzeń stanów ma $(50 + 8 + 1) * (30 + 79 + 1) * (10 +
 + 1) = 123 310$ stanów, co jak można się spodziewać jest prawie stukrotnym
 pomniejszeniem ilości elementów w przestrzeni stanów. Tak zaimplementowany 
 algorytm i grę uruchomiłem po czym otrzymałem wyniki
-widoczne na wykresie \ref{plot_first_approach}.
-
-Wykres \ref{plot_first_approach} pokazuje jaką ilość punktów agent otrzymywał w
-danej grze -- te dane są zaznaczone na wykresie czarnymi punktami. Agent
+widoczne na wykresie przedstawionym na rysunku \ref{plot_first_approach}.
+Na wykresie każdy czarny punkt pokazuje jaki wynik został uzyskany w danej
+grze. Agent
 rozegrał $5000$ gier. Maksymalny wynik jaki udało mu się osiągnąć to $1003$ w
 grze o numerze $4152$. Jest to jednak bardzo odizolowany przypadek. Niebieska
 linia to wykres średniej kroczącej. Gdzie średnia ta jest liczona w każdym
@@ -1232,8 +1261,6 @@ punkcie dla ostatnich $100$ gier (z wyjątkiem $100$ pierwszych gier). Po $5000$
 gier średnia wynosiła $69,09$.
 
 \section{Optymalizacja algorytmu}
-Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony na
-rysunku \ref{agent_top_pipe}.
 \begin{figure}[!htb] 
 	\begin{center}
 		\includegraphics[scale=0.45]{agent_top_pipe_penalty.png}
@@ -1241,6 +1268,9 @@ rysunku \ref{agent_top_pipe}.
 	\caption{Agent wybiera złą akcję.}
 	\label{agent_top_pipe}
 \end{figure}
+
+Zauważyłem, że podczas uczenia często miał miejsce scenariusz przedstawiony na
+rysunku \ref{agent_top_pipe}.
 Gdy wygenerowana szczelina znajdowała się wysoko, a następna za nią
 zdecydowanie niżej, agent bardzo często wybierał by podskoczyć zamiast dać czas
 obiektowi ptaka na zmniejszenie swojej wysokości co oczywiście sprawiało,
@@ -1250,7 +1280,8 @@ postanowiłem lekko zmodyfikować algorytm przedstawiony w listingu
 pionie między obiektem ptaka a dolną rurą była wystarczająco duża. Wtedy,
 jeżeli ostatnią akcją agenta było podskoczenie (\textit{last\_action}
 $=1$) i flaga była włączona to dla tego stanu przyznawałem nagrodę $-1000$. Po
-takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
+takim zmodyfikowaniu algorytmu otrzymałem wyniki przedstawione na wykresie z
+rysunku \ref{plot_top_pipe_penalty}.
 \begin{figure}[!htb]
 	\begin{center}
 		\input{plots/plotTopPipeDeathPenalty.pgf}
@@ -1262,7 +1293,7 @@ takim zmodyfikowaniu algorytmu otrzymałem następujące wyniki:
 
 Agent uczył się tutaj od początku (wszystkie wartości $Q$ zostały wyzerowane
 dla każdego stanu przed uruchomieniem programu).
-Jak widać na wykresie \ref{plot_top_pipe_penalty} maksymalny wynik jaki 
+Jak widać na rysunku \ref{plot_top_pipe_penalty} maksymalny wynik jaki 
 udało mu się osiągnąć jest mniejszy niż w poprzedniej grze. Jest to $933$
 uzyskanych punktów w grze $4652$, czyli aż o $70$ punktów mniej niż poprzednio
 Mimo tego średni wynik po $5000$ rozegranych gier wynosi już $119,36$, czyli o 
@@ -1340,19 +1371,8 @@ mimo wszystko stosując algorytm uczenia przez wzmacnianie udało mi się
 wytrenować agenta do grania w grę, nie mniej jednak zalecany byłby większy
 nakład pracy by osiągać naprawdę dobre wyniki.
 
-
-%\listoftables{} % jeśli są tabele
-%\addcontentsline{toc}{chapter}{Spis tabel}
-%
-%\listoffigures{} % jeśli są obrazki
-%\addcontentsline{toc}{chapter}{Spis rysunków}
-%
-%\lstlistoflistings
-%\addcontentsline{toc}{chapter}{Spis listingów}
-
 \addcontentsline{toc}{chapter}{Bibliografia}
-\bibliographystyle{iopart-num}
-%\bibliographystyle{nar}
+\bibliographystyle{unsrt}
 \bibliography{praca_licencjacka}
 
 \end{document}

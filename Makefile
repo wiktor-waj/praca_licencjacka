@@ -29,3 +29,4 @@ praca_licencjacka.pdf: praca_licencjacka.tex
 clean:
 	latexmk -C
 	rm praca_licencjacka.bbl
+	rm img/UMCS_logotyp_gray-eps-converted-to.pdf
