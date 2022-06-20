@@ -73,6 +73,11 @@
   numberstyle      	= \tiny,
 }
 
+% zmień caption w środowisku algorithm
+\makeatletter
+\renewcommand{\ALG@name}{Algorytm}
+\makeatother
+
 % komenda która sprawi że nie numerowany chapter (chapter*) jest dodany do TOC
 \newcommand\chap[1]{%
   \chapter*{#1}%
@@ -154,11 +159,13 @@ problemów \cite{machine_learning_definition}.
 Do głównych technik uczenia maszynowego zaliczają się:
 \begin{itemize}
 	\setlength\itemsep{-0.4em}
-\item Uczenie nadzorowane, gdzie komputer dostaje przykładowe dane wejściowe i
+\item Uczenie nadzorowane (ang. \textit{supervised learning}), gdzie komputer
+	dostaje przykładowe dane wejściowe i
 	pożądane dane wyjściowe, jego celem jest nauczyć się generalnej zasady
 	przypisywania danych wejściowych do wyjściowych.
-\item Uczenie nienadzorowane, gdzie dane wejściowe nie są w żaden sposób
-	oznaczone a algorytm uczenia musi sam znaleźć ukryte wzory w danych.
+\item Uczenie nienadzorowane (ang. \textit{unsupervised learning}), gdzie dane
+	wejściowe nie są w żaden sposób
+	oznaczone a algorytm uczenia musi sam znaleźć ukryte wzorce w danych.
 \item \textbf{Uczenie przez wzmacnianie}
 	(ang. \textit{reinforcement learning}), gdzie w odróżnieniu od zarówno
 	uczenia 
@@ -183,13 +190,13 @@ został zastosowany do wytrenowania agenta realizującego prostą grę ``Flappy
 Bird''. Implementacja została zrealizowana z użyciem języka python oraz modułu
 pygame.
 
-W rozdziale ``\nameref{chapter:gra}'' przedstawię grę ``Flappy Bird'',
+W rozdziale 1 przedstawię grę ``Flappy Bird'',
 opiszę jej
 zasady oraz zaprezentuję szczegóły jej implementacji. Następnie w rozdziale
-``\nameref{chapter:uczenie}'' przybliżę zagadnienie uczenia przez
+2 przybliżę zagadnienie uczenia przez
 wzmacnianie. Algorytm Q\dywiz learning oraz jego implementację opiszę w
-rozdziale ``\nameref{chapter:qlearning}''. Na koniec w rozdziale
-``\nameref{chapter:testy}'' przedstawię testy po optymalizacjach algorytmu,
+rozdziale 3. Na koniec w rozdziale
+4 przedstawię testy po optymalizacjach algorytmu,
 które zastosowałem.
 \newpage{}
 
@@ -229,17 +236,17 @@ przelatywał między nadchodzącymi rurami.
 \section{Wykorzystane technologie}
 Do zaimplementowania tej gry zdecydowałem się na użycie wysoko poziomowego
 interpretowanego języka \textbf{python} w wersji 3.8. Python jest dostępny na
-większości współczesnych platform oraz jest to język  open\dywiz source.
-Dodatkowo wykorzystałem moduł \textbf{pygame}.
+większości współczesnych platform.
+Dodatkowo wykorzystałem moduł \textbf{pygame} \cite{pygame_about_ref}.
 
-Pygame używa funkcjonalności biblioteki SDL. Simple DirectMedia Layer (SDL)
-jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy dostęp do
-audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick oraz
-sprzętu graficznego (za pomocą OpenGL i Direct3D). Jest to technologia open
-source, która została zaimplementowana w C. Została użyta przy produkcjach gier
-firmy \textit{Valve Software} czy gry \textit{SuperTuxCart} \cite{sdl_ref}.
-Pygame używa tej biblioteki do odczytywania wejścia z klawiatury/myszy oraz
-rysowania wyjścia na ekran.
+Pygame używa funkcjonalności biblioteki SDL \cite{sdl_ref}. Simple DirectMedia
+Layer (SDL) jest to wieloplatformowa biblioteka zapewniająca nisko poziomowy
+dostęp do audio, urządzeń peryferyjnych takich jak mysz, klawiatura, joystick
+oraz sprzętu graficznego (za pomocą OpenGL i Direct3D). Jest to technologia
+open source, która została zaimplementowana w C. Została użyta przy produkcjach
+gier firmy \textit{Valve Software} czy gry \textit{SuperTuxCart}
+\cite{sdl_ref}. Pygame używa tej biblioteki do odczytywania wejścia z
+klawiatury/myszy oraz rysowania wyjścia na ekran.
 
 Pygame pozwala tworzyć w pełni funkcjonalne gry oraz programy multimedialne
 w pythonie. Zaletami pygame są między innymi: podstawowe funkcje używają
@@ -328,7 +335,9 @@ szybciej przesuwane w stronę obiektu ptaka.
 
 Generowanie obiektów rur odbywa się co $P_f$ milisekund, liczba ta jest
 obliczana w następujący sposób:
-\[P_f = 900 * (30 \div F)\]
+\begin{equation}
+P_f = 900 * (30 \div F)
+\end{equation}
 gdzie $F$ to liczba FPS (domyślnie $30$ stąd ta liczba we wzorze)
 podawana przy starcie programu. Domyślnie będzie to wartość 900 milisekund.
 Uznałem, że taka wartość jest optymalna dla graczy będących ludźmi. 
@@ -1023,7 +1032,7 @@ Q[s',a'] \right)
 \label{qvalue_2}
 \end{equation}
 \begin{algorithm}
-	\caption{Algorytm Q-Learning \cite{ai_foundations_qlearning}}
+	\caption{Q-Learning \cite{ai_foundations_qlearning}}
 \begin{algorithmic}[1]
 	\Procedure{Q-Learning}{$S, A, \gamma, \alpha$} \\
 	\hspace{\algorithmicindent}\textbf{Zmienne wejściowe} \\
@@ -1229,15 +1238,6 @@ następujące:
 \chapter{Testy i rezultaty}
 \label{chapter:testy}
 \section{Optymalizacja pod względem rozmiaru przestrzeni stanów}
-\begin{figure}[!htb]
-	\begin{center}
-		\input{plots/plotFirstApproach.pgf}
-		%\includegraphics{plotFirstApproach.png}
-	\end{center}
-	\caption{Wykres gry od wyniku.}
-	\label{plot_first_approach}
-\end{figure}
-
 Przestrzeń stanów to zbiór $S$, którego elementy wyglądają następująco:
 \[x \in [-80, 509] \cap \mathbb{Z} \ y \in [-300,799] \cap
 \mathbb{Z} \ v \in [-10,8] \cap \mathbb{Z}\ \  \{x, y, v\}\]
@@ -1252,6 +1252,15 @@ $10$. W ten sposób przestrzeń stanów ma $(50 + 8 + 1) * (30 + 79 + 1) * (10 +
 pomniejszeniem ilości elementów w przestrzeni stanów. Tak zaimplementowany 
 algorytm i grę uruchomiłem po czym otrzymałem wyniki
 widoczne na wykresie przedstawionym na rysunku \ref{plot_first_approach}.
+\begin{figure}[!htb]
+	\begin{center}
+		\input{plots/plotFirstApproach.pgf}
+		%\includegraphics{plotFirstApproach.png}
+	\end{center}
+	\caption{Wykres gry od wyniku.}
+	\label{plot_first_approach}
+\end{figure}
+
 Na wykresie każdy czarny punkt pokazuje jaki wynik został uzyskany w danej
 grze. Agent
 rozegrał $5000$ gier. Maksymalny wynik jaki udało mu się osiągnąć to $1003$ w
